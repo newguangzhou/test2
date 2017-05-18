@@ -1,0 +1,11 @@
+tornado
+setproctitle
+Tornado-MySQL
+redis
+hashring
+futures
+redis-py-cluster
+python-geohash
+haversine
+pymongo
+pillow

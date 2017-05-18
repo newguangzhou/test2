@@ -1,0 +1,120 @@
+# -*- coding: utf-8 -*-
+
+import copy
+import datetime
+
+import pymongo
+from pymongo.operations import IndexModel
+
+from lib import utils
+
+PET_DATABASE = "xmq_pet"
+"""
+宠物基本信息表
+"""
+PET_INFOS_TB = "pet_infos"
+PET_INFOS_TB_INDEXES = [
+    IndexModel("pet_id", unique=True),
+    IndexModel("device_imei", unique=True),
+    IndexModel("uid"),
+]
+_PET_INFOS_TB_ROW_DEFINE = {
+    "pet_id": (None, int),  # 宠物全局唯一ID
+    "uid": (None, int),
+    "nick": (u"", unicode),
+    "logo_url": (u"", unicode),
+    "logo_small_url": (u"", unicode),
+    "birthday": (datetime.datetime(1970, 1, 1), datetime.datetime),
+    "sex": (0, int),
+    "weight": (0, float),
+    "pet_type_id": (None, int),
+    "description": (u"", unicode),
+    "register_date": (None, datetime.datetime),
+    "mod_date": (None, datetime.datetime),
+    "device_imei": (None, unicode),
+    "target_step": (0, int),
+    "pet_status": (0, int),
+    "home_wifi": (None, dict),
+    "common_wifi": ([], list)
+}
+"""
+狗睡眠信息
+"""
+PET_SLEEP_INFOS_TB = "pet_sleep_info"
+PET_SLEEP_INFOS_TB_INDEXES = [IndexModel("pet_id"), IndexModel("begin_time")]
+PET_SLEEP_TB_ROW_DEFINE = {
+    "pet_id": (None, int),
+    "device_imei": (u"", unicode),
+    "begin_time": (None, datetime.datetime),
+    "total_secs": (0, int),
+    "quality": (0, int),
+    #"location"
+}
+"""
+狗运动信息
+"""
+PET_SPORT_INFOS_TB = "pet_sport_info"
+PET_SPORT_INFOS_TB_INDEXES = [IndexModel(
+    [("pet_id", pymongo.DESCENDING), ("diary", pymongo.ASCENDING)])]
+PET_SPORT_TB_ROW_DEFINE = {
+    "pet_id": (None, int),
+    "device_imei": (u"", unicode),
+    "diary": (None, datetime.datetime),
+    "step_count": (0, int),
+    "distance": (0, int),
+    "calorie": (0, int),
+    #"location"
+}
+"""
+狗位置信息
+"""
+PET_LOCATION_INFOS_TB = "pet_location_info"
+PET_LOCATION_INFOS_TB_INDEXES = [IndexModel("pet_id"),
+                                 IndexModel("device_imei")]
+PET_LOCATION_TB_ROW_DEFINE = {
+    "pet_id": (None, int),
+    "device_imei": (u"", unicode),
+    "locator_time": (None, datetime.datetime),
+    "lnglat": ([], list),
+    "lnglat2": ([], list),
+    "lnglat3": ([], list),
+    "radius": (0, int),
+    "radius2": (0, int),
+    "radius3": (0, int),
+    #"location"
+}
+
+
+def new_pet_sleep_row():
+    tmp = utils.new_mongo_row(PET_SLEEP_TB_ROW_DEFINE)
+    return tmp
+
+
+def new_pet_sport_row():
+    tmp = utils.new_mongo_row(PET_SPORT_TB_ROW_DEFINE)
+    return tmp
+
+
+def new_pet_location_row():
+    tmp = utils.new_mongo_row(PET_LOCATION_TB_ROW_DEFINE)
+    return tmp
+
+
+def new_pet_infos_row():
+    tmp = utils.new_mongo_row(_PET_INFOS_TB_ROW_DEFINE)
+    cur = datetime.datetime.today()
+    tmp["register_date"] = cur
+    tmp["mod_date"] = cur
+    return tmp
+
+
+def validate_pet_infos_row(row):
+    return utils.validate_mongo_row(row, _PET_INFOS_TB_ROW_DEFINE)
+
+
+def validate_pet_infos_cols(**cols):
+    return utils.validate_mongo_row_cols(_PET_INFOS_TB_ROW_DEFINE, **cols)
+
+
+def has_pet_infos_col(colname):
+    return utils.has_mongo_row_col(_PET_INFOS_TB_ROW_DEFINE, colname)

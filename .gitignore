@@ -2,6 +2,6 @@
 *.swo
 *.swp
 *.log
-*.idea/
+.idea/
 *.out
 *.html

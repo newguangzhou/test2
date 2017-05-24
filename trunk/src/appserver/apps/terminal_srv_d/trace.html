@@ -1,0 +1,18 @@
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic"># ThreadID: 140107019200256</span>
+File: <span style="color: #BA2121">&quot;/usr/lib/python2.7/threading.py&quot;</span>, line <span style="color: #666666">783</span>, <span style="color: #AA22FF; font-weight: bold">in</span> __bootstrap
+  <span style="color: #008000">self</span><span style="color: #666666">.</span>__bootstrap_inner()
+File: <span style="color: #BA2121">&quot;/usr/lib/python2.7/threading.py&quot;</span>, line <span style="color: #666666">810</span>, <span style="color: #AA22FF; font-weight: bold">in</span> __bootstrap_inner
+  <span style="color: #008000">self</span><span style="color: #666666">.</span>run()
+File: <span style="color: #BA2121">&quot;/data/server/server/trunk/src/appserver/apps/terminal_srv_d/base/thread_trace.py&quot;</span>, line <span style="color: #666666">65</span>, <span style="color: #AA22FF; font-weight: bold">in</span> run
+  <span style="color: #008000">self</span><span style="color: #666666">.</span>stacktraces()
+File: <span style="color: #BA2121">&quot;/data/server/server/trunk/src/appserver/apps/terminal_srv_d/base/thread_trace.py&quot;</span>, line <span style="color: #666666">79</span>, <span style="color: #AA22FF; font-weight: bold">in</span> stacktraces
+  fout<span style="color: #666666">.</span>write(stacktraces())
+File: <span style="color: #BA2121">&quot;/data/server/server/trunk/src/appserver/apps/terminal_srv_d/base/thread_trace.py&quot;</span>, line <span style="color: #666666">25</span>, <span style="color: #AA22FF; font-weight: bold">in</span> stacktraces
+  <span style="color: #008000; font-weight: bold">for</span> filename, lineno, name, line <span style="color: #AA22FF; font-weight: bold">in</span> traceback<span style="color: #666666">.</span>extract_stack(stack):
+
+<span style="color: #408080; font-style: italic"># ThreadID: 140107087996736</span>
+File: <span style="color: #BA2121">&quot;main.py&quot;</span>, line <span style="color: #666666">132</span>, <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #666666">&lt;</span>module<span style="color: #666666">&gt;</span>
+  IOLoop<span style="color: #666666">.</span>instance()<span style="color: #666666">.</span>start()
+File: <span style="color: #BA2121">&quot;/usr/local/lib/python2.7/dist-packages/tornado/ioloop.py&quot;</span>, line <span style="color: #666666">863</span>, <span style="color: #AA22FF; font-weight: bold">in</span> start
+  event_pairs <span style="color: #666666">=</span> <span style="color: #008000">self</span><span style="color: #666666">.</span>_impl<span style="color: #666666">.</span>poll(poll_timeout)
+</pre></div>

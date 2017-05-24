@@ -17,6 +17,6 @@ shift 2
 
 eval_str="db.getMongo().getDB('admin').createUser({user:'${username}', pwd:'${passwd}', roles:[{role:'readWriteAnyDatabase', db:'admin'}, {role:'userAdminAnyDatabase', db:'admin'}, {role:'clusterAdmin', db:'admin'}, {role:'dbAdminAnyDatabase', db:'admin'}]})"
 
-mongo $* --eval "$eval_str"
+mongo 127.0.0.1:27020 $* --eval "$eval_str"
 
 

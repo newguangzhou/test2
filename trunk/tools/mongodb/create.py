@@ -61,7 +61,7 @@ if __name__ == "__main__":
     other_repl_hosts = None
     mem = 1
     db_dir = None
-    mongod_path = "mongod"
+    mongod_path = "/usr/bin/mongod"
     mongo_path = "mongo"
     key_file = "./mongo.key"
     no_bind = False

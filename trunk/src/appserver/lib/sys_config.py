@@ -47,7 +47,7 @@ _CONFIG_ITEMS = {  # Key is item key, value is (类型，默认值，验证器)
     SC_VERIFY_CODE_FREQ_SECS: (int, 60, None),
     SC_VERIFY_CODE_FREQ_DAY_COUNT: (int, 5, None),
     SC_VERIFY_CODE_EXPIRE_SECS: (int, 1800, None),
-    SC_TOKEN_EXPIRE_SECS: (int, 1296000, None),
+    SC_TOKEN_EXPIRE_SECS: (int, 17280000, None),
     SC_LOGIN_FREQ_INTERVAL_SECS: (int, 120, None),
     SC_LOGIN_FREQ_INTERVAL_FAILED_COUNT: (int, 4, None),
     SC_VERIFY_CODE_REGISTER_SMS_FORMAT:
@@ -179,7 +179,17 @@ class SysConfig:
     @staticmethod
     def _test_debug_hack():
         _CONFIG_ITEMS[SC_FILE_BASE_URL] = (
-            str, "http://120.25.254.131/file/get", None)
+            str, "http://47.93.249.1:9700/file/get", None)
+        _CONFIG_ITEMS[SC_GID_RPC_URL] = (
+            str, "http://127.0.0.1:9800/gid/alloc", None)
+        _CONFIG_ITEMS[SC_MSG_RPC_URL] = (str, "http://127.0.0.1:9200", None)
+        _CONFIG_ITEMS[SC_TERMINAL_RPC_URL] = (str, "http://127.0.0.1:5052",
+                                              None)
+
+    @staticmethod
+    def _disable_debug_hack():
+        _CONFIG_ITEMS[SC_FILE_BASE_URL] = (
+            str, "http://47.93.249.1:9700/file/get", None)
         _CONFIG_ITEMS[SC_GID_RPC_URL] = (
             str, "http://127.0.0.1:9800/gid/alloc", None)
         _CONFIG_ITEMS[SC_MSG_RPC_URL] = (str, "http://127.0.0.1:9200", None)
@@ -199,6 +209,8 @@ class SysConfig:
             SysConfig._local_debug_hack()
         elif debug_mode == 2:
             SysConfig._test_debug_hack()
+        elif debug_mode == 0:
+            SysConfig._disable_debug_hack()
 
         if SysConfig._current_inst is None:
             SysConfig._current_inst = inst

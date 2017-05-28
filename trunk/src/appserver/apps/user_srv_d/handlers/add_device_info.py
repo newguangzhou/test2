@@ -49,6 +49,9 @@ class AddDeviceInfo(HelperHandler):
         try:
             bind_res = yield pet_dao.bind_device(uid, imei)
         except pymongo.errors.DuplicateKeyError, e:
+            user_dao = self.settings["user_dao"]
+            info = yield user_dao.get_user_info(uid, ("phone_num"))
+            res["old_account"] = info["phone_num"]
             res["status"] = error_codes.EC_EXIST
             self.res_and_fini(res)
             return
@@ -58,6 +61,7 @@ class AddDeviceInfo(HelperHandler):
             info["imei"] = imei
         if device_name is not None:
             info["device_name"] = device_name
+        info["sim_deadline"] = datetime.datetime.now() + datetime.timedelta(days=180)
         try:
             yield device_dao.update_device_info(**info)
         except Exception, e:

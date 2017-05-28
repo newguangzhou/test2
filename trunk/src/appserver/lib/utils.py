@@ -33,6 +33,13 @@ def str2datetime(str, format="%Y%m%d%H%M%S"):
     st = time.strptime(str, format)
     return datetime.datetime.fromtimestamp(time.mktime(st))
 
+def compare_time(time1,time2):
+    i_time1 = date2int(time1)
+    i_time2 = date2int(time2)
+    if i_time1 < i_time2:
+        return 0
+    else:
+        return 1
 
 def date2int(dt):
     return int(time.mktime(dt.timetuple()))

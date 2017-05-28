@@ -200,7 +200,7 @@ EC_NODATA = 32                                      #没有数据
                    birthday(2014-02-22)
                    sex(1,2)
                    weight (12)
-                   pet_type_id
+                   pet_type_id（1:狗  2:猫 -1 其他）
                    description
     返回:           {
                         status:状态，可能的只有:
@@ -467,8 +467,10 @@ EC_NODATA = 32                                      #没有数据
                             
                         device:设备名称
                         imei:imei码
-                        firmware_version:固件版本
+                        firmware_version:固件版本 (软件版本)
+                        hardware_version:硬件版本 ( 从V开始显示，前面的不显示)
                         battery_level:电池电量
+                        sim_deadline:sim卡过期时间
                         iccid:sim卡iccid信息                         
                    }
 --
@@ -488,6 +490,7 @@ EC_NODATA = 32                                      #没有数据
                             EC_SYS_ERROR
                             EC_UNKNOWN_ERROR
                             EC_PET_NOT_EXIST("追踪器是宠物身上的，如果没有宠物就没有追踪器信息")
+                            old_account:18825180264("如果已经设备已经被绑定,返回老用户"
                             
                               
                    }               

@@ -38,6 +38,7 @@ class AddPetInfo(HelperHandler):
 
         try:
             uid = int(self.get_argument("uid"))
+            pet_type_id = int(self.get_argument("pet_type_id"))
             token = self.get_argument("token")
             st = yield self.check_token("OnAddPetInfo", res, uid, token)
             if not st:

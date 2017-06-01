@@ -67,7 +67,8 @@ class AddPetInfo(HelperHandler):
             return
 
         if (sex is not None and sex not in (0, 1, 2)) or (
-                weight is not None and (weight > 1000 or weight < 0)):
+                weight is not None and (weight > 1000 or weight < 0)
+                or (pet_type_id is not None and pet_type_id not in (-1, 1, 2))):
             logging.warning("AddPetInfo, invalid args, %s", self.dump_req())
             res["status"] = error_codes.EC_INVALID_ARGS
             self.res_and_fini(res)

@@ -68,8 +68,8 @@ class MongoDAOBase:
             #if self._meta.repl_set_name:
             #    extra_args["replicaSet"] = self._meta.repl_set_name
             print self._meta.host, self._meta.port, self._meta.passwd, self._meta.username, extra_args
-            # mongo_client = pymongo.MongoReplicaSetClient(self._meta.host, self._meta.port, **extra_args)
-            mongo_client = pymongo.MongoClient(self._meta.host, self._meta.port, **extra_args)
+            mongo_client = pymongo.MongoReplicaSetClient(self._meta.host,replicaset=self._meta.repl_set_name, **extra_args)
+            # mongo_client = pymongo.MongoClient(self._meta.host, self._meta.port, **extra_args)
             print mongo_client
             mongo_client.get_database("admin").authenticate(self._meta.username, self._meta.passwd, mechanism='SCRAM-SHA-1')
             self._th_local.mongo_client = mongo_client

@@ -10,14 +10,14 @@ class MongoConfig:
             debug_mode = kwargs["debug_mode"]
 
         #self.default_meta = MongoMeta(hosts="172.19.101.61", port=27017, username="root", passwd="mgdb8w34asdadat51!((")
-        self.default_meta = MongoMeta(hosts="127.0.0.1",
+        self.default_meta = MongoMeta(hosts="127.0.0.1:27018,127.0.0.1:27019,127.0.0.1:27020",
                                       port=27020,
                                       username="root",
                                       passwd="mgdb8w34asdadat51!((",
                                       repl_set_name="mongo_shard1")
 
         if debug_mode != 0:
-            self.default_meta = MongoMeta(hosts="127.0.0.1",
+            self.default_meta = MongoMeta(hosts="127.0.0.1:27018,127.0.0.1:27019,127.0.0.1:27020",
                                           port=27020,
                                           username="root",
                                           passwd="mgdb8w34asdadat51!((",

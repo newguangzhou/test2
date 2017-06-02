@@ -3,7 +3,7 @@
 import pdb
 
 import terminal_proto
-
+import logging
 from util import change_unescape_ssid
 
 
@@ -70,11 +70,12 @@ class LocationInfo(terminal_proto.ComplexField):
             #    1:n + 1])
             tmp = data[1:n]
             if self.locator_status == LOCATOR_STATUS_MIXED:
-                pos = tmp.find("@")
+                pos = tmp.find("%")
                 if pos == 0:
                     raise PacketException("Invalid location  mixed info")
                 segs5 = [tmp[0:pos], tmp[pos + 1:]]
-
+                # logging.info("tang seqs5 pos:%d#####%s#####%s" %
+                #             (pos, segs5, tmp))
                 self.fields["station_locator_data"] = terminal_proto.Field(
                     terminal_proto.STRING_FIELD).FromStr(segs5[0])
                 self.fields["mac"] = terminal_proto.Field(
@@ -131,6 +132,7 @@ class ReportLocationInfoReq:
             raise PacketException(
                 "Invalid report location info request packet")
         segs = [data[0:pos], data[pos + 1:]]
+        #logging.info("tang %s" % segs)
         # 获取imei
         self._fields["imei"] = terminal_proto.Field(
             terminal_proto.STRING_FIELD).FromStr(segs[0])
@@ -140,8 +142,8 @@ class ReportLocationInfoReq:
         if pos == 0:
             raise PacketException(
                 "Invalid report location info request packet")
-        segs3 = [segs[1][0:pos], segs[1][pos+1:]]
-
+        segs3 = [segs[1][0:pos], segs[1][pos + 1:]]
+        # logging.info("tang %s" % segs3)
         # 获取定位状态
         self._fields["locator_status"] = terminal_proto.Field(
             terminal_proto.INTEGER_FIELD).FromStr(segs3[0][0:1])
@@ -175,6 +177,7 @@ class ReportLocationInfoReq:
             raise PacketException("\"%s\" attribute not exists" % (attr, ))
 
     def __str__(self):
+        # logging.info("tang %s" % str(self._fields))
         return terminal_proto.FieldsStr(self._fields)
 
     def orgin_data(self):

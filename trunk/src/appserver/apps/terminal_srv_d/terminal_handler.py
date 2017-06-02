@@ -201,7 +201,7 @@ class TerminalHandler:
             "OnReportLocationInfoReq, parse packet success, pk=\"%s\" id=%u peer=%s",
             str_pk, conn_id, peer)
         self._broadcastor.register_conn(conn_id, pk.imei)
-        self.imei_timer_mgr.add_imei(pk.ime)
+        self.imei_timer_mgr.add_imei(pk.imei)
 
         self._OnOpLog('c2s header=%s pk=%s peer=%s' % (header, str_pk, peer),
                       pk.imei)
@@ -346,7 +346,7 @@ class TerminalHandler:
             "OnReportHealthInfoReq, parse packet success, pk=\"%s\" id=%u peer=%s",
             str_pk, conn_id, peer)
         self._broadcastor.register_conn(conn_id, pk.imei)
-        self.imei_timer_mgr.add_imei(pk.ime)
+        self.imei_timer_mgr.add_imei(pk.imei)
         # Ack
         sleep_data = []
         pet_info = yield self.pet_dao.get_pet_info(("pet_id", ),
@@ -376,7 +376,7 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s peer=%s' % (header, body, peer),
                       pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
-        self.imei_timer_mgr.add_imei(pk.ime)
+        self.imei_timer_mgr.add_imei(pk.imei)
 
         logger.debug(
             "OnSendCommandAck, parse packet success, pk=\"%s\" id=%u peer=%s",
@@ -393,7 +393,7 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s parse_data=%s peer=%s' %
                       (header, body, str_pk, peer), pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
-        self.imei_timer_mgr.add_imei(pk.ime)
+        self.imei_timer_mgr.add_imei(pk.imei)
 
         logger.info(
             "OnHeartbeatReq, parse packet success, pk=\"%s\" id=%u peer=%s",
@@ -430,7 +430,7 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s peer=%s' % (header, body, peer),
                       pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
-        self.imei_timer_mgr.add_imei(pk.ime)
+        self.imei_timer_mgr.add_imei(pk.imei)
 
         logger.debug(
             "OnReportTerminalStatusReq, parse packet success, pk=\"%s\" id=%u peer=%s",
@@ -463,7 +463,7 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s peer=%s' % (header, body, peer),
                       pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
-        self.imei_timer_mgr.add_imei(pk.ime)
+        self.imei_timer_mgr.add_imei(pk.imei)
 
         logger.debug(
             "OnSyncCommandReq, parse packet success, pk=\"%s\" id=%u peer=%s",
@@ -489,7 +489,7 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s peer=%s' % (header, body, peer),
                       pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
-        self.imei_timer_mgr.add_imei(pk.ime)
+        self.imei_timer_mgr.add_imei(pk.imei)
 
         logger.debug(
             "OnUploadTerminalLogReq, parse packet success, pk=\"%s\" id=%u peer=%s",
@@ -516,7 +516,7 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s peer=%s' % (header, body, peer),
                       pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
-        self.imei_timer_mgr.add_imei(pk.ime)
+        self.imei_timer_mgr.add_imei(pk.imei)
 
         logger.debug(
             "_OnUploadStationLocationReq, parse packet success, pk=\"%s\" id=%u peer=%s",
@@ -540,7 +540,7 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s peer=%s' % (header, body, peer),
                       pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
-        self.imei_timer_mgr.add_imei(pk.ime)
+        self.imei_timer_mgr.add_imei(pk.imei)
 
         logger.debug(
             "_OnGpsSwitchReq, parse packet success, pk=\"%s\" id=%u peer=%s",
@@ -561,7 +561,7 @@ class TerminalHandler:
             "_OnGetLocationReq, parse packet success, pk=\"%s\" id=%u peer=%s",
             str_pk, conn_id, peer)
         self._broadcastor.register_conn(conn_id, pk.imei)
-        self.imei_timer_mgr.add_imei(pk.ime)
+        self.imei_timer_mgr.add_imei(pk.imei)
 
         locator_time = pk.location_info.locator_time
         lnglat = []

@@ -76,6 +76,7 @@ class AddPetInfo(HelperHandler):
             logging.warning("AddPetInfo, invalid args, %s", self.dump_req())
             res["status"] = error_codes.EC_INVALID_ARGS
             self.res_and_fini(res)
+            return
 
         pet_id = yield gid_rpc.alloc_pet_gid()
         device_info = yield device_dao.get_device_info_by_uid(uid,("imei",))

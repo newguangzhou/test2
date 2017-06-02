@@ -242,7 +242,7 @@ class AuthMongoDAO(MongoDAOBase):
                 pass
             elif auth_info[
                     "state"] == type_defines.ST_AUTH_FREEZE_FOREVER:  # 永久冻结
-                return (error_codes.EC_ACCOUNT_FREEZED_FOREVER, None)
+                return (error_codes.EC_ACCOUNT_FREEZED, None)
             elif auth_info[
                     "state"] == type_defines.ST_AUTH_FREEZE_TEMP:  # 账号被临时冻结
                 # 检查冻结是否已经过期
@@ -313,24 +313,24 @@ class AuthMongoDAO(MongoDAOBase):
             #    else:
             #        raise AuthMongoDAOException("Unknown auth old subtype \"%u\"", auth_info["sub_type"])
             #    is_old = True
-            if check_st:  # 登录成功
-                # 重置登录频率计时器
-                auth_info_tb.update_one({"type": type,
-                                         "auth_id": auth_id},
-                                        {"$set": {"freq_begin_tm": cur_tm,
-                                                  "freq_counter": 0}})
+            # if check_st:  # 登录成功
+            # 重置登录频率计时器
+            auth_info_tb.update_one({"type": type,
+                                     "auth_id": auth_id},
+                                    {"$set": {"freq_begin_tm": cur_tm,
+                                              "freq_counter": 0}})
 
-                return (error_codes.EC_SUCCESS, is_old)
-            else:  # 登录失败则需要更新频率限制的计数器
-                up_data = None
-                if cur_tm > freq_check_interval + auth_info["freq_begin_tm"]:
-                    updata = {"$set": {"freq_begin_tm": cur_tm,
-                                       "freq_counter": 1}}
-                else:
-                    updata = {"$inc": {"freq_counter": 1}}
-                auth_info_tb.update_one({"type": type,
-                                         "auth_id": auth_id}, updata)
-                return (error_codes.EC_INVALID_PASS, None)
+            return (error_codes.EC_SUCCESS, is_old)
+            #else:  # 登录失败则需要更新频率限制的计数器
+            #    up_data = None
+            #    if cur_tm > freq_check_interval + auth_info["freq_begin_tm"]:
+            #        updata = {"$set": {"freq_begin_tm": cur_tm,
+            #                           "freq_counter": 1}}
+            #    else:
+            #        updata = {"$inc": {"freq_counter": 1}}
+            #    auth_info_tb.update_one({"type": type,
+            #                             "auth_id": auth_id}, updata)
+            #    return (error_codes.EC_INVALID_PASS, None)
 
         ret = yield self.submit(_callback)
         raise gen.Return(ret)
@@ -365,10 +365,6 @@ class AuthMongoDAO(MongoDAOBase):
 
         ret = yield self.submit(_callback)
         raise gen.Return(ret)
-
-    #@gen.coroutine
-    #def get_user_token(self, )
-
 
     def gen_token(self, type, auth_id, multi_login, device_type, device_token,
                   expire_times, platform, device_model):
@@ -416,14 +412,14 @@ class AuthMongoDAO(MongoDAOBase):
     def gen_user_token(self, uid, multi_login, device_type, device_token,
                        expire_times, platform, device_model):
         return self.gen_token(type_defines.USER_AUTH, uid, multi_login,
-                              device_type, device_token, expire_times, platform, device_model)
+                              device_type, device_token, expire_times,
+                              platform, device_model)
 
     # def get_cur_login_info(self, type, auth_id):
     #    info = {}
     #    tb = mongo_client[auth_def.AUTH_DATABASE][auth_def.AUTH_STATUS_TB]
     #    return tb.find_one({"auth_type": type,
     #                        "auth_id": auth_id}, sort=[("add_date", pymongo.DESCENDING)])
-
 
     def check_token(self, type, auth_id, token):
         def _callback(mongo_client, **kwargs):
@@ -433,7 +429,8 @@ class AuthMongoDAO(MongoDAOBase):
             tb = mongo_client[auth_def.AUTH_DATABASE][auth_def.AUTH_STATUS_TB]
 
             info = tb.find_one({"auth_type": type,
-                                "auth_id": auth_id}, sort=[("add_date", pymongo.DESCENDING)])
+                                "auth_id": auth_id},
+                               sort=[("add_date", pymongo.DESCENDING)])
 
             if info is None:
                 ec = error_codes.EC_INVALID_TOKEN
@@ -449,7 +446,8 @@ class AuthMongoDAO(MongoDAOBase):
                     else:
                         ec = error_codes.EC_LOGIN_IN_OTHER_PHONE
                 elif info["expire_times"] != 0:
-                    tm = utils.date2int(info["mod_date"]) + info["expire_times"]
+                    tm = utils.date2int(info["mod_date"]) + info[
+                        "expire_times"]
                     cur_tm = int(time.time())
                     if cur_tm >= tm:  # 已经过期
                         ec = error_codes.EC_TOKEN_EXPIRED

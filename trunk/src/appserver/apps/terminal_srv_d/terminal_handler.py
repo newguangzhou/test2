@@ -277,17 +277,17 @@ class TerminalHandler:
             if pet_info is not None:
                 yield self.pet_dao.add_location_info(pet_info["pet_id"],
                                                      pk.imei, location_info)
-            uid = pet_info.get("uid", None)
-            if uid is not None:
-                msg = push_msg.new_location_change_msg(
-                    "%.7f" % lnglat[1], "%.7f" % lnglat[0],
-                    int(time.mktime(locator_time.timetuple())), radius)
-                try:
-                    yield self.msg_rpc.push_android(uids=str(uid),
-                                                    payload=msg,
-                                                    pass_through=1)
-                except Exception, e:
-                    logger.exception(e)
+                uid = pet_info.get("uid", None)
+                if uid is not None:
+                    msg = push_msg.new_location_change_msg(
+                        "%.7f" % lnglat[1], "%.7f" % lnglat[0],
+                        int(time.mktime(locator_time.timetuple())), radius)
+                    try:
+                        yield self.msg_rpc.push_android(uids=str(uid),
+                                                        payload=msg,
+                                                        pass_through=1)
+                    except Exception, e:
+                        logger.exception(e)
 
         yield self.new_device_dao.update_device_info(
             pk.imei,

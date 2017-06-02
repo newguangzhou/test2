@@ -66,12 +66,13 @@ class XMQWebHandler(tornado.web.RequestHandler):
     def custom_headers(self):
         ret = {}
         os = self.request.headers.get(HTTP_HD_OS, "")
-        if os.startwith(HTTP_HD_ANDROID_START_STRING):
+        if os.startswith(HTTP_HD_ANDROID_START_STRING):
             platform = PLATFORM_ANDROID
         else:
             platform = PLATFORM_IOS
 
         ret["platform"] = platform
         ret["app_version"] = self.request.headers.get(HTTP_HD_APPVERSION, "")
-        ret["device_model"] = self.request.headers.get(HTTP_HD_DEVICE_MODEL, "")
+        ret["device_model"] = self.request.headers.get(HTTP_HD_DEVICE_MODEL,
+                                                       "")
         return ret

@@ -592,6 +592,7 @@ EC_NODATA = 32                                      #没有数据
 参数:             uid
                  token
                  imei
+                 pet_id
 返回:            {
                     status:状态,可能的值有:
                         EC_SUCCESS

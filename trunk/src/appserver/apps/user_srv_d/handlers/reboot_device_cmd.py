@@ -44,17 +44,37 @@ class RebootDeviceCmd(HelperHandler):
                 self.res_and_fini(res)
                 return
             imei = info.get("device_imei", None)
-            if imei is None:
+            pet_id = info.get("pet_id", None)
+            if imei is None or pet_id is None:
                 logging.warning("RebootDeviceCmd, not found, %s",
                                 self.dump_req())
                 res["status"] = error_codes.EC_DEVICE_NOT_EXIST
                 self.res_and_fini(res)
                 return
-            get_res = yield terminal_rpc.send_j03(imei,"020")
-            res["status"] = get_res["status"]
+
 
         except Exception, e:
             logging.warning("RebootDeviceCmd, invalid args, %s %s",
+                            self.dump_req(), str(e))
+            res["status"] = error_codes.EC_INVALID_ARGS
+            self.res_and_fini(res)
+            return
+
+        try:
+            get_res = yield terminal_rpc.send_j03(imei, "020")
+            res["status"] = get_res["status"]
+        except Exception, e:
+            logging.warning("RebootDeviceCmd, error, %s %s",
+                            self.dump_req(), str(e))
+            res["status"] = error_codes.EC_SEND_CMD_FAIL
+            self.res_and_fini(res)
+            return
+
+        info = {"has_reboot":1}
+        try:
+            yield pet_dao.update_pet_info(pet_id, **info)
+        except Exception, e:
+            logging.warning("RebootDeviceCmd,write database error, %s %s",
                             self.dump_req(), str(e))
             res["status"] = error_codes.EC_SYS_ERROR
             self.res_and_fini(res)

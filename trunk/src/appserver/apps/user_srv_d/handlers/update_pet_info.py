@@ -78,6 +78,7 @@ class UpdatePetInfo(HelperHandler):
             logging.warning("UpdatePetInfo, invalid args, %s", self.dump_req())
             res["status"] = error_codes.EC_INVALID_ARGS
             self.res_and_fini(res)
+            return
         try:
             exist = yield pet_dao.is_pet_id_exist(pet_id, uid)
             if not exist:
@@ -85,6 +86,7 @@ class UpdatePetInfo(HelperHandler):
                                 self.dump_req())
                 res["status"] = error_codes.EC_PET_NOT_EXIST
                 self.res_and_fini(res)
+                return
         except Exception, e:
             logging.warning("UpdatePetInfo, is_pet_id_exist error, %s %s",
                             self.dump_req(), self.dump_exp(e))

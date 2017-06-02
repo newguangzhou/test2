@@ -37,6 +37,20 @@ _PET_INFOS_TB_ROW_DEFINE = {
     "home_wifi": (None, dict),
     "common_wifi": ([], list)
 }
+
+"""
+宠物的wifi信息
+"""
+PET_WIFI_INFOS_TB = "pet_wifi_info"
+PET_WIFI_INFOS_TB_INDEXES = [IndexModel("pet_id"), IndexModel("create_time")]
+PET_WIFI_TB_ROW_DEFINE = {
+    "pet_id": (None, int),
+    "device_imei": (u"", unicode),
+    "create_time": (None, datetime.datetime),
+    "wifis": ([], list)
+
+}
+
 """
 狗睡眠信息
 """
@@ -97,6 +111,10 @@ def new_pet_sport_row():
 
 def new_pet_location_row():
     tmp = utils.new_mongo_row(PET_LOCATION_TB_ROW_DEFINE)
+    return tmp
+
+def new_pet_wifi_row():
+    tmp = utils.new_mongo_row(PET_WIFI_TB_ROW_DEFINE)
     return tmp
 
 

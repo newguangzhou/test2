@@ -21,7 +21,7 @@ class RemoveDeviceInfo(HelperHandler):
         logging.debug("RemoveDeviceInfo, %s", self.dump_req())
 
         self.set_header("Content-Type", "application/json; charset=utf-8")
-        #device_dao = self.settings["device_dao"]
+        device_dao = self.settings["device_dao"]
         pet_dao = self.settings["pet_dao"]
         conf = self.settings["appconfig"]
         res = {"status": error_codes.EC_SUCCESS}
@@ -57,7 +57,16 @@ class RemoveDeviceInfo(HelperHandler):
         try:
             yield pet_dao.unbind_device_imei(info["pet_id"])
         except Exception, e:
-            logging.warning("RemoveDeviceInfo, error, %s %s", self.dump_req(),
+            logging.warning("RemoveDeviceInfo, pet_dao.unbind_device_imei error, %s %s", self.dump_req(),
+                            self.dump_exp(e))
+            res["status"] = error_codes.EC_SYS_ERROR
+            self.res_and_fini(res)
+            return
+
+        try:
+            yield device_dao.unbind_device_imei(device_imei)
+        except Exception, e:
+            logging.warning("RemoveDeviceInfo, device_dao.unbind_device_imei error, %s %s", self.dump_req(),
                             self.dump_exp(e))
             res["status"] = error_codes.EC_SYS_ERROR
             self.res_and_fini(res)

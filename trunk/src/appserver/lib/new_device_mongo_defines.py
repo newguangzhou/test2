@@ -13,9 +13,11 @@ DEVICE_DATABASE = "xmq_device2"
 设备信息
 """
 DEVICE_INFOS_TB = "device_info"
-DEVICE_INFOS_TB_INDEXES = [IndexModel("imei"), ]
+DEVICE_INFOS_TB_INDEXES = [IndexModel("imei",unique=True),
+                           IndexModel("uid"),]
 DEVICE_TB_ROW_DEFINE = {
     "imei": (u"", unicode),
+    "uid": (None, int),
     "sleep_data": ([], list),
     "heart_rate_data": ([], list),
     "log_items": ([], list),

@@ -22,6 +22,8 @@ class AddPetInfo(HelperHandler):
 
         self.set_header("Content-Type", "application/json; charset=utf-8")
         pet_dao = self.settings["pet_dao"]
+        device_dao = self.settings["device_dao"]
+        terminal_rpc = self.settings["terminal_rpc"]
         conf = self.settings["appconfig"]
         gid_rpc = self.settings["gid_rpc"]
         res = {"status": error_codes.EC_SUCCESS}
@@ -66,7 +68,7 @@ class AddPetInfo(HelperHandler):
             self.res_and_fini(res)
             return
 
-        if (sex is not None and sex not in (0, 1, 2)) or (
+        if (sex is not None and sex not in (1, 2)) or (
                 weight is not None and (weight > 1000 or weight < 0)
                 or (pet_type_id is not None and pet_type_id not in (-1, 1, 2))):
             logging.warning("AddPetInfo, invalid args, %s", self.dump_req())
@@ -74,7 +76,11 @@ class AddPetInfo(HelperHandler):
             self.res_and_fini(res)
 
         pet_id = yield gid_rpc.alloc_pet_gid()
+        device_info = yield device_dao.get_device_info_by_uid(uid,("imei",))
+        imei = device_info["imei"]
         info = {"pet_type_id": pet_type_id, "uid": uid}
+        info["device_imei"] = imei
+        info["uid"] = uid
         if nick is not None:
             info["nick"] = nick
         if logo_url is not None:
@@ -102,6 +108,22 @@ class AddPetInfo(HelperHandler):
             self.res_and_fini(res)
             return
         res["pet_id"] = pet_id
+        try:
+            yield terminal_rpc.send_j13(imei)
+        except Exception, e:
+            logging.warning("get wifi list in add_pet_info, error, %s %s",
+                            self.dump_req(), str(e))
+
+        # @017,25%1%0,3#2,5%15.3%1
+        try:
+            get_res = yield terminal_rpc.send_j03(imei,"017,25%1%0,3#2,5%15.3%1")
+            res["status"] = get_res["status"]
+        except Exception, e:
+            logging.warning("add_pet_info to device, error, %s %s",
+                            self.dump_req(), str(e))
+            res["status"] = error_codes.EC_SYS_ERROR
+            self.res_and_fini(res)
+            return 
 
         # 成功
         logging.debug("AddPetInfo, success %s", self.dump_req())

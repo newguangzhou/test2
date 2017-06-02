@@ -46,20 +46,20 @@ class AddDeviceInfo(HelperHandler):
             self.res_and_fini(res)
             return
 
-        try:
-            bind_res = yield pet_dao.bind_device(uid, imei)
-        except pymongo.errors.DuplicateKeyError, e:
-            user_dao = self.settings["user_dao"]
-            res["status"] = error_codes.EC_EXIST
-            try:
-                info = yield user_dao.get_user_info(uid, ("phone_num"))
-                res["old_account"] = info["phone_num"]
-            except Exception,ee:
-                logging.warning("AddDeviceInfo, error, imei has exit but can't get the old account: %s %s", self.dump_req(),
-                                self.dump_exp(ee))
-                res["old_account"] = ""
-            self.res_and_fini(res)
-            return
+        # try:
+        #     bind_res = yield pet_dao.bind_device(uid, imei)
+        # except pymongo.errors.DuplicateKeyError, e:
+        #     user_dao = self.settings["user_dao"]
+        #     res["status"] = error_codes.EC_EXIST
+        #     try:
+        #         info = yield user_dao.get_user_info(uid, ("phone_num"))
+        #         res["old_account"] = info["phone_num"]
+        #     except Exception,ee:
+        #         logging.warning("AddDeviceInfo, error, imei has exit but can't get the old account: %s %s", self.dump_req(),
+        #                         self.dump_exp(ee))
+        #         res["old_account"] = ""
+        #     self.res_and_fini(res)
+        #     return
 
 
         info = {}
@@ -68,8 +68,22 @@ class AddDeviceInfo(HelperHandler):
         if device_name is not None:
             info["device_name"] = device_name
         info["sim_deadline"] = datetime.datetime.now() + datetime.timedelta(days=180)
+        info["uid"] = uid;
         try:
             yield device_dao.update_device_info(**info)
+        except pymongo.errors.DuplicateKeyError, e:
+            user_dao = self.settings["user_dao"]
+            res["status"] = error_codes.EC_EXIST
+            try:
+                info = yield user_dao.get_user_info(uid, ("phone_num"))
+                res["old_account"] = info["phone_num"]
+            except Exception, ee:
+                logging.warning("AddDeviceInfo, error, imei has exit but can't get the old account: %s %s",
+                                self.dump_req(),
+                                self.dump_exp(ee))
+                res["old_account"] = ""
+            self.res_and_fini(res)
+            return
         except Exception, e:
             logging.warning("AddDeviceInfo, error, %s %s", self.dump_req(),
                             self.dump_exp(e))

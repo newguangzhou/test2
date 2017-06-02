@@ -25,6 +25,7 @@ class TerminalRPCException(Exception):
 class TerminalRPC:
     def __init__(self, msg_url):
         self._apis = {"send_j13": "%s/send_commandj13" % (msg_url, ),
+                      "send_j03": "%s/send_commandj03" % (msg_url,),
                       "send_command_params":
                       "%s/send_command_params" % (msg_url, ), }
 
@@ -46,6 +47,11 @@ class TerminalRPC:
     @gen.coroutine
     def send_j13(self, imei):
         ret = yield self.call("send_j13", imei=imei)
+        raise gen.Return(ret)
+
+    @gen.coroutine
+    def send_j03(self, imei, command_content):
+        ret = yield self.call("send_j03", imei=imei, command_content = command_content)
         raise gen.Return(ret)
 
     @gen.coroutine

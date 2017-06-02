@@ -127,9 +127,38 @@ class NewDeviceMongoDAO(MongoDAOBase):
 
         yield self.submit(_callback)
 
+
+    @gen.coroutine
+    def unbind_device_imei(self, imei):
+        def _callback(mongo_client, **kwargs):
+            tb = mongo_client[new_device_def.DEVICE_DATABASE][new_device_def.DEVICE_INFOS_TB]
+            tb.delete_one({"imei": imei})
+
+        yield self.submit(_callback)
+
 # @gen.coroutine
 # def add_device_info(self, **kwargs):
 #     return
+
+    @gen.coroutine
+    def get_device_info_by_uid(self, uid, cols):
+        def _callback(mongo_client, **kwargs):
+            tb = mongo_client[new_device_def.DEVICE_DATABASE][
+                new_device_def.DEVICE_INFOS_TB]
+            qcols = {"_id": 0}
+            for v in cols:
+                if not new_device_def.has_device_col(v):
+                    raise NewDeviceMongoDAOException(
+                        "Unknown device infos row column \"%s\"", v)
+                qcols[v] = 1
+
+            cursor = tb.find({"uid": uid}, qcols)
+            if cursor.count() <= 0:
+                return None
+            return cursor[0]
+
+        ret = yield self.submit(_callback)
+        raise gen.Return(ret)
 
     @gen.coroutine
     def get_device_info(self, imei, cols):

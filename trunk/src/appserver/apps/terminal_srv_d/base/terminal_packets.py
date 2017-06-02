@@ -70,9 +70,11 @@ class LocationInfo(terminal_proto.ComplexField):
             #    1:n + 1])
             tmp = data[1:n]
             if self.locator_status == LOCATOR_STATUS_MIXED:
-                segs5 = tmp.split("%")
-                if len(segs5) != 2:
+                pos = tmp.find("@")
+                if pos == 0:
                     raise PacketException("Invalid location  mixed info")
+                segs5 = [tmp[0:pos], tmp[pos + 1:]]
+
                 self.fields["station_locator_data"] = terminal_proto.Field(
                     terminal_proto.STRING_FIELD).FromStr(segs5[0])
                 self.fields["mac"] = terminal_proto.Field(
@@ -124,20 +126,21 @@ class ReportLocationInfoReq:
 
     def Parse(self, data):
         self._data = data
-        segs = data.split("@")
-        if len(segs) != 2:
+        pos = data.find("@")
+        if pos == 0:
             raise PacketException(
                 "Invalid report location info request packet")
-
+        segs = [data[0:pos], data[pos + 1:]]
         # 获取imei
         self._fields["imei"] = terminal_proto.Field(
             terminal_proto.STRING_FIELD).FromStr(segs[0])
 
         # 得到参数和附加参数列表
-        segs3 = segs[1].split("#")
-        if len(segs3) != 2:
+        pos = segs[1].rfind("#")
+        if pos == 0:
             raise PacketException(
                 "Invalid report location info request packet")
+        segs3 = [segs[1][0:pos], segs[1][pos+1:]]
 
         # 获取定位状态
         self._fields["locator_status"] = terminal_proto.Field(
@@ -804,12 +807,18 @@ class GetLocationAck:
 
 
 def main():
-    msg = UploadStationReq()
-    msg.Parse(
-        "123456789012345@0460,01,40977,2205409,-65|460,01,40977 ,2205409,-65|460,01,40977,2205409,-65")
-    print msg
-    msg = UploadStationAck("200710231200001000", 121.411783, 31.178125)
-    print msg
+    # msg = UploadStationReq()
+    # msg.Parse(
+    #    "123456789012345@0460,01,40977,2205409,-65|460,01,40977 ,2205409,-65|460,01,40977,2205409,-65")
+    # print msg
+    # msg = UploadStationAck("200710231200001000", 121.411783, 31.178125)
+    # print msg
+    test_str = "5460,0,9470,22175,36|460,0,9470,22927,44|460,0,9470,23408,42|460,0,9470,48805,38|460,0,9470,22928,37|460,0,9470,23107,32|460,0,9470,55443,30%B8:08:D7:5B:6E:EC,-67,XMQ_WIFI|64:09:80:5A:95:69,-61,XMQ_WIFI|EC:26:CA:40:8F:AA,-77,TP-LINK_sengnon|30:B4:9E:29:22:B0,-90,Eco-Mobile|CC:81:DA:8A:F9:08,-95,@PHICOMM_00|T20170522195311#00,100,13,11,69"
+    pos = test_str.rfind("#")
+    if pos == 0:
+        print "err"
+    seq = [test_str[0:pos], test_str[pos + 1:]]
+    print seq
 
 
 if __name__ == '__main__':

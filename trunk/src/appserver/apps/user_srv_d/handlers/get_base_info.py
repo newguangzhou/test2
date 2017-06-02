@@ -21,6 +21,7 @@ class GetBaseInfo(HelperHandler):
 
         self.set_header("Content-Type", "application/json; charset=utf-8")
         pet_dao = self.settings["pet_dao"]
+        device_dao = self.settings["device_dao"]
         conf = self.settings["appconfig"]
 
         res = {"status": error_codes.EC_SUCCESS}
@@ -50,7 +51,14 @@ class GetBaseInfo(HelperHandler):
             info = yield pet_dao.get_user_pets(uid, ("pet_id", "device_imei",
                                                      "home_wifi"))
             if not info:
-                logging.warning("GetBaseInfo, not found, %s", self.dump_req())
+                logging.warning("GetBaseInfo in pet dao, not found, %s", self.dump_req())
+                device_info = yield device_dao.get_device_info_by_uid(uid,("imei",))
+                if not device_info:
+                    logging.warning("GetBaseInfo in device dao, not found, %s", self.dump_req())
+                else:
+                    device_imei = device_info.get("imei", "")
+                    if device_imei is not None:
+                        res["device_imei"] = device_imei
             else:
                 res["pet_id"] = info.get("pet_id", 0)
                 device_imei = info.get("device_imei", "")

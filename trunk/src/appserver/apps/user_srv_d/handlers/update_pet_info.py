@@ -94,6 +94,7 @@ class UpdatePetInfo(HelperHandler):
             self.res_and_fini(res)
             return
         info = {"mod_date": datetime.datetime.today()}
+        info["has_reboot"] = 0
         if pet_type_id is not None:
             info["pet_type_id"] = pet_type_id
         if nick is not None:

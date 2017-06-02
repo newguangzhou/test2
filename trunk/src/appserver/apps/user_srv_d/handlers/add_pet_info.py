@@ -38,6 +38,7 @@ class AddPetInfo(HelperHandler):
         pet_type_id = 1
         description = None
         reboot = None
+        imei = None
 
         try:
             uid = int(self.get_argument("uid"))
@@ -47,7 +48,7 @@ class AddPetInfo(HelperHandler):
             st = yield self.check_token("OnAddPetInfo", res, uid, token)
             if not st:
                 return
-
+            imei = self.get_argument("imei",None)
             nick = self.get_argument("nick", None)
             logo_url = self.get_argument("logo_url", None)
             logo_small_url = self.get_argument("logo_small_url", None)
@@ -70,7 +71,7 @@ class AddPetInfo(HelperHandler):
             self.res_and_fini(res)
             return
 
-        if (sex is not None and sex not in (0,1, 2)) or (
+        if imei is None or (sex is not None and sex not in (0,1, 2)) or (
                 weight is not None and (weight > 1000 or weight < 0))or (
                         pet_type_id is not None and pet_type_id not in (0,-1, 1, 2)):
             logging.warning("AddPetInfo, invalid args, %s", self.dump_req())
@@ -79,8 +80,6 @@ class AddPetInfo(HelperHandler):
             return
 
         pet_id = yield gid_rpc.alloc_pet_gid()
-        device_info = yield device_dao.get_device_info_by_uid(uid,("imei",))
-        imei = device_info["imei"]
         info = {"pet_type_id": pet_type_id, "uid": uid}
         info["device_imei"] = imei
         info["uid"] = uid
@@ -101,7 +100,7 @@ class AddPetInfo(HelperHandler):
 
             # @017,25%1%0,3#2,5%15.3%1
         try:
-            command = "017,25%%1%%0,3#2,5%%%f%%%d" % (info["weight"], info["sex"])
+            command = "017,25%%0%%0,0#0,0%%%f%%%d" % (info["weight"], info["sex"])
             print command
             get_res = yield terminal_rpc.send_j03(imei, command)
             res["status"] = get_res["status"]

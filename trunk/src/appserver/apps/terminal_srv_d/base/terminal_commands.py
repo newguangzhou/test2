@@ -144,10 +144,10 @@ class StepInterVal:
 
 class PetLocation:
     def __init__(self):
-        self.battery_threshold = 0  #计步器开关，0:关闭，1:一直开， 2 分时段开
+        self.battery_threshold = 0
         self.history_location_switch = 0
         self.light_flash = []
-        self.pet_heght = ""
+        self.pet_weight = "0"
         self.pet_gender = 1
 
     def __str__(self):
@@ -158,7 +158,7 @@ class PetLocation:
                 light_flash_str += "#"
         return "017,%d%%%d%%%s%%%s%%%d" % (
             self.battery_threshold, self.history_location_switch,
-            light_flash_str, self.pet_heght, self.pet_gender)
+            light_flash_str, self.pet_weight, self.pet_gender)
 
     def orgin_data(self):
         return self.__str__()
@@ -199,7 +199,7 @@ def main():
     msg.battery_threshold = 20
     msg.history_location_switch = 0
     msg.light_flash = [(1, 5), (1, 7)]
-    msg.pet_heght = "15.2"
+    msg.pet_weight = "15.2"
     msg.pet_gender = 1
     msg.server_ip = "127.0.0.1"
     msg.server_port = 5050

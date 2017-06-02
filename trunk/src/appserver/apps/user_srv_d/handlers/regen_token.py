@@ -25,7 +25,7 @@ class RegenToken(HelperHandler):
         logging.debug("OnRegenToken, %s", self.dump_req())
         
         self.set_header("Content-Type", "application/json; charset=utf-8")
-        
+        custom_headers = self.custom_headers()
         auth_dao = self.settings["auth_dao"]
         conf = self.settings["appconfig"]
         
@@ -57,8 +57,10 @@ class RegenToken(HelperHandler):
             
             yield auth_dao.delete_user_token(uid, token)
             
-            new_token = yield auth_dao.gen_user_token(uid, True, device_type, device_token, 
-                SysConfig.current().get(sys_config.SC_TOKEN_EXPIRE_SECS))
+            new_token = yield auth_dao.gen_user_token(uid, True, device_type, device_token,
+                                                      SysConfig.current().get(sys_config.SC_TOKEN_EXPIRE_SECS),
+                                                      custom_headers["platform"], custom_headers["device_model"])
+
             res["new_token"] = new_token
             res["token_expire_secs"] = SysConfig.current().get(sys_config.SC_TOKEN_EXPIRE_SECS)
         except Exception,e:

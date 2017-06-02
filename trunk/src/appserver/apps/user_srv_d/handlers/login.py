@@ -25,12 +25,11 @@ class Login(HelperHandler):
     @asynchronous
     def _deal_request(self):
         logging.debug("OnLogin, %s", self.dump_req())
-
         self.set_header("Content-Type", "application/json; charset=utf-8")
 
         res = {"status": error_codes.EC_SUCCESS}
         auth_dao = self.settings["auth_dao"]
-
+        custom_headers = self.custom_headers()
         conf = self.settings["appconfig"]
 
         # 获取请求参数
@@ -79,8 +78,8 @@ class Login(HelperHandler):
         # 生成token
             expire_secs = SysConfig.current().get(
                 sys_config.SC_TOKEN_EXPIRE_SECS)
-            token = yield auth_dao.gen_user_token(uid, True, device_type,
-                                                  device_token, expire_secs)
+            token = yield auth_dao.gen_user_token(uid, True, device_type,device_token,
+                expire_secs, custom_headers["platform"], custom_headers["device_model"])
             res["uid"] = uid
             res["token"] = token
             res["token_expire_secs"] = expire_secs

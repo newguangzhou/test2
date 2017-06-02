@@ -74,11 +74,13 @@ class HelperHandler(xmq_web_handler.XMQWebHandler):
     @asynchronous
     def check_token(self, logprefix, res, uid, token):
         auth_dao = self.settings["auth_dao"]
-        ec = yield auth_dao.check_user_token(uid, token)
+        ec, info = yield auth_dao.check_user_token(uid, token)
         if ec != error_codes.EC_SUCCESS:
-            logging.warning("%s, check token failed, ec=%u %s", logprefix, ec,
-                            self.dump_req())
+            logging.warning("%s, check token failed, ec=%u %s info=%s", logprefix, ec,
+                            self.dump_req(), str(info))
             res["status"] = ec
+            if ec == error_codes.EC_LOGIN_IN_OTHER_PHONE:
+                res["msg"] = "您的账号已经在另一台手机登陆"
             self.res_and_fini(res)
             raise gen.Return(False)
         raise gen.Return(True)

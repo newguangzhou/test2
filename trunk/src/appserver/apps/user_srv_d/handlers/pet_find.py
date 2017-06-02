@@ -6,6 +6,7 @@ import logging
 import traceback
 from lib import error_codes
 
+from terminal_base import terminal_commands
 from tornado.web import asynchronous
 from tornado import gen
 from helper_handler import HelperHandler
@@ -44,9 +45,9 @@ class PetFind(HelperHandler):
             return
 
         # 检查token
-        #st = yield self.check_token("OnOnPetWalk", res, uid, token)
-        #if not st:
-        #    return
+        st = yield self.check_token("OnOnPetWalk", res, uid, token)
+        if not st:
+           return
 
         try:
             info = yield pet_dao.get_user_pets(uid, ("pet_id", "device_imei"))
@@ -62,9 +63,15 @@ class PetFind(HelperHandler):
                 res["status"] = error_codes.EC_DEVICE_NOT_EXIST
                 self.res_and_fini(res)
                 return
+
             gps_enable = 1 if find_status == 1 else 0
+            msg = terminal_commands.Params()
+            msg.gps_enable = gps_enable
+            if msg.gps_enable == 1:
+                msg.report_time = 1
+
             get_res = yield terminal_rpc.send_command_params(
-                imei=imei, gps_enable=gps_enable)
+                imei=imei, command_content=str(msg))
 
             if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
                 res["status"] = error_codes.EC_SEND_CMD_FAIL

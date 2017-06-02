@@ -20,6 +20,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 
 class PushAndrod(xmq_web_handler.XMQWebHandler):
+    executor = ThreadPoolExecutor(5)
+
     @gen.coroutine
     def _deal_request(self):
         logging.debug("PushAndrod, %s", self.dump_req())

@@ -40,9 +40,9 @@ class GetWifiList(HelperHandler):
             return
 
         try:
-            #st = yield self.check_token("OnGetPetInfo", res, uid, token)
-            #if not st:
-            #    return
+            st = yield self.check_token("OnGetPetInfo", res, uid, token)
+            if not st:
+               return
 
             info = yield pet_dao.get_user_pets(uid,
                                                ("device_imei", "home_wifi"))

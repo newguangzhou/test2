@@ -2,6 +2,7 @@
 
 import sys
 sys.path.append("../../")
+sys.path.append("../terminal_srv_d/")
 reload(sys)
 sys.setdefaultencoding('utf-8')
 

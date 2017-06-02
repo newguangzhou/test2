@@ -70,8 +70,11 @@ class GetDeviceInfo(HelperHandler):
 
             res["firmware_version"] = info.get("software_version", "")
             res["hardware_version"] = info.get("hardware_version", "")
-            res["sim_deadline"] = utils.date2str(info.get("sim_deadline", ""))
+            sim_deadline = info.get("sim_deadline", "")
+            if sim_deadline != "":
+                sim_deadline = utils.date2str(sim_deadline)
             res["battery_level"] = info.get("electric_quantity", -1)
+            res["sim_deadline"] = sim_deadline
             res["imei"] = device_imei
         except Exception, e:
             logging.error("OnGetPetInfo, error, %s %s", self.dump_req(),

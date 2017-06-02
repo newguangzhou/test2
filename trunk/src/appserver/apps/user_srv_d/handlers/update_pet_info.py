@@ -5,7 +5,7 @@ import logging
 import datetime
 import traceback
 from lib import error_codes
-
+from terminal_base import terminal_commands
 from tornado.web import asynchronous
 from tornado import gen
 from helper_handler import HelperHandler
@@ -25,6 +25,7 @@ class UpdatePetInfo(HelperHandler):
         conf = self.settings["appconfig"]
         terminal_rpc = self.settings["terminal_rpc"]
         res = {"status": error_codes.EC_SUCCESS}
+        pet_info = None
 
         uid = None
         pet_id = None
@@ -41,7 +42,7 @@ class UpdatePetInfo(HelperHandler):
         try:
             uid = int(self.get_argument("uid"))
             token = self.get_argument("token")
-            st = yield self.check_token("OnAddPetInfo", res, uid, token)
+            st = yield self.check_token("OnUpdatePetInfo", res, uid, token)
             if not st:
                 return
             pet_id = int(self.get_argument("pet_id"))

@@ -15,6 +15,7 @@ class PetLocation(HelperHandler):
     @asynchronous
     @gen.coroutine
     def _deal_request(self):
+
         logging.debug("OnPetLocation, %s", self.dump_req())
         self.set_header("Content-Type", "application/json; charset=utf-8")
         pet_dao = self.settings["pet_dao"]

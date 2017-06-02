@@ -10,20 +10,25 @@ sys.setdefaultencoding("utf-8")
 import time
 import getopt
 import signal
-from tornado.ioloop import IOLoop
-import tornado.options
 import tornado
+import tornado.options
+from tornado.ioloop import IOLoop
 from tornado.options import define, options
 from tornado.web import Application, url
-from base import conn_mgr2
-from base import broadcast
+from tornado import gen
+
+from terminal_base import conn_mgr2, broadcast, thread_trace
 from lib.pyloader import PyLoader
 from lib.op_log_dao import OPLogDAO
 from lib.new_device_dao import NewDeviceDAO
 from lib.pet_dao import PetDAO
-from base import thread_trace
 import terminal_handler
 import http_handlers
+import imei_timer
+from lib.msg_rpc import MsgRPC
+from lib.sys_config import SysConfig
+from lib import sys_config
+
 support_setptitle = True
 ptitle = "terminal_srv_d"
 verbose = False
@@ -45,46 +50,6 @@ mongo_conf = mongo_pyloader.ReloadInst("MongoConfig", debug_mode=debug)
 # Parse options
 #def Usage():
 #   print "Usage:  -h  get help"
-#   print "        -v  verbose"
-#   print "        -t  process title, default is terminal_srv_d"
-#   print "        -r  log root directory, default is ./logs/"
-#   print "        -p  listen port, default is 9911"
-#   print "        -d  Enable debug"
-
-#opts = None
-#try:
-#   opts, args = getopt.getopt(sys.argv[1:], "hvt:r:p:d")
-#except getopt.GetoptError, err:
-#    print str(err)
-#   Usage()
-#    sys.exit(1)
-
-#for o, a in opts:
-#    if o == "-h":
-#        Usage()
-#        sys.exit()
-#    elif o == "-v":
-#        verbose = True
-#    elif o == "-t":
-#        ptitle = a
-#   elif o == "-r":
-#        logrootdir = a
-#    elif o == "-p":
-#        try:
-#            listen_port = int(a)
-#        except:
-#            assert False, "Invalid listen port"
-#    elif o == "-d":
-#        debug = True
-#    else:
-#       assert False, "unhandled option"
-
-# Init logger
-#logdir = logrootdir
-#if not logdir.endswith("/"):
-#    logdir += "/"
-#logdir += ptitle
-#logger.Init(logdir, verbose, ptitle)
 
 # Set process title
 if support_setptitle:
@@ -94,6 +59,14 @@ else:
         "System not support python setproctitle module, please check!!!")
 
 # Init web application
+#Init async
+
+
+@gen.coroutine
+def _async_init():
+    SysConfig.new(mongo_meta=mongo_conf.global_mongo_meta, debug_mode=debug)
+    yield SysConfig.current().open()
+
 
 if __name__ == '__main__':
     tornado.options.options.logging = "debug"
@@ -101,16 +74,20 @@ if __name__ == '__main__':
     conn_mgr = conn_mgr2.ServerConnMgr()
     thread_trace.trace_start("trace.html")
     broadcastor = broadcast.BroadCastor(conn_mgr)
+    imei_timer_mgr = imei_timer.ImeiTimer()
+    IOLoop.current().run_sync(_async_init)
+    msg_rpc = MsgRPC(SysConfig.current().get(sys_config.SC_MSG_RPC_URL))
 
-    # Create terminal server
     handler = terminal_handler.TerminalHandler(
         conn_mgr,
         debug,
+        imei_timer_mgr,
         op_log_dao=OPLogDAO.new(mongo_meta=mongo_conf.op_log_mongo_meta),
         broadcastor=broadcastor,
         pet_dao=PetDAO.new(mongo_meta=mongo_conf.op_log_mongo_meta),
         new_device_dao=NewDeviceDAO.new(
-            mongo_meta=mongo_conf.op_log_mongo_meta))
+            mongo_meta=mongo_conf.op_log_mongo_meta),
+        msg_rpc=msg_rpc)
 
     conn_mgr.CreateTcpServer("", listen_port, handler)
     webapp = Application(
@@ -127,31 +104,10 @@ if __name__ == '__main__':
         autoreload=True,
         debug=True,
         broadcastor=broadcastor,
+        msg_rpc=msg_rpc,
         op_log_dao=OPLogDAO.new(mongo_meta=mongo_conf.op_log_mongo_meta), )
+
     webapp.listen(http_listen_port)
-    IOLoop.instance().start()
-# Init connection manager
-#conn_mgr = conn_mgr.EpollConnMgr()
-
-# Set signals
-#def sig_handler(signum, frame):
-#    try:
-#        pass
-#    except Exception, e:
-#        logger.error(
-#            "Clean error when siging, bug bug!!!, exp=\"%s\" trace=\"%s\"",
-#            str(e), traceback.format_exc())
-#    finally:
-#        sys.exit(1)
-
-#signal.signal(signal.SIGINT, sig_handler)
-#signal.signal(signal.SIGTERM, sig_handler)
-
-# Run loop
-#while True:
-#    try:
-#        if not conn_mgr.CheckEvents(0.3, 1000):
-#            break
-#    except Exception, e:
-#        logger.warning("Check events error, exp=\"%s\" trace=\"%s\"", str(e),
-#                       traceback.format_exc())
+    imei_timer_mgr.set_on_imeis_expire(handler._OnImeiExpires)
+    imei_timer_mgr.start()
+    IOLoop.current().start()

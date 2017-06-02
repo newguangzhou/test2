@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from base import terminal_commands, terminal_packets
+from terminal_base import terminal_commands, terminal_packets
 
 params = terminal_commands.Params()
 params.report_time = 10  # 分时段上报间隔，以分钟位单位最大值为60

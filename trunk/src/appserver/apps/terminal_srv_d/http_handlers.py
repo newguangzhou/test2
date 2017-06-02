@@ -8,7 +8,7 @@ from lib import utils
 from lib import error_codes
 import json
 import base64
-from base import terminal_packets, terminal_commands, terminal_proto
+from terminal_base import terminal_packets, terminal_commands, terminal_proto
 from test_data import TEST_S2C_COMMAND_DATA
 logger = logging.getLogger(__name__)
 from urllib import quote
@@ -175,16 +175,13 @@ class SendParamsCommandHandler(tornado.web.RequestHandler):
         res = {"status": error_codes.EC_SUCCESS}
         try:
             imei = self.get_argument("imei")
-            gps_enable = int(self.get_argument("gps_enable"))
+            content = self.get_argument("command_content")
+            #gps_enable = int(self.get_argument("gps_enable"))
         except Exception as e:
             res["status"] = error_codes.EC_INVALID_ARGS
         else:
             broadcastor = self.settings["broadcastor"]
-            msg = terminal_commands.Params()
-            msg.gps_enable = gps_enable
-            if msg.gps_enable == 1:
-                msg.report_time = 1
-            pk = terminal_packets.SendCommandReq(imei, msg)
+            pk = terminal_packets.SendCommandReq(imei, content)
             send_data = str(pk)
             ret = yield broadcastor.send_msg_multicast((imei, ), send_data)
             if ret:

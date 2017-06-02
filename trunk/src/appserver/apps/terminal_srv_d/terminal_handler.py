@@ -9,14 +9,18 @@ import pdb
 from test_data import TEST_S2C_COMMAND_DATA
 import logging
 from tornado import gen
-from base import terminal_proto, terminal_commands, terminal_packets
+from terminal_base import terminal_proto, terminal_commands, terminal_packets, util
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
 from get_location import get_location_by_wifi, get_location_by_bts_info, get_location_by_mixed, convert_coordinate
 _TERMINAL_CONN_MAX_BUFFER_SIZE = 2 * 1024 * 1024  # 2M
 logger = logging.getLogger(__name__)
-from base import util
+
 from lib import utils
+from lib import push_msg
+
+LOW_BATTERY = 30
+ULTRA_LOW_BATTERY = 15
 
 
 class TerminalHandler:
@@ -34,14 +38,21 @@ class TerminalHandler:
         elif kwargs.has_key("debug"):
             self.debug = kwargs["debug"]
 
-        self._broadcastor = kwargs.get("broadcastor", None)
-        if self._broadcastor == None:
+        self.imei_timer_mgr = kwargs.get("imei_timer_mgr", None)
+        if self.imei_timer_mgr is None:
             if len(args) > 2:
-                self._broadcastor = args[2]
+                self.imei_timer_mgr = args[2]
+
+        self._broadcastor = kwargs.get("broadcastor", None)
+        if self._broadcastor is None:
+            if len(args) > 3:
+                self._broadcastor = args[3]
 
         self.op_log_dao = kwargs.get("op_log_dao", None)
         self.new_device_dao = kwargs.get("new_device_dao", None)
         self.pet_dao = kwargs.get("pet_dao", None)
+        self.msg_rpc = kwargs.get("msg_rpc", None)
+
         self.terminal_proto_ios = {}
 
     def OnOpen(self, conn_id):
@@ -55,12 +66,11 @@ class TerminalHandler:
     @gen.coroutine
     def OnData(self, conn_id, data):
         conn = self.conn_mgr.GetConn(conn_id)
-        #print conn_id, data
         # Get proto io
         proto_io = self.terminal_proto_ios[conn_id]
-        logger.info("onData conn_id:%d data:%s ", conn_id, str(data))
-        logger.info("onData conn_id:%d hex_data:%s ", conn_id,
-                    data.encode('hex'))
+
+        logger.debug("onData conn_id:%d data:%s hex_data:%s ", conn_id, data,
+                     data.encode('hex'))
         # Check buffer
         if proto_io.read_buff.GetSize() + len(
                 data) >= _TERMINAL_CONN_MAX_BUFFER_SIZE:
@@ -83,7 +93,9 @@ class TerminalHandler:
                     logger.info(
                         "Receive a terminal packet simple heart id=%u peer=%s imei=%s",
                         conn_id, conn.GetPeer(), imei)
-                    self._OnOpLog("[]", imei)
+                    if imei is not None:
+                        self._OnOpLog("[]", imei)
+                        self.imei_timer_mgr.add_imei(imei)
                     continue
                 logger.info(
                     "Receive a terminal packet, header=\"%s\" body=\"%s\" id=%u peer=%s",
@@ -189,8 +201,15 @@ class TerminalHandler:
             "OnReportLocationInfoReq, parse packet success, pk=\"%s\" id=%u peer=%s",
             str_pk, conn_id, peer)
         self._broadcastor.register_conn(conn_id, pk.imei)
+        self.imei_timer_mgr.add_imei(pk.ime)
+
         self._OnOpLog('c2s header=%s pk=%s peer=%s' % (header, str_pk, peer),
                       pk.imei)
+
+        if need_send_ack:
+            ack = terminal_packets.ReportLocationInfoAck(header.sn)
+            yield self._send_res(conn_id, ack, pk.imei, peer)
+
         locator_time = pk.location_info.locator_time
         lnglat = []
         lnglat2 = []
@@ -239,7 +258,8 @@ class TerminalHandler:
 
         else:
             logger.warning("imei:%s location fail", pk.imei)
-        pet_info = yield self.pet_dao.get_pet_info(None, ("pet_id", ), pk.imei)
+        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
+                                                   device_imei=pk.imei)
         if pet_info is None:
             logger.error("imei:%s pk:%s not found pet_info", pk, str_pk)
         if len(lnglat) != 0:
@@ -257,11 +277,25 @@ class TerminalHandler:
             if pet_info is not None:
                 yield self.pet_dao.add_location_info(pet_info["pet_id"],
                                                      pk.imei, location_info)
+            uid = pet_info.get("uid", None)
+            if uid is not None:
+                msg = push_msg.new_location_change_msg("%.7f" % lnglat[1],
+                                                       "%.7f" % lnglat[0],
+                                                       locator_time, radius)
+                yield self.msg_rpc.push_android(uids=str(uid),
+                                                payload=msg,
+                                                pass_through=1)
 
         yield self.new_device_dao.update_device_info(
             pk.imei,
             status=pk.status,
             electric_quantity=pk.electric_quantity)
+
+        if pk.electric_quantity < LOW_BATTERY:
+            if_ultra = False
+            if pk.electric_quantity < ULTRA_LOW_BATTERY:
+                if_ultra = True
+            yield self._SendBatteryMsg(pk.imei, pk.electric_quantity, if_ultra)
 
         if pet_info is not None:
             sport_info = {}
@@ -293,13 +327,10 @@ class TerminalHandler:
                 # common_wifis.append(new_wifi_dic)
                 yield self.pet_dao.add_common_wifi_info(pet_info["pet_id"],
                                                         wifo_info)
+
         if pk.location_info.locator_status == terminal_packets.LOCATOR_STATUS_MIXED:
             yield self.new_device_dao.report_wifi_info(pk.imei,
                                                        pk.location_info.mac)
-
-        if need_send_ack:
-            ack = terminal_packets.ReportLocationInfoAck(header.sn)
-            yield self._send_res(conn_id, ack, pk.imei, peer)
 
         raise gen.Return(True)
 
@@ -315,10 +346,11 @@ class TerminalHandler:
             "OnReportHealthInfoReq, parse packet success, pk=\"%s\" id=%u peer=%s",
             str_pk, conn_id, peer)
         self._broadcastor.register_conn(conn_id, pk.imei)
-
+        self.imei_timer_mgr.add_imei(pk.ime)
         # Ack
         sleep_data = []
-        pet_info = yield self.pet_dao.get_pet_info(None, ("pet_id", ), pk.imei)
+        pet_info = yield self.pet_dao.get_pet_info(("pet_id", ),
+                                                   device_imei=pk.imei)
         if pet_info is None:
             logger.error("imei:%s pk:%s not found pet_info", pk, str_pk)
         else:
@@ -344,6 +376,8 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s peer=%s' % (header, body, peer),
                       pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
+        self.imei_timer_mgr.add_imei(pk.ime)
+
         logger.debug(
             "OnSendCommandAck, parse packet success, pk=\"%s\" id=%u peer=%s",
             str_pk, conn_id, peer)
@@ -359,6 +393,8 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s parse_data=%s peer=%s' %
                       (header, body, str_pk, peer), pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
+        self.imei_timer_mgr.add_imei(pk.ime)
+
         logger.info(
             "OnHeartbeatReq, parse packet success, pk=\"%s\" id=%u peer=%s",
             str_pk, conn_id, peer)
@@ -370,6 +406,22 @@ class TerminalHandler:
         raise gen.Return(True)
 
     @gen.coroutine
+    def _SendBatteryMsg(self, imei, battery, if_ultra):
+        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
+                                                   device_imei=imei)
+        if pet_info is not None:
+            uid = pet_info.get("uid", None)
+            if uid is None:
+                logger.warning("imei:%s uid not find", imei)
+                return
+            msg = push_msg.new_low_battery_msg(battery, if_ultra)
+            yield self.msg_rpc.push_android(uids=str(uid),
+                                            payload=msg,
+                                            pass_through=1)
+        else:
+            logger.warning("imei:%s uid not find", imei)
+
+    @gen.coroutine
     def _OnReportTerminalStatusReq(self, conn_id, header, body, peer):
         # Parse packet
         pk = terminal_packets.ReportTerminalStatusReq()
@@ -378,6 +430,8 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s peer=%s' % (header, body, peer),
                       pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
+        self.imei_timer_mgr.add_imei(pk.ime)
+
         logger.debug(
             "OnReportTerminalStatusReq, parse packet success, pk=\"%s\" id=%u peer=%s",
             str_pk, conn_id, peer)
@@ -388,6 +442,12 @@ class TerminalHandler:
             hardware_version=unicode(pk.hardware_version),
             software_version=unicode(pk.software_version),
             electric_quantity=pk.electric_quantity)
+
+        if pk.electric_quantity < LOW_BATTERY:
+            if_ultra = False
+            if pk.electric_quantity < ULTRA_LOW_BATTERY:
+                if_ultra = True
+            yield self._SendBatteryMsg(pk.imei, pk.electric_quantity, if_ultra)
 
         # Ack
         ack = terminal_packets.ReportTerminalStatusAck(header.sn, 0)
@@ -403,6 +463,8 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s peer=%s' % (header, body, peer),
                       pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
+        self.imei_timer_mgr.add_imei(pk.ime)
+
         logger.debug(
             "OnSyncCommandReq, parse packet success, pk=\"%s\" id=%u peer=%s",
             str_pk, conn_id, peer)
@@ -427,6 +489,8 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s peer=%s' % (header, body, peer),
                       pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
+        self.imei_timer_mgr.add_imei(pk.ime)
+
         logger.debug(
             "OnUploadTerminalLogReq, parse packet success, pk=\"%s\" id=%u peer=%s",
             str_pk, conn_id, peer)
@@ -452,6 +516,8 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s peer=%s' % (header, body, peer),
                       pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
+        self.imei_timer_mgr.add_imei(pk.ime)
+
         logger.debug(
             "_OnUploadStationLocationReq, parse packet success, pk=\"%s\" id=%u peer=%s",
             str_pk, conn_id, peer)
@@ -474,6 +540,8 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s body=%s peer=%s' % (header, body, peer),
                       pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
+        self.imei_timer_mgr.add_imei(pk.ime)
+
         logger.debug(
             "_OnGpsSwitchReq, parse packet success, pk=\"%s\" id=%u peer=%s",
             str_pk, conn_id, peer)
@@ -493,6 +561,8 @@ class TerminalHandler:
             "_OnGetLocationReq, parse packet success, pk=\"%s\" id=%u peer=%s",
             str_pk, conn_id, peer)
         self._broadcastor.register_conn(conn_id, pk.imei)
+        self.imei_timer_mgr.add_imei(pk.ime)
+
         locator_time = pk.location_info.locator_time
         lnglat = []
         if pk.location_info.locator_status == terminal_packets.LOCATOR_STATUS_GPS:
@@ -536,6 +606,23 @@ class TerminalHandler:
 
         yield self.new_device_dao.add_sport_info(pk.imei, sport_info)
         raise gen.Return(True)
+
+    @gen.coroutine
+    def _OnImeiExpires(self, imeis):
+        for imei in imeis:
+            pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
+                                                       device_imei=imei)
+            if pet_info is not None:
+                uid = pet_info.get("uid", None)
+                if uid is None:
+                    logger.warning("imei:%s uid not find", imei)
+                    continue
+                msg = push_msg.new_device_off_line_msg()
+                yield self.msg_rpc.push_android(uids=str(uid),
+                                                payload=msg,
+                                                pass_through=1)
+            else:
+                logger.warning("imei:%s uid not find", imei)
 
     @run_on_executor
     def get_location_by_bts_info(self, imei, bts_info, near_bts_infos):

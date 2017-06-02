@@ -37,11 +37,13 @@ class AddPetInfo(HelperHandler):
         weight = None
         pet_type_id = 1
         description = None
+        reboot = None
 
         try:
             uid = int(self.get_argument("uid"))
             pet_type_id = int(self.get_argument("pet_type_id"))
             token = self.get_argument("token")
+            reboot = self.get_argument("reboot", 1)
             st = yield self.check_token("OnAddPetInfo", res, uid, token)
             if not st:
                 return
@@ -108,22 +110,34 @@ class AddPetInfo(HelperHandler):
             self.res_and_fini(res)
             return
         res["pet_id"] = pet_id
-        try:
-            yield terminal_rpc.send_j13(imei)
-        except Exception, e:
-            logging.warning("get wifi list in add_pet_info, error, %s %s",
-                            self.dump_req(), str(e))
 
         # @017,25%1%0,3#2,5%15.3%1
         try:
-            get_res = yield terminal_rpc.send_j03(imei,"017,25%1%0,3#2,5%15.3%1")
+            command = "017,25%%1%%0,3#2,5%%%f%%%d" % (info["weight"], info["sex"])
+            print command
+            get_res = yield terminal_rpc.send_j03(imei,command)
             res["status"] = get_res["status"]
         except Exception, e:
             logging.warning("add_pet_info to device, error, %s %s",
                             self.dump_req(), str(e))
             res["status"] = error_codes.EC_SYS_ERROR
             self.res_and_fini(res)
-            return 
+            return
+
+        # if reboot:
+        #     try:
+        #         terminal_rpc.send_j03(imei, "020")
+        #     except Exception, e:
+        #         logging.warning("reboot device in add_pet_info, error, %s %s",
+        #                 self.dump_req(), str(e))
+        #         res["status"] = error_codes.EC_SYS_ERROR
+        #         self.res_and_fini(res)
+        # else:
+        # try:
+        #     yield terminal_rpc.send_j13(imei)
+        # except Exception, e:
+        #     logging.warning("get wifi list in add_pet_info, error, %s %s",
+        #             self.dump_req(), str(e))
 
         # 成功
         logging.debug("AddPetInfo, success %s", self.dump_req())

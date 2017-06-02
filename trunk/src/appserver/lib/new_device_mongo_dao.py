@@ -1,6 +1,7 @@
 import bson
 
 from tornado import ioloop, gen
+import datetime
 
 import new_device_mongo_defines as new_device_def
 import utils
@@ -228,6 +229,24 @@ class NewDeviceMongoDAO(MongoDAOBase):
             cursor = tb.find({"imei": imei},
                              qcols,
                              sort=[("create_date", pymongo.DESCENDING)])
+            if cursor.count() <= 0:
+                return None
+            return cursor[0]
+
+        ret = yield self.submit(_callback)
+        raise gen.Return(ret)
+
+    @gen.coroutine
+    def get_ten_minutes_wifi_info(self, imei):
+        def _callback(mongo_client, **kwargs):
+            tb = mongo_client[new_device_def.DEVICE_DATABASE][
+                new_device_def.DEVICE_WIFI_INFOS_TB]
+            now_time = datetime.datetime.now();
+            pre_ten_minutes_time = now_time + datetime.timedelta(minutes=-10)
+            qcols = {"_id": 0}
+            cursor = tb.find({"imei": imei,
+                              "create_date": {"$gte": pre_ten_minutes_time, "$lt": now_time}},
+                             qcols)
             if cursor.count() <= 0:
                 return None
             return cursor[0]

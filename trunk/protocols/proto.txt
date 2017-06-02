@@ -95,6 +95,7 @@ EC_NODATA = 32                                      #没有数据
 方法:           POST/GET
 参数:         uid
               token
+              reboot 是否重启(1：重启 0：不重启,默认不重启)
               wifi_ssid:wifi名称
               wifi_bssid:wifi mac地址(如ffffffffffff)
               
@@ -191,9 +192,11 @@ EC_NODATA = 32                                      #没有数据
 /pet/add_pet_info 
     方法:           POST/GET
     参数:           uid
-                    token
-                   
+                   token
+
+
                    以下参数可以多选或者单选，但是必须至少有一个:
+                   reboot 是否重启(1：重启 0：不重启,默认重启)
                    nick
                    logo_url
                    logo_small_url
@@ -578,6 +581,27 @@ EC_NODATA = 32                                      #没有数据
                         light_status     // 1:on 0:off    
                    }
 
+
+--
+重启硬件
+--
+
+/device/reboot_device
+方法:             GET/POST
+参数:             uid
+                 token
+                 imei
+返回:            {
+                    status:状态,可能的值有:
+                        EC_SUCCESS
+                        EC_DEVICE_NOT_EXIST
+                        EC_CURRENT_TIME_NOT_ALLOW
+                        EC_INVALID_TOKEN
+                        EC_INVALID_ARGS
+                        EC_SYS_ERROR
+                        EC_UNKNOWN_ERROR
+                }
+--
                   
 --
 上传宠物头像，上传参数传递请严格遵守http的form表单上传规范否则会出现错误
@@ -608,4 +632,5 @@ EC_NODATA = 32                                      #没有数据
                       10  小图片
                    file_id 文件标识
     返回:           文件数据
+
                      

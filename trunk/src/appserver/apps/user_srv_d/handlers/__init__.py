@@ -43,6 +43,7 @@ from get_pet_status import GetPetStatusInfo
 from get_base_info import GetBaseInfo
 from send_get_wifi_list_cmd import SendGetWifiListCmd
 from get_wifi_list import GetWifiList
+from reboot_device_cmd import RebootDeviceCmd
 #from get_sale_info import GetSaleInfo
 #from get_sale_statist import GetSaleStatist
 #from get_user_recommand_activities import GetUserRecommandActivities

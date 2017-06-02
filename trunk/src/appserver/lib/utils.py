@@ -32,7 +32,10 @@ def str2date(str, format="%Y%m%d"):
 def str2datetime(str, format="%Y%m%d%H%M%S"):
     st = time.strptime(str, format)
     return datetime.datetime.fromtimestamp(time.mktime(st))
-
+'''
+0:time1小
+1:time1大
+'''
 def compare_time(time1,time2):
     i_time1 = date2int(time1)
     i_time2 = date2int(time2)

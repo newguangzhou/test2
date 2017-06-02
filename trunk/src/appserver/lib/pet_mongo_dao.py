@@ -258,6 +258,7 @@ class PetMongoDAO(MongoDAOBase):
         def _callback(mongo_client, **kwargs):
             tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_INFOS_TB]
             push_all_dict = {}
+            info = tb.find
             if common_wifi_info:
                 push_all_dict["common_wifi"] = common_wifi_info
             tb.update_one({"pet_id": pet_id}, {"$set": push_all_dict})

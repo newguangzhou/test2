@@ -88,6 +88,7 @@ webapp = Application(
         (r"/device/get_light_status", handlers.GetDeviceSwitchLightStatus),
         (r"/device/send_get_wifi_list_cmd", handlers.SendGetWifiListCmd),
         (r"/device/get_wifi_list", handlers.GetWifiList),
+        (r"/device/reboot_device_cmd", handlers.RebootDeviceCmd),
     ],
     autoreload=True,
     pyloader=pyloader,

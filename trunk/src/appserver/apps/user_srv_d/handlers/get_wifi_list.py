@@ -58,29 +58,32 @@ class GetWifiList(HelperHandler):
                 self.res_and_fini(res)
                 return
             res["data"] = []
-            last_wifi = yield device_dao.get_last_wifi_info(device_imei)
-            print "last_wifi", last_wifi
-            if last_wifi is not None:
-                create_date = last_wifi["create_date"]
-                now = datetime.datetime.today()
-                secs = (now - create_date).total_seconds()
-                print "secs", secs
-                if -30 < secs < 30:
-                    tmp = utils.change_wifi_info(last_wifi["wifi_info"], True)
+            ten_minutes_wifi = yield device_dao.get_ten_minutes_wifi_info(device_imei)
+            print "ten_minutes_wifi", ten_minutes_wifi
+            if ten_minutes_wifi is not None:
+                all_wifis = []
+                all_wifi_names = []
+                for col in ten_minutes_wifi:
+                    tmp = utils.change_wifi_info(col["wifi_info"], True)
                     for item in tmp:
-                        last_item = {}
-                        last_item["wifi_ssid"] = item["wifi_ssid"]
-                        last_item["wifi_bssid"] = item["wifi_bssid"]
-                        last_item["wifi_power"] = item["deep"]
-                        if home_wifi is not None and home_wifi[
-                                "wifi_ssid"] == last_item[
-                                    "wifi_ssid"] and home_wifi[
-                                        "wifi_bssid"] == last_item[
-                                            "wifi_bssid"]:
-                            last_item["is_homewifi"] = 1
-                        else:
-                            last_item["is_homewifi"] = 0
-                        res["data"].append(last_item)
+                        if item["wifi_ssid"] not in all_wifi_names:
+                            last_item = {}
+                            last_item["wifi_ssid"] = item["wifi_ssid"]
+                            last_item["wifi_bssid"] = item["wifi_bssid"]
+                            last_item["wifi_power"] = item["deep"]
+
+                            if home_wifi is not None and home_wifi[
+                                    "wifi_ssid"] == last_item[
+                                        "wifi_ssid"] and home_wifi[
+                                            "wifi_bssid"] == last_item[
+                                                "wifi_bssid"]:
+                                last_item["is_homewifi"] = 1
+                            else:
+                                last_item["is_homewifi"] = 0
+                            all_wifi_names.append(item["wifi_ssid"])
+                            all_wifis.append(last_item)
+                all_wifis.sort(key=lambda obj: obj.get('wifi_power'), reverse=True)
+                res["data"] = all_wifis
 
         except Exception, e:
             logging.error("OnGetDeviceSwitchLightStatus, error, %s %s",

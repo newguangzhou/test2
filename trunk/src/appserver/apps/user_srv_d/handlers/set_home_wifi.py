@@ -23,15 +23,18 @@ class SetHomeWifi(HelperHandler):
         self.set_header("Content-Type", "application/json; charset=utf-8")
         user_dao = self.settings["user_dao"]
         pet_dao = self.settings["pet_dao"]
+        terminal_rpc = self.settings["terminal_rpc"]
         conf = self.settings["appconfig"]
         res = {"status": error_codes.EC_SUCCESS}
 
         uid = None
         wifi_ssid = None
         wifi_bssid = None
+        reboot = None
         try:
             uid = int(self.get_argument("uid"))
             token = self.get_argument("token")
+            reboot = self.get_argument("reboot",0)
             #st = yield self.check_token("SetSimInfo", res, uid, token)
             #if not st:
             #    return
@@ -66,6 +69,13 @@ class SetHomeWifi(HelperHandler):
             res["status"] = error_codes.EC_SYS_ERROR
             self.res_and_fini(res)
             return
+
+        # if reboot:
+        #     try:
+        #         terminal_rpc.send_j03(imei, "020")
+        #     except Exception, e:
+        #         logging.warning("reboot device in add_pet_info, error, %s %s",
+        #                 self.dump_req(), str(e))
 # 成功
         logging.debug("SetHomeWifi, success %s", self.dump_req())
         self.res_and_fini(res)

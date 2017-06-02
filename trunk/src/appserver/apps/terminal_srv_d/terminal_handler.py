@@ -277,6 +277,20 @@ class TerminalHandler:
             if pk.location_info.locator_status == terminal_packets.LOCATOR_STATUS_MIXED:
                 #print "mac:", pk.location_info.mac, pk.location_info.locator_time
                 wifo_info = utils.change_wifi_info(pk.location_info.mac)
+                # common_wifis = pet_info["common_wifi"]
+                # pre_ten_datetime = datetime.datetime.now() + datetime.timedelta(minutes=-10)
+                # length = len(common_wifis)
+                # index = -1
+                # for i in range(length):
+                #     wifi_dic = common_wifis[i]
+                #     create_time = wifi_dic["create_time"]
+                #     if utils.compare_time(create_time,pre_ten_datetime):
+                #         index = i
+                #         break
+                # if index != -1:
+                #     common_wifis = common_wifis[index+1:length]
+                # new_wifi_dic = {"wifi_list":wifo_info,"create_time":datetime.datetime.now()}
+                # common_wifis.append(new_wifi_dic)
                 yield self.pet_dao.add_common_wifi_info(pet_info["pet_id"],
                                                         wifo_info)
         if pk.location_info.locator_status == terminal_packets.LOCATOR_STATUS_MIXED:

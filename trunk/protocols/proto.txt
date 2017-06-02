@@ -182,6 +182,7 @@ EC_NODATA = 32                                      #没有数据
                             EC_PET_NOT_EXIST
                             EC_INVALID_TOKEN
                             EC_INVALID_ARGS
+                            EC_SEND_CMD_FAIL
                             EC_SYS_ERROR
                             EC_UNKNOWN_ERROR
                     }
@@ -212,6 +213,7 @@ EC_NODATA = 32                                      #没有数据
                             EC_INVALID_TOKEN
                             EC_INVALID_ARGS
                             EC_SYS_ERROR
+                            EC_SEND_CMD_FAIL
                             EC_UNKNOWN_ERROR
                     }
 
@@ -602,6 +604,7 @@ EC_NODATA = 32                                      #没有数据
                         EC_INVALID_ARGS
                         EC_SYS_ERROR
                         EC_UNKNOWN_ERROR
+                        EC_SEND_CMD_FAIL = 100
                 }
 --
                   

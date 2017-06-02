@@ -165,7 +165,8 @@ EC_NODATA = 32                                      #没有数据
     方法:           POST/GET
     参数:           uid
                     token
-                    pet_id                     
+                    pet_id
+                    imei
                    
                    以下参数可以多选或者单选，但是必须至少有一个:
                    nick

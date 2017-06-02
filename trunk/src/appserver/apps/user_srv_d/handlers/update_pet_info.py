@@ -23,6 +23,7 @@ class UpdatePetInfo(HelperHandler):
         self.set_header("Content-Type", "application/json; charset=utf-8")
         pet_dao = self.settings["pet_dao"]
         conf = self.settings["appconfig"]
+        terminal_rpc = self.settings["terminal_rpc"]
         res = {"status": error_codes.EC_SUCCESS}
 
         uid = None
@@ -35,6 +36,7 @@ class UpdatePetInfo(HelperHandler):
         weight = None
         pet_type_id = None
         description = None
+        imei = None
 
         try:
             uid = int(self.get_argument("uid"))
@@ -43,6 +45,7 @@ class UpdatePetInfo(HelperHandler):
             if not st:
                 return
             pet_id = int(self.get_argument("pet_id"))
+            imei = self.get_argument("imei")
             nick = self.get_argument("nick", None)
             logo_url = self.get_argument("logo_url", None)
             logo_small_url = self.get_argument("logo_small_url", None)
@@ -70,7 +73,8 @@ class UpdatePetInfo(HelperHandler):
 
         if (sex is not None and sex not in
             (0, 1, 2)) or (weight is not None and
-                           (weight > 1000 or weight < 0)):
+                           (weight > 1000 or weight < 0)) \
+                or (pet_type_id is not None and pet_type_id not in (0, -1, 1, 2)):
             logging.warning("UpdatePetInfo, invalid args, %s", self.dump_req())
             res["status"] = error_codes.EC_INVALID_ARGS
             self.res_and_fini(res)
@@ -104,6 +108,19 @@ class UpdatePetInfo(HelperHandler):
             info["description"] = description
         if weight is not None:
             info["weight"] = weight
+
+        # @017,25%1%0,3#2,5%15.3%1
+        try:
+            command = "017,25%%1%%0,3#2,5%%%f%%%d" % (float(info["weight"]), int(info["sex"]))
+            print command
+            get_res = yield terminal_rpc.send_j03(imei, command)
+            res["status"] = get_res["status"]
+        except Exception, e:
+            logging.warning("add_pet_info to device, error, %s %s",
+                            self.dump_req(), str(e))
+            res["status"] = error_codes.EC_SEND_CMD_FAIL
+            self.res_and_fini(res)
+            return
         try:
             yield pet_dao.update_pet_info(pet_id, **info)
         except Exception, e:

@@ -35,7 +35,8 @@ _PET_INFOS_TB_ROW_DEFINE = {
     "target_step": (0, int),
     "pet_status": (0, int),
     "home_wifi": (None, dict),
-    "common_wifi": ([], list)
+    "common_wifi": ([], list),
+    "has_reboot":(0,int)
 }
 
 """

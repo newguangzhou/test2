@@ -70,9 +70,9 @@ class AddPetInfo(HelperHandler):
             self.res_and_fini(res)
             return
 
-        if (sex is not None and sex not in (1, 2)) or (
-                weight is not None and (weight > 1000 or weight < 0)
-                or (pet_type_id is not None and pet_type_id not in (-1, 1, 2))):
+        if (sex is not None and sex not in (0,1, 2)) or (
+                weight is not None and (weight > 1000 or weight < 0))or (
+                        pet_type_id is not None and pet_type_id not in (0,-1, 1, 2)):
             logging.warning("AddPetInfo, invalid args, %s", self.dump_req())
             res["status"] = error_codes.EC_INVALID_ARGS
             self.res_and_fini(res)
@@ -98,6 +98,20 @@ class AddPetInfo(HelperHandler):
             info["description"] = description
         if weight is not None:
             info["weight"] = weight
+
+            # @017,25%1%0,3#2,5%15.3%1
+        try:
+            command = "017,25%%1%%0,3#2,5%%%f%%%d" % (info["weight"], info["sex"])
+            print command
+            get_res = yield terminal_rpc.send_j03(imei, command)
+            res["status"] = get_res["status"]
+        except Exception, e:
+            logging.warning("add_pet_info to device, error, %s %s",
+                            self.dump_req(), str(e))
+            res["status"] = error_codes.EC_SEND_CMD_FAIL
+            self.res_and_fini(res)
+            return
+
         try:
             yield pet_dao.update_pet_info(pet_id, **info)
         except pymongo.errors.DuplicateKeyError, e:
@@ -111,19 +125,6 @@ class AddPetInfo(HelperHandler):
             self.res_and_fini(res)
             return
         res["pet_id"] = pet_id
-
-        # @017,25%1%0,3#2,5%15.3%1
-        try:
-            command = "017,25%%1%%0,3#2,5%%%f%%%d" % (info["weight"], info["sex"])
-            print command
-            get_res = yield terminal_rpc.send_j03(imei,command)
-            res["status"] = get_res["status"]
-        except Exception, e:
-            logging.warning("add_pet_info to device, error, %s %s",
-                            self.dump_req(), str(e))
-            res["status"] = error_codes.EC_SYS_ERROR
-            self.res_and_fini(res)
-            return
 
         # if reboot:
         #     try:

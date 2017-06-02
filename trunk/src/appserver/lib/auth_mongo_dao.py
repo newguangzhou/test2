@@ -366,9 +366,12 @@ class AuthMongoDAO(MongoDAOBase):
         ret = yield self.submit(_callback)
         raise gen.Return(ret)
 
-    @gen.coroutine
+    #@gen.coroutine
+    #def get_user_token(self, )
+
+
     def gen_token(self, type, auth_id, multi_login, device_type, device_token,
-                  expire_times):
+                  expire_times, platform, device_model):
         def _callback(mongo_client, **kwargs):
             tb = mongo_client[auth_def.AUTH_DATABASE][auth_def.AUTH_STATUS_TB]
 
@@ -394,6 +397,8 @@ class AuthMongoDAO(MongoDAOBase):
             row["device_type"] = device_type
             row["device_token"] = device_token
             row["expire_times"] = expire_times
+            row["platform"] = platform
+            row["device_model"] = device_model
 
             if not multi_login:
                 tb.delete_many(cond)
@@ -402,55 +407,62 @@ class AuthMongoDAO(MongoDAOBase):
 
             return token
 
-        ret = yield self.submit(_callback)
-        raise gen.Return(ret)
+        return self.submit(_callback)
 
     """
     生成用户token
     """
 
-    @gen.coroutine
     def gen_user_token(self, uid, multi_login, device_type, device_token,
-                       expire_times):
-        ret = yield self.gen_token(type_defines.USER_AUTH, uid, multi_login,
-                                   device_type, device_token, expire_times)
-        raise gen.Return(ret)
+                       expire_times, platform, device_model):
+        return self.gen_token(type_defines.USER_AUTH, uid, multi_login,
+                              device_type, device_token, expire_times, platform, device_model)
 
-    @gen.coroutine
+    # def get_cur_login_info(self, type, auth_id):
+    #    info = {}
+    #    tb = mongo_client[auth_def.AUTH_DATABASE][auth_def.AUTH_STATUS_TB]
+    #    return tb.find_one({"auth_type": type,
+    #                        "auth_id": auth_id}, sort=[("add_date", pymongo.DESCENDING)])
+
+
     def check_token(self, type, auth_id, token):
         def _callback(mongo_client, **kwargs):
             # 检查token状态
+            ec = error_codes.EC_SUCCESS
+            info = {}
             tb = mongo_client[auth_def.AUTH_DATABASE][auth_def.AUTH_STATUS_TB]
 
-            cursor = tb.find({"auth_type": type,
-                              "auth_id": auth_id,
-                              "token": token})
-            print "xxxxxxxxxxxxxx", cursor
-            if cursor.count() <= 0:
-                return error_codes.EC_INVALID_TOKEN
+            info = tb.find_one({"auth_type": type,
+                                "auth_id": auth_id}, sort=[("add_date", pymongo.DESCENDING)])
 
-            info = cursor[0]
-            if info["state"] == 0:
-                return error_codes.EC_INVALID_TOKEN
-            elif info["expire_times"] != 0:
-                tm = utils.date2int(info["mod_date"]) + info["expire_times"]
-                cur_tm = int(time.time())
-                if cur_tm >= tm:  # 已经过期
-                    return error_codes.EC_TOKEN_EXPIRED
+            if info is None:
+                ec = error_codes.EC_INVALID_TOKEN
+            else:
+                if info["state"] == 0:
+                    ec = error_codes.EC_INVALID_TOKEN
+                elif info["token"] != token:
+                    tmp = tb.find_one({"auth_type": type,
+                                       "auth_id": auth_id,
+                                       "token": token})
+                    if tmp is not None:
+                        ec = error_codes.EC_INVALID_TOKEN
+                    else:
+                        ec = error_codes.EC_LOGIN_IN_OTHER_PHONE
+                elif info["expire_times"] != 0:
+                    tm = utils.date2int(info["mod_date"]) + info["expire_times"]
+                    cur_tm = int(time.time())
+                    if cur_tm >= tm:  # 已经过期
+                        ec = error_codes.EC_TOKEN_EXPIRED
+            return ec, info
 
-            return error_codes.EC_SUCCESS
-
-        ret = yield self.submit(_callback)
-        raise gen.Return(ret)
+        return self.submit(_callback)
 
     """
     检查用户token
     """
 
-    @gen.coroutine
     def check_user_token(self, uid, token):
-        ret = yield self.check_token(type_defines.USER_AUTH, uid, token)
-        raise gen.Return(ret)
+        return self.check_token(type_defines.USER_AUTH, uid, token)
 
     @gen.coroutine
     def delete_token(self, type, auth_id, token):

@@ -107,8 +107,33 @@ class PetMongoDAO(MongoDAOBase):
         ret = yield self.submit(_callback)
         raise gen.Return(ret)
 
+    # @gen.coroutine
+    # def get_pet_info(self, pet_id, cols, device_imei=None):
+    #     def _callback(mongo_client, **kwargs):
+    #         tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_INFOS_TB]
+    #         qcols = {"_id": 0}
+    #         for v in cols:
+    #             if not pet_def.has_pet_infos_col(v):
+    #                 raise PetMongoDAOException(
+    #                     "Unknown pet infos row column \"%s\"", v)
+    #             qcols[v] = 1
+    #         cond = {}
+    #         if pet_id is not None:
+    #             cond["pet_id"] = pet_id
+    #         if device_imei is not None:
+    #             cond["device_imei"] = device_imei
+    #         cursor = tb.find(cond, qcols)
+    #         if cursor.count() <= 0:
+    #             return None
+    #         return cursor[0]
+    #
+    #     ret = yield self.submit(_callback)
+    #     raise gen.Return(ret)
+
     @gen.coroutine
-    def get_pet_info(self, pet_id, cols, device_imei=None):
+    def get_pet_info(self, cols, **kwargs):
+        cond = kwargs
+
         def _callback(mongo_client, **kwargs):
             tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_INFOS_TB]
             qcols = {"_id": 0}
@@ -117,11 +142,6 @@ class PetMongoDAO(MongoDAOBase):
                     raise PetMongoDAOException(
                         "Unknown pet infos row column \"%s\"", v)
                 qcols[v] = 1
-            cond = {}
-            if pet_id is not None:
-                cond["pet_id"] = pet_id
-            if device_imei is not None:
-                cond["device_imei"] = device_imei
             cursor = tb.find(cond, qcols)
             if cursor.count() <= 0:
                 return None

@@ -28,7 +28,8 @@ class MsgRPC:
             "send_sms": "%s/msg/send_sms" % (msg_url, ),
             "send_verify_code": "%s/msg/send_verify_code" % (msg_url, ),
             "push": "%s/msg/push" % (msg_url, ),
-            "push_all": "%s/msg/push_all" % (msg_url, )
+            "push_all": "%s/msg/push_all" % (msg_url, ),
+            "push_android": "%s/msg/push_android" % (msg_url, ),
         }
 
     @gen.coroutine
@@ -58,6 +59,10 @@ class MsgRPC:
                               code=code,
                               product=product)
         raise gen.Return(ret)
+
+    def push_android(self, **args):
+        return self.call("push_android",
+                              **args)
 
     @gen.coroutine
     def push(self, uid, title, desc):

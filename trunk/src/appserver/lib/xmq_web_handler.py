@@ -4,7 +4,7 @@ import json
 import traceback
 import logging
 import tornado.web
-
+from type_defines import *
 logger = logging.getLogger(__name__)
 
 
@@ -57,4 +57,21 @@ class XMQWebHandler(tornado.web.RequestHandler):
         logger.debug("res_and_fini:%s", data)
 
     def get_str_arg(self, arg):
-        return self.decode_argument(self.get_argument(arg)).encode("utf8")
+        tmp = self.get_argument(arg, "")
+        if tmp == "":
+            return tmp
+        else:
+            return self.decode_argument(tmp).encode("utf8")
+
+    def custom_headers(self):
+        ret = {}
+        os = self.request.headers.get(HTTP_HD_OS, "")
+        if os.startwith(HTTP_HD_ANDROID_START_STRING):
+            platform = PLATFORM_ANDROID
+        else:
+            platform = PLATFORM_IOS
+
+        ret["platform"] = platform
+        ret["app_version"] = self.request.headers.get(HTTP_HD_APPVERSION, "")
+        ret["device_model"] = self.request.headers.get(HTTP_HD_DEVICE_MODEL, "")
+        return ret

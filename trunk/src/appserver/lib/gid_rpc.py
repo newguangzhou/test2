@@ -40,8 +40,10 @@ class GIDRPC:
         #res = json.loads(res.body)
         #if res["status"] != error_codes.EC_SUCCESS:
         #    raise GIDRPCException("Alloc gid error, status=%u", res["status"])
-        #raise gen.Return(crc32(str(time.time())))
-        raise gen.Return(int(time.time()))
+        ret = crc32(str(time.time())) & 0xffffffff
+        raise gen.Return(ret)
+
+        # raise gen.Return(int(time.time()))
 
     @gen.coroutine
     def alloc_user_gid(self):

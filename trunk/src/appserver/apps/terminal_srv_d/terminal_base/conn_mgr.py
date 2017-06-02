@@ -1,6 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 """ 
-@biref Connection manager terminal_base on epoll
+@biref Connection manager base on epoll
 @file connmgr.py
 @author ChenYongqiang
 @date 2014-12-04

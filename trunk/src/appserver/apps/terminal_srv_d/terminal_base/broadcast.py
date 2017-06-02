@@ -5,6 +5,7 @@ from tornado import gen
 logger = logging.getLogger(__name__)
 import time
 
+
 class BroadException(Exception):
     def __init__(self, message, *args):
         self._msg = message % tuple(args)
@@ -21,14 +22,14 @@ class BroadCastor(object):
             self.conn_mgr = kwargs["conn_mgr"]
         self._conn_imei_dict = {}
         self._imei_conn_dict = {}
-        # self._imei_timestamp_dict = {}
+        #self._imei_timestamp_dict = {}
 
     def register_conn(self, conn_id, imei):
         logger.info("register_conn conn_id:%d, imei:%s", conn_id, imei)
         exist = self._imei_conn_dict.has_key(imei)
         self._imei_conn_dict[imei] = conn_id
         self._conn_imei_dict[conn_id] = imei
-        # self._imei_timestamp_dict[imei] = int(time.time())
+        #self._imei_timestamp_dict[imei] = int(time.time())
         return exist
 
     def un_register_conn(self, conn_id):

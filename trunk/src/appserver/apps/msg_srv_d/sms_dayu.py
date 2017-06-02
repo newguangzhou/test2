@@ -8,13 +8,8 @@ import logging
 
 import traceback
 import json
-#from tornado import ioloop, gen
-#from tornado.httpclient import AsyncHTTPClient
-#import tornado.escape
 from top import api
 import top
-#from taobao_sdk.top import api
-#from taobao_sdk import top
 
 def send_verify(code, product, phones):
     logging.debug("code:%s product:%s phones:%s", code, product, phones)

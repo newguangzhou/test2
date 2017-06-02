@@ -22,6 +22,7 @@ from lib.auth_dao import AuthDAO
 from sms_ymrt import YMRTSMS
 from sms_nexmo import NEXMOSMS
 from mipush import MIPush
+from mipush2 import MiPush2
 from sms_dayu import send_verify
 import handlers
 
@@ -53,7 +54,7 @@ webapp = Application(
     [
         (r"/msg/send_sms", handlers.SendSMS),
         (r"/msg/send_verify_code", handlers.SendVerify),
-        (r"/msg/push", handlers.Push), (r"/msg/push_all", handlers.PushAll)
+        (r"/msg/push_android", handlers.PushAndrod)
     ],
     autoreload=False,
     pyloader=pyloader,
@@ -62,6 +63,7 @@ webapp = Application(
     auth_dao=AuthDAO.new(mongo_meta=mongo_conf.auth_mongo_meta),
     sms_sender=sms_sender,
     verify_sender=send_verify,
+    xiaomi_push2= MiPush2(conf.mipush_appsecret, conf.mipush_pkg_name,True),
     xiaomi_push=MIPush(conf.mipush_host, conf.mipush_appsecret,
                        conf.mipush_pkg_name))
 
@@ -77,7 +79,7 @@ class _UserSrvConsole(Console):
             conf = self.pyld.ReloadInst("Config")
             webapp.settings["appconfig"] = conf
             mipush = MIPush(conf.mipush_host, conf.mipush_appsecret,
-                            mipush_pkg_name)
+                           conf.mipush_pkg_name)
             webapp.settings["xiaomi_push"] = mipush
             self.send_response(stream, "done")
         else:

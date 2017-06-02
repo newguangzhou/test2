@@ -282,9 +282,12 @@ class TerminalHandler:
                 msg = push_msg.new_location_change_msg(
                     "%.7f" % lnglat[1], "%.7f" % lnglat[0],
                     int(time.mktime(locator_time.timetuple())), radius)
-                yield self.msg_rpc.push_android(uids=str(uid),
-                                                payload=msg,
-                                                pass_through=1)
+                try:
+                    yield self.msg_rpc.push_android(uids=str(uid),
+                                                    payload=msg,
+                                                    pass_through=1)
+                except Exception, e:
+                    logger.exception(e)
 
         yield self.new_device_dao.update_device_info(
             pk.imei,
@@ -415,9 +418,12 @@ class TerminalHandler:
                 logger.warning("imei:%s uid not find", imei)
                 return
             msg = push_msg.new_low_battery_msg(battery, if_ultra)
-            yield self.msg_rpc.push_android(uids=str(uid),
-                                            payload=msg,
-                                            pass_through=1)
+            try:
+                yield self.msg_rpc.push_android(uids=str(uid),
+                                                payload=msg,
+                                                pass_through=1)
+            except Exception, e:
+                logger.exception(e)
         else:
             logger.warning("imei:%s uid not find", imei)
 
@@ -618,9 +624,13 @@ class TerminalHandler:
                     logger.warning("imei:%s uid not find", imei)
                     continue
                 msg = push_msg.new_device_off_line_msg()
-                yield self.msg_rpc.push_android(uids=str(uid),
-                                                payload=msg,
-                                                pass_through=1)
+                try:
+                    yield self.msg_rpc.push_android(uids=str(uid),
+                                                    payload=msg,
+                                                    pass_through=1)
+                except Exception, e:
+                    logger.exception(e)
+
             else:
                 logger.warning("imei:%s uid not find", imei)
 

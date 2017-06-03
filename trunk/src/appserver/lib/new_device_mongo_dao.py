@@ -249,7 +249,7 @@ class NewDeviceMongoDAO(MongoDAOBase):
                              qcols)
             if cursor.count() <= 0:
                 return None
-            return cursor[0]
+            return cursor
 
         ret = yield self.submit(_callback)
         raise gen.Return(ret)

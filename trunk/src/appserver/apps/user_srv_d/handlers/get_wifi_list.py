@@ -17,7 +17,7 @@ from lib.sys_config import SysConfig
 class GetWifiList(HelperHandler):
     @gen.coroutine
     def _deal_request(self):
-        logging.debug("OnGetDeviceSwitchLightStatus, %s", self.dump_req())
+        logging.debug("OnGetWifiListStatus, %s", self.dump_req())
 
         self.set_header("Content-Type", "application/json; charset=utf-8")
         pet_dao = self.settings["pet_dao"]
@@ -40,7 +40,7 @@ class GetWifiList(HelperHandler):
             return
 
         try:
-            st = yield self.check_token("OnGetPetInfo", res, uid, token)
+            st = yield self.check_token("OnGetWifiList", res, uid, token)
             if not st:
                return
 
@@ -59,7 +59,7 @@ class GetWifiList(HelperHandler):
                 return
             res["data"] = []
             ten_minutes_wifi = yield device_dao.get_ten_minutes_wifi_info(device_imei)
-            print "ten_minutes_wifi", ten_minutes_wifi
+            logging.info("ten_minutes_wifi:%s", ten_minutes_wifi)
             if ten_minutes_wifi is not None:
                 all_wifis = []
                 all_wifi_names = []
@@ -86,14 +86,14 @@ class GetWifiList(HelperHandler):
                 res["data"] = all_wifis
 
         except Exception, e:
-            logging.error("OnGetDeviceSwitchLightStatus, error, %s %s",
+            logging.error("OnGetWifiListStatus, error, %s %s",
                           self.dump_req(), self.dump_exp(e))
             res["status"] = error_codes.EC_SYS_ERROR
             self.res_and_fini(res)
             return
 
 # 成功
-        logging.debug("OnGetPetInfo, success %s", self.dump_req())
+        logging.debug("OnGetWifiList, success %s", self.dump_req())
         self.res_and_fini(res)
 
     def post(self):

@@ -59,11 +59,11 @@ class GetWifiList(HelperHandler):
                 return
             res["data"] = []
             ten_minutes_wifi = yield device_dao.get_ten_minutes_wifi_info(device_imei)
-            logging.info("ten_minutes_wifi:%s", ten_minutes_wifi)
             if ten_minutes_wifi is not None:
                 all_wifis = []
                 all_wifi_names = []
                 for col in ten_minutes_wifi:
+                    logging.info("ten_minutes_wifi:%s",col )
                     tmp = utils.change_wifi_info(col["wifi_info"], True)
                     for item in tmp:
                         if item["wifi_ssid"] not in all_wifi_names:
@@ -82,7 +82,8 @@ class GetWifiList(HelperHandler):
                                 last_item["is_homewifi"] = 0
                             all_wifi_names.append(item["wifi_ssid"])
                             all_wifis.append(last_item)
-                all_wifis.sort(key=lambda obj: obj.get('wifi_power'), reverse=True)
+                logging.info("all_wifis:%s", all_wifis)
+                all_wifis.sort(key=lambda obj: int(obj.get('wifi_power')), reverse=True)
                 res["data"] = all_wifis
 
         except Exception, e:

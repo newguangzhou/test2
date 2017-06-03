@@ -72,7 +72,7 @@ class AddPetInfo(HelperHandler):
             self.res_and_fini(res)
             return
 
-        if imei is None or (sex is not None and sex not in (0,1, 2)) or (
+        if (sex is not None and sex not in (0,1, 2)) or (
                 weight is not None and (weight > 1000 or weight < 0))or (
                         pet_type_id is not None and pet_type_id not in (0,-1, 1, 2)):
             logging.warning("AddPetInfo, invalid args2, %s", self.dump_req())

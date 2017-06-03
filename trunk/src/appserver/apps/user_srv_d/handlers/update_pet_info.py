@@ -46,7 +46,7 @@ class UpdatePetInfo(HelperHandler):
             if not st:
                 return
             pet_id = int(self.get_argument("pet_id"))
-            imei = self.get_argument("imei")
+            #imei = self.get_argument("imei")
             nick = self.get_argument("nick", None)
             logo_url = self.get_argument("logo_url", None)
             logo_small_url = self.get_argument("logo_small_url", None)

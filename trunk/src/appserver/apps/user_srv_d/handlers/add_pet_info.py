@@ -49,7 +49,7 @@ class AddPetInfo(HelperHandler):
             st = yield self.check_token("OnAddPetInfo", res, uid, token)
             if not st:
                 return
-            imei = self.get_argument("imei",None)
+            # imei = self.get_argument("imei",None)
             nick = self.get_argument("nick", None)
             logo_url = self.get_argument("logo_url", None)
             logo_small_url = self.get_argument("logo_small_url", None)
@@ -66,7 +66,7 @@ class AddPetInfo(HelperHandler):
                 weight = float(weight)
             description = self.get_argument("description", None)
         except Exception, e:
-            logging.warning("AddPetInfo, invalid args, %s %s", self.dump_req(),
+            logging.warning("AddPetInfo, invalid args1, %s %s", self.dump_req(),
                             str(e))
             res["status"] = error_codes.EC_INVALID_ARGS
             self.res_and_fini(res)
@@ -75,7 +75,7 @@ class AddPetInfo(HelperHandler):
         if imei is None or (sex is not None and sex not in (0,1, 2)) or (
                 weight is not None and (weight > 1000 or weight < 0))or (
                         pet_type_id is not None and pet_type_id not in (0,-1, 1, 2)):
-            logging.warning("AddPetInfo, invalid args, %s", self.dump_req())
+            logging.warning("AddPetInfo, invalid args2, %s", self.dump_req())
             res["status"] = error_codes.EC_INVALID_ARGS
             self.res_and_fini(res)
             return

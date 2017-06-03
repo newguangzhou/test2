@@ -251,3 +251,21 @@ def is_imei_valide(imei):
         return True
     else:
         return False
+
+def is_in_home(home_wifi,common_wifi,wifi_list):
+    wifi_list_names = []
+    for item in wifi_list:
+        wifi_list_names.append(item["wifi_ssid"])
+        if home_wifi is not None and home_wifi[
+            "wifi_ssid"] == item[
+            "wifi_ssid"] and home_wifi[
+            "wifi_bssid"] == item[
+            "wifi_bssid"]:
+            return True
+    num = 0;
+    for item in common_wifi:
+        if item["wifi_ssid"] in wifi_list_names:
+            num += 1;
+            if num > 2:
+                return True
+    return False

@@ -133,7 +133,7 @@ class UpdatePetInfo(HelperHandler):
                 send_sex = sex
             else:
                 send_sex = int(pet_info.get("sex", 1))
-            msg.light_flash = ((0, 0),)
+            msg.light_flash = ((0, 0),(0, 0))
             msg.pet_weight = "%.2f" % (send_weight)
             msg.pet_gender = send_sex
             get_res = yield terminal_rpc.send_command_params(

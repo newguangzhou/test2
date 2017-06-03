@@ -7,7 +7,7 @@ import time
 import pymongo
 from pymongo.operations import IndexModel
 
-AUTH_DATABASE = "ydzvip_auth"
+AUTH_DATABASE = "xmq_auth"
 """ 
 认证信息
 """
@@ -23,8 +23,8 @@ AUTH_INFOS_TB_INDEXES = [
     IndexModel("state"),
 ]
 _AUTH_INFOS_TB_ROW_DEFINE = {
-    "type": None,  # 认证类型，1为普通用户, 3为店铺认证
-    "sub_type": None,  # 认证子类型，1为普通，2为上一平台的普通用户
+    "type": None,  # 认证类型，1为普通用户
+    "sub_type": None,  # 认证子类型，1为普通
     "auth_id": None,  # 认证ID， 和认证类型相关, type + auth_id 必须全局唯一
     "mobile_num": None,  # 手机号码
     "auth_data": None,  # 认证相关信息, 依据不同的认证类型而不同

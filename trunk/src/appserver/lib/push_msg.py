@@ -7,6 +7,16 @@ def new_device_off_line_msg():
            "signal": "offline", }
     return json.dumps(msg, ensure_ascii=False, encoding="utf8")
 
+def new_device_on_line_msg():
+    msg = {"type": "device",
+           "signal": "online", }
+    return json.dumps(msg, ensure_ascii=False, encoding="utf8")
+
+def new_pet_not_home_msg():
+    msg = {"type": "pet",
+           "signal": "not-home", }
+    return json.dumps(msg, ensure_ascii=False, encoding="utf8")
+
 
 def new_location_change_msg(latitude, longitude, location_time, radius):
     msg = {"type": "pet",

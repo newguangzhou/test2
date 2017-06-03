@@ -8,7 +8,7 @@ from pymongo.operations import IndexModel
 
 from lib import utils
 
-USER_DATABASE = "ydzvip_user"
+USER_DATABASE = "xmq_user"
 """
 用户基本信息表
 """

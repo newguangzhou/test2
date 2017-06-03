@@ -47,10 +47,10 @@ class PetFind(HelperHandler):
         # 检查token
         st = yield self.check_token("OnOnPetWalk", res, uid, token)
         if not st:
-           return
-
+            return
+        info = None
         try:
-            info = yield pet_dao.get_user_pets(uid, ("pet_id", "device_imei"))
+            info = yield pet_dao.get_user_pets(uid, ("pet_id", "device_imei", "sex", "weight"))
             if info is None or pet_id != info["pet_id"]:
                 logging.warning("OnPetFind, not found, %s", self.dump_req())
                 res["status"] = error_codes.EC_PET_NOT_EXIST
@@ -95,6 +95,29 @@ class PetFind(HelperHandler):
             res["status"] = error_codes.EC_SYS_ERROR
             self.res_and_fini(res)
             return
+
+        if info is not None:
+            device_imei = info.get("device_imei", None)
+            if device_imei is None:
+                logging.warning("UpdatePetInfo, not found, %s",
+                                self.dump_req())
+                return
+            msg = terminal_commands.PetLocation()
+            if gps_enable:
+                msg.battery_threshold = 0
+            else:
+                msg.battery_threshold = 25
+            send_weight = float(info.get("weight", 0.0))
+            send_sex = int(info.get("sex", 1))
+            msg.light_flash = ((0, 0), (0, 0))
+            msg.pet_weight = "%.2f" % (send_weight)
+            msg.pet_gender = send_sex
+            get_res = yield terminal_rpc.send_command_params(
+                imei=device_imei, command_content=str(msg))
+
+            if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
+                logging.warning("pet find,send_command_params, fail status:%d",
+                                error_codes.EC_SEND_CMD_FAIL)
 
         self.res_and_fini(res)
 

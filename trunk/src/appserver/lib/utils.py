@@ -225,3 +225,29 @@ def change_wifi_info(mac, need_deep=False):
             #for item2 in tmp2:
 
     return ret
+
+def is_imei_valide(imei):
+    if imei is None or len(imei)<>15 or imei.index('35739608')<>0:
+        return False
+    list = []
+    index = 0
+    eSum = 0
+    iSum = 0
+    for item in imei:
+        value = int(item)
+        if index < 14:
+            if index % 2 == 0:
+                eSum += value
+            else:
+                iSum += (int(value * 2 / 10) + (value * 2 % 10))
+        list.append(value)
+        index += 1
+    # print("--iSum--%d",iSum)
+    # print("--eSum--%d",eSum)
+    # print list
+    imei15 = (10 - ((eSum + iSum) % 10)) % 10
+    # print imei15
+    if imei15 == list[14]:
+        return True
+    else:
+        return False

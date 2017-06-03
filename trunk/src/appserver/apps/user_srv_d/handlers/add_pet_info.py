@@ -5,6 +5,7 @@ import logging
 import datetime
 import traceback
 from lib import error_codes
+from terminal_base import terminal_commands
 import pymongo
 from tornado.web import asynchronous
 from tornado import gen
@@ -79,6 +80,20 @@ class AddPetInfo(HelperHandler):
             self.res_and_fini(res)
             return
 
+        try:
+            device_info = yield device_dao.get_device_info_by_uid(uid, ("imei",))
+        except Exception,e:
+            logging.warning("AddPetInfo, error, %s", self.dump_req())
+            res["status"] = error_codes.EC_SYS_ERROR
+            self.res_and_fini(res)
+            return
+        imei = device_info.get("imei",None)
+        if imei is None:
+            logging.warning("AddPetInfo, can't find imei, %s", self.dump_req())
+            res["status"] = error_codes.EC_DEVICE_NOT_EXIST
+            self.res_and_fini(res)
+            return
+
         pet_id = yield gid_rpc.alloc_pet_gid()
         info = {"pet_type_id": pet_type_id, "uid": uid}
         info["device_imei"] = imei
@@ -98,18 +113,41 @@ class AddPetInfo(HelperHandler):
         if weight is not None:
             info["weight"] = weight
 
-            # @017,25%1%0,3#2,5%15.3%1
-        try:
-            command = "017,25%%0%%0,0#0,0%%%f%%%d" % (info["weight"], info["sex"])
-            print command
-            get_res = yield terminal_rpc.send_j03(imei, command)
-            res["status"] = get_res["status"]
-        except Exception, e:
-            logging.warning("add_pet_info to device, error, %s %s",
-                            self.dump_req(), str(e))
-            res["status"] = error_codes.EC_SEND_CMD_FAIL
-            self.res_and_fini(res)
-            return
+        # 发给终端
+        if weight is not None and sex is not None:
+            device_imei = imei
+            if device_imei is None:
+                logging.warning("UpdatePetInfo, not found, %s",
+                                self.dump_req())
+                return
+            msg = terminal_commands.PetLocation()
+            msg.battery_threshold = 25
+            send_weight = weight
+            send_sex = sex
+            msg.light_flash = ((0, 0),)
+            msg.pet_weight = "%.2f" % (send_weight)
+            msg.pet_gender = send_sex
+            get_res = yield terminal_rpc.send_command_params(
+                imei=device_imei, command_content=str(msg))
+
+            if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
+                logging.warning("send_command_params, fail status:%d",
+                                error_codes.EC_SEND_CMD_FAIL)
+                res["status"] = error_codes.EC_SEND_CMD_FAIL
+                self.res_and_fini(res)
+                return
+        # @017,25%1%0,3#2,5%15.3%1
+        # try:
+        #     command = "017,25%%0%%0,0#0,0%%%f%%%d" % (info["weight"], info["sex"])
+        #     print command
+        #     get_res = yield terminal_rpc.send_j03(imei, command)
+        #     res["status"] = get_res["status"]
+        # except Exception, e:
+        #     logging.warning("add_pet_info to device, error, %s %s",
+        #                     self.dump_req(), str(e))
+        #     res["status"] = error_codes.EC_SEND_CMD_FAIL
+        #     self.res_and_fini(res)
+        #     return
 
         try:
             yield pet_dao.update_pet_info(pet_id, **info)

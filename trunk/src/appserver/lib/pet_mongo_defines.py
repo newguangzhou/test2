@@ -40,19 +40,6 @@ _PET_INFOS_TB_ROW_DEFINE = {
 }
 
 """
-宠物的wifi信息
-"""
-PET_WIFI_INFOS_TB = "pet_wifi_info"
-PET_WIFI_INFOS_TB_INDEXES = [IndexModel("pet_id"), IndexModel("create_time")]
-PET_WIFI_TB_ROW_DEFINE = {
-    "pet_id": (None, int),
-    "device_imei": (u"", unicode),
-    "create_time": (None, datetime.datetime),
-    "wifis": ([], list)
-
-}
-
-"""
 狗睡眠信息
 """
 PET_SLEEP_INFOS_TB = "pet_sleep_info"

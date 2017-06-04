@@ -12,8 +12,8 @@ import traceback
 from tornado.web import asynchronous
 from tornado import gen
 
-from ydzlib import error_codes
-from ydzlib import utils
+from lib import error_codes
+from lib import utils
 from helper_handler import HelperHandler
 
 class GetUInfo(HelperHandler):

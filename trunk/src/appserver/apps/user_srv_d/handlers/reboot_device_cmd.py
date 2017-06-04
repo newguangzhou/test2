@@ -8,6 +8,7 @@ from lib import error_codes
 from tornado.web import asynchronous
 from tornado import gen
 from helper_handler import HelperHandler
+from terminal_base import terminal_commands
 
 from lib import sys_config
 from lib.sys_config import SysConfig
@@ -60,12 +61,18 @@ class RebootDeviceCmd(HelperHandler):
             self.res_and_fini(res)
             return
 
-        try:
-            get_res = yield terminal_rpc.send_j03(imei, "020")
-            res["status"] = get_res["status"]
-        except Exception, e:
-            logging.warning("RebootDeviceCmd, error, %s %s",
-                            self.dump_req(), str(e))
+            # 重启
+        if imei is None:
+            logging.warning("RebootDeviceCmd, invalid args, imei is none")
+            res["status"] = error_codes.EC_INVALID_ARGS
+            self.res_and_fini(res)
+            return
+
+        get_res = yield terminal_rpc.send_command_params(
+            imei=imei, command_content=str(terminal_commands.TermimalReboot()))
+        if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
+            logging.warning("send_command_params reboot, fail status:%d",
+                            error_codes.EC_SEND_CMD_FAIL)
             res["status"] = error_codes.EC_SEND_CMD_FAIL
             self.res_and_fini(res)
             return

@@ -30,6 +30,7 @@ class SetHomeWifi(HelperHandler):
         uid = None
         wifi_ssid = None
         wifi_bssid = None
+        wifi_power = None
         reboot = None
         try:
             uid = int(self.get_argument("uid"))
@@ -40,6 +41,7 @@ class SetHomeWifi(HelperHandler):
             #    return
             wifi_ssid = self.get_argument("wifi_ssid")
             wifi_bssid = self.get_argument("wifi_bssid")
+            wifi_power = self.get_argument("wifi_power")
         except Exception, e:
             logging.warning("SetHomeWifi, invalid args, %s %s",
                             self.dump_req(), str(e))
@@ -58,7 +60,8 @@ class SetHomeWifi(HelperHandler):
 
             set_res = yield pet_dao.set_home_wifi(uid, {"wifi_ssid": wifi_ssid,
                                                         "wifi_bssid":
-                                                        wifi_bssid})
+                                                        wifi_bssid,
+                                                        "deep":wifi_power})
             if set_res.matched_count <= 0:
                 logging.warning("SetHomeWifi, set fail, %s", self.dump_req())
                 res["status"] = error_codes.EC_SYS_ERROR

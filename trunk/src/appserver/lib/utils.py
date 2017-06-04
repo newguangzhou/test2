@@ -269,3 +269,38 @@ def is_in_home(home_wifi,common_wifi,wifi_list):
             if num > 2:
                 return True
     return False
+
+def get_new_common_wifi(common_wifi,wifi_info,home_wifi):
+    alpha = 2
+    beta = 1
+    home_wifi_power = int(home_wifi["deep"])
+    pre_seven_days_datetime = datetime.datetime.now() + datetime.timedelta(days=-7)
+    for item in common_wifi:
+        item_create_time = item["create_time"]
+        if compare_time(pre_seven_days_datetime,item_create_time):
+            common_wifi.remove(item)
+            continue
+        item_power = int(item["deep"])
+        item_cal = alpha * home_wifi_power+ beta * item_power
+        item["cal"] = item_cal
+
+    create_time = datetime.datetime.now()
+    for item in wifi_info:
+        item_power = int(item["deep"])
+        item_cal = alpha * home_wifi_power+ beta * item_power
+        item["cal"] = item_cal
+        item["create_time"] = create_time
+        if len(common_wifi) < 10:
+            common_wifi.append(item)
+        else:
+            for common_item in common_wifi:
+                common_item_cal = common_item["cal"]
+                if common_item_cal < item_cal:
+                    common_wifi.remove(common_item)
+                    common_wifi.append(item)
+                    break
+    return common_wifi
+
+
+
+

@@ -98,7 +98,6 @@ EC_NODATA = 32                                      #没有数据
               reboot 是否重启(1：重启 0：不重启,默认不重启)
               wifi_ssid:wifi名称
               wifi_bssid:wifi mac地址(如ffffffffffff)
-              wifi_power:信号 强度 ,字符串类型
               
   返回:          {
                       status:状态,可能的值有:

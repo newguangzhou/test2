@@ -61,13 +61,7 @@ class RebootDeviceCmd(HelperHandler):
             self.res_and_fini(res)
             return
 
-            # 重启
-        if imei is None:
-            logging.warning("RebootDeviceCmd, invalid args, imei is none")
-            res["status"] = error_codes.EC_INVALID_ARGS
-            self.res_and_fini(res)
-            return
-
+        # 重启
         get_res = yield terminal_rpc.send_command_params(
             imei=imei, command_content=str(terminal_commands.TermimalReboot()))
         if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:

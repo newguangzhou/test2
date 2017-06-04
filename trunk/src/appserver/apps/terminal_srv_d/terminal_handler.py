@@ -315,7 +315,7 @@ class TerminalHandler:
                 wifi_info = utils.change_wifi_info(pk.location_info.mac)
                 common_wifi = pet_info.get("common_wifi", None)
                 home_wifi = pet_info.get("home_wifi", None)
-                new_common_wifi = utils.get_new_common_wifi(common_wifi,wifi_info)
+                new_common_wifi = utils.get_new_common_wifi(common_wifi,wifi_info,home_wifi)
                 uid = pet_info.get("uid", None)
                 if uid is not None:
                     if not utils.is_in_home(home_wifi, new_common_wifi, wifi_info):

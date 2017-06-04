@@ -70,7 +70,25 @@ EC_NODATA = 32                                      #没有数据
                         token_expire_secs:token的过期时间，以秒为单位
                     }
 
-
+--
+获取用户基本信息
+--
+/user/get_base_infomation
+    方法:           POST/GET
+    参数:           uid                             // 用户唯一id
+                    token                           // 用户token
+    返回:           {
+                        status:状态, 可能的值有:
+                            EC_SUCCESS
+                            EC_SYS_ERROR
+                            EC_UNKNOWN_ERROR
+                            EC_INVALID_ARGS
+                        pet_id：宠物id,如果未绑定,返回0
+                        device_imei:硬件imei,如果未绑定,返回""
+                        wifi_bssid:home_wifi的bssid,未设置,返回""
+                        wifi_ssid：home_wifi的ssid,未设置,返回""
+                        has_reboot:绑定宠物信息后,设备是否重启过(0:未重启过,1:重启过)
+                   }
 --
 登出
 --
@@ -95,7 +113,6 @@ EC_NODATA = 32                                      #没有数据
 方法:           POST/GET
 参数:         uid
               token
-              reboot 是否重启(1：重启 0：不重启,默认不重启)
               wifi_ssid:wifi名称
               wifi_bssid:wifi mac地址(如ffffffffffff)
               
@@ -199,7 +216,6 @@ EC_NODATA = 32                                      #没有数据
 
 
                    以下参数可以多选或者单选，但是必须至少有一个:
-                   reboot 是否重启(1：重启 0：不重启,默认重启)
                    nick
                    logo_url
                    logo_small_url

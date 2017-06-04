@@ -38,14 +38,12 @@ class AddPetInfo(HelperHandler):
         weight = None
         pet_type_id = 1
         description = None
-        reboot = None
         imei = None
 
         try:
             uid = int(self.get_argument("uid"))
             pet_type_id = int(self.get_argument("pet_type_id"))
             token = self.get_argument("token")
-            reboot = self.get_argument("reboot", 1)
             st = yield self.check_token("OnAddPetInfo", res, uid, token)
             if not st:
                 return

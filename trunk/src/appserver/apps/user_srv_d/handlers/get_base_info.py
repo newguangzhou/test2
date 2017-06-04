@@ -41,15 +41,15 @@ class GetBaseInfo(HelperHandler):
             return
 
         try:
-            #st = yield self.check_token("OnGetPetInfo", res, uid, token)
-            #if not st:
+            # st = yield self.check_token("OnGetBaseInfo", res, uid, token)
+            # if not st:
             #    return
             res["pet_id"] = 0
             res["device_imei"] = ""
             res["wifi_bssid"] = ""
             res["wifi_ssid"] = ""
             info = yield pet_dao.get_user_pets(uid, ("pet_id", "device_imei",
-                                                     "home_wifi"))
+                                                     "home_wifi","has_reboot"))
             if not info:
                 logging.warning("GetBaseInfo in pet dao, not found, %s", self.dump_req())
                 device_info = yield device_dao.get_device_info_by_uid(uid,("imei",))
@@ -61,6 +61,7 @@ class GetBaseInfo(HelperHandler):
                         res["device_imei"] = device_imei
             else:
                 res["pet_id"] = info.get("pet_id", 0)
+                res["has_reboot"] = info.get("has_reboot",0)
                 device_imei = info.get("device_imei", "")
                 if device_imei is not None:
                     res["device_imei"] = device_imei

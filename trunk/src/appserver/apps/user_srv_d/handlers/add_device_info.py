@@ -72,7 +72,9 @@ class AddDeviceInfo(HelperHandler):
             info["imei"] = imei
         if device_name is not None:
             info["device_name"] = device_name
-        info["sim_deadline"] = datetime.datetime.now() + datetime.timedelta(days=180)
+        expire_days = SysConfig.current().get(
+            sys_config.SC_SIM_CARD_EXPIRE_DAYS)
+        info["sim_deadline"] = datetime.datetime.now() + datetime.timedelta(days=expire_days)
         info["uid"] = uid;
         try:
             yield device_dao.update_device_info(**info)

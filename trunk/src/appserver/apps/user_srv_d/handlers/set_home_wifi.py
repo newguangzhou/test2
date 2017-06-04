@@ -31,11 +31,9 @@ class SetHomeWifi(HelperHandler):
         wifi_ssid = None
         wifi_bssid = None
         # wifi_power = None
-        reboot = None
         try:
             uid = int(self.get_argument("uid"))
             token = self.get_argument("token")
-            reboot = self.get_argument("reboot",0)
             #st = yield self.check_token("SetSimInfo", res, uid, token)
             #if not st:
             #    return

@@ -96,7 +96,6 @@ class UpdatePetInfo(HelperHandler):
             self.res_and_fini(res)
             return
         info = {"mod_date": datetime.datetime.today()}
-        info["has_reboot"] = 0
         if pet_type_id is not None:
             info["pet_type_id"] = pet_type_id
         if nick is not None:
@@ -146,6 +145,19 @@ class UpdatePetInfo(HelperHandler):
                 self.res_and_fini(res)
                 return
 
+        info["has_reboot"] = 1
+        # 重启
+        if device_imei is not None:
+            get_res = yield terminal_rpc.send_command_params(
+                imei=device_imei, command_content=str(terminal_commands.TermimalReboot()))
+            if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
+                logging.warning("send_command_params reboot, fail status:%d",
+                                error_codes.EC_SEND_CMD_FAIL)
+                res["status"] = error_codes.EC_SEND_CMD_FAIL
+                info["has_reboot"] = 0
+                self.res_and_fini(res)
+                return
+
         # @017,25%1%0,3#2,5%15.3%1
         # try:
         #     command = "017,25%%1%%0,3#2,5%%%f%%%d" % (float(info["weight"]), int(info["sex"]))
@@ -166,17 +178,6 @@ class UpdatePetInfo(HelperHandler):
             res["status"] = error_codes.EC_SYS_ERROR
             self.res_and_fini(res)
             return
-
-        # 重启
-        if device_imei is not None:
-            get_res = yield terminal_rpc.send_command_params(
-                imei=device_imei, command_content=str(terminal_commands.TermimalReboot()))
-            if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
-                logging.warning("send_command_params reboot, fail status:%d",
-                                error_codes.EC_SEND_CMD_FAIL)
-                res["status"] = error_codes.EC_SEND_CMD_FAIL
-                self.res_and_fini(res)
-                return
 
 # 成功
         logging.debug("UpdatePetInfo, success %s", self.dump_req())

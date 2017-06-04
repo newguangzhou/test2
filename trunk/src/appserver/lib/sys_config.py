@@ -31,6 +31,7 @@ SC_SHARE_WITH_OTHERS_RULE_DESC_FMT = 20  # 是否与其他优惠活动同享规�
 SC_AC_ONLY_NEW_USER_RULE_DESC_FMT = 21  # 是否仅限新用户领取规则描述格式
 SC_AC_ONLY_MEMBER_RULE_DESC_FMT = 22  # 是否仅限店铺会员参与
 SC_TERMINAL_RPC_URL = 30
+SC_SIM_CARD_EXPIRE_DAYS = 31 #sim card 默认过期时间,天数
 
 
 class SysConfigException(Exception):
@@ -66,7 +67,8 @@ _CONFIG_ITEMS = {  # Key is item key, value is (类型，默认值，验证器)
     SC_SHARE_WITH_OTHERS_RULE_DESC_FMT: (str, "%s与其他优惠同享", None),
     SC_AC_ONLY_NEW_USER_RULE_DESC_FMT: (str, "%s", None),
     SC_AC_ONLY_MEMBER_RULE_DESC_FMT: (str, "%s", None),
-    SC_TERMINAL_RPC_URL: (str, "http://127.0.0.1:5052", None)
+    SC_TERMINAL_RPC_URL: (str, "http://127.0.0.1:5052", None),
+    SC_SIM_CARD_EXPIRE_DAYS: (int, 180, None),
 }
 
 DOG_CONFIG = {

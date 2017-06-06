@@ -60,7 +60,7 @@ class GetDeviceInfo(HelperHandler):
 
             info = yield device_dao.get_device_info(
                 device_imei, ("device_name", "iccid", "hardware_version",
-                              "software_version", "electric_quantity", "sim_deadline"))
+                              "software_version", "electric_quantity", "sim_deadline","j01_repoter_date"))
             if not info:
                 logging.warning("OnGetDeviceInfo, not found, %s",
                                 self.dump_req())
@@ -70,6 +70,11 @@ class GetDeviceInfo(HelperHandler):
 
             res["firmware_version"] = info.get("software_version", "")
             res["hardware_version"] = info.get("hardware_version", "")
+            battery_last_get_time = info.get("j01_repoter_date","")
+            if battery_last_get_time != "":
+                battery_last_get_time = utils.date2str(battery_last_get_time)
+
+            res["battery_last_get_time"] = battery_last_get_time
             sim_deadline = info.get("sim_deadline", "")
             if sim_deadline != "":
                 sim_deadline = utils.date2str(sim_deadline)

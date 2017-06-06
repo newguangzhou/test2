@@ -292,7 +292,8 @@ class TerminalHandler:
         yield self.new_device_dao.update_device_info(
             pk.imei,
             status=pk.status,
-            electric_quantity=pk.electric_quantity)
+            electric_quantity=pk.electric_quantity,
+            j01_repoter_date = datetime.datetime.now())
 
         if pk.electric_quantity < LOW_BATTERY:
             if_ultra = False

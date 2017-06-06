@@ -25,6 +25,8 @@ DEVICE_TB_ROW_DEFINE = {
     "hardware_version": (u"", unicode),
     "software_version": (u"", unicode),
     "electric_quantity": (-1, int),
+    "j01_repoter_date": (None, datetime.datetime),
+    "sim_deadline": (None, datetime.datetime),
     "location_data": ([], list),
     "light_status": (0, int),
     "device_name": (u"", unicode),  #设备名称

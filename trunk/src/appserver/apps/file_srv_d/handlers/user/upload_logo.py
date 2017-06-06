@@ -59,7 +59,7 @@ class UploadLogo(HelperHandler):
         # 
         try:    
             # 检查账号状态
-            st = yield self.check_account_status("OnUploadLogo", res, type_defines.USER_AUTH, uid)
+            st = yield self.check_account_status("OnUploadLogo check account", res, type_defines.USER_AUTH, uid)
             if not st:
                 return
             

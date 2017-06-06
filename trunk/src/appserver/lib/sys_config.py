@@ -178,10 +178,11 @@ class SysConfig:
         _CONFIG_ITEMS[SC_TERMINAL_RPC_URL] = (str, "http://127.0.0.1:5052",
                                               None)
 
+    # 47.93.249.1
     @staticmethod
     def _test_debug_hack():
         _CONFIG_ITEMS[SC_FILE_BASE_URL] = (
-            str, "http://47.93.249.1:9700/file/get", None)
+            str, "http://120.24.152.121:9700/file/get", None)
         _CONFIG_ITEMS[SC_GID_RPC_URL] = (
             str, "http://127.0.0.1:9800/gid/alloc", None)
         _CONFIG_ITEMS[SC_MSG_RPC_URL] = (str, "http://127.0.0.1:9200", None)
@@ -191,7 +192,8 @@ class SysConfig:
     @staticmethod
     def _disable_debug_hack():
         _CONFIG_ITEMS[SC_FILE_BASE_URL] = (
-            str, "http://47.93.249.1:9700/file/get", None)
+
+            str, "http://120.24.152.121:9700/file/get", None)
         _CONFIG_ITEMS[SC_GID_RPC_URL] = (
             str, "http://127.0.0.1:9800/gid/alloc", None)
         _CONFIG_ITEMS[SC_MSG_RPC_URL] = (str, "http://127.0.0.1:9200", None)

@@ -70,12 +70,6 @@ class SetHomeWifi(HelperHandler):
             self.res_and_fini(res)
             return
 
-        # if reboot:
-        #     try:
-        #         terminal_rpc.send_j03(imei, "020")
-        #     except Exception, e:
-        #         logging.warning("reboot device in add_pet_info, error, %s %s",
-        #                 self.dump_req(), str(e))
 # 成功
         logging.debug("SetHomeWifi, success %s", self.dump_req())
         self.res_and_fini(res)

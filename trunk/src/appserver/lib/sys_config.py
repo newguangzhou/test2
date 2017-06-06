@@ -43,7 +43,7 @@ class SysConfigException(Exception):
 
 
 _CONFIG_ITEMS = {  # Key is item key, value is (类型，默认值，验证器)
-    SC_FILE_BASE_URL: (str, "http://172.26.73.34:9700/file/get", None),
+    SC_FILE_BASE_URL: (str, "http://120.24.152.121:9700/file/get", None),
     SC_VERIFY_CODE_LEN: (int, 6, None),
     SC_VERIFY_CODE_FREQ_SECS: (int, 60, None),
     SC_VERIFY_CODE_FREQ_DAY_COUNT: (int, 5, None),
@@ -171,7 +171,7 @@ class SysConfig:
     @staticmethod
     def _local_debug_hack():
         _CONFIG_ITEMS[SC_FILE_BASE_URL] = (
-            str, "http://172.26.73.34:9700/file/get", None)
+            str, "http://120.24.152.121:9700/file/get", None)
         _CONFIG_ITEMS[SC_GID_RPC_URL] = (
             str, "http://127.0.0.1:9800/gid/alloc", None)
         _CONFIG_ITEMS[SC_MSG_RPC_URL] = (str, "http://127.0.0.1:9200", None)

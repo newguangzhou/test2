@@ -48,6 +48,7 @@ class GetBaseInfo(HelperHandler):
             res["device_imei"] = ""
             res["wifi_bssid"] = ""
             res["wifi_ssid"] = ""
+            res["has_reboot"] = 0
             info = yield pet_dao.get_user_pets(uid, ("pet_id", "device_imei",
                                                      "home_wifi","has_reboot"))
             if not info:

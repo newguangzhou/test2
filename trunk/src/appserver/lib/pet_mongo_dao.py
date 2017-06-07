@@ -80,9 +80,7 @@ class PetMongoDAO(MongoDAOBase):
     def unbind_device_imei(self, pet_id):
         def _callback(mongo_client, **kwargs):
             tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_INFOS_TB]
-            res = tb.update_one({"pet_id": pet_id},
-                                {"$unset": {"device_imei": ""}},
-                                upsert=True)
+            res = tb.delete_one({"pet_id": pet_id})
             return res.modified_count
 
         ret = yield self.submit(_callback)

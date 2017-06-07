@@ -79,13 +79,18 @@ class AddPetInfo(HelperHandler):
             return
 
         try:
-            device_info = yield device_dao.get_device_info_by_uid(uid, ("imei",))
+            device_info = yield pet_dao.get_user_pets(uid, ("device_imei",))
+            if device_info is None:
+                logging.warning("AddPetInfo, can't find imei, %s", self.dump_req())
+                res["status"] = error_codes.EC_DEVICE_NOT_EXIST
+                self.res_and_fini(res)
+                return
         except Exception,e:
             logging.warning("AddPetInfo, error, %s", self.dump_req())
             res["status"] = error_codes.EC_SYS_ERROR
             self.res_and_fini(res)
             return
-        imei = device_info.get("imei",None)
+        imei = device_info.get("device_imei",None)
         if imei is None:
             logging.warning("AddPetInfo, can't find imei, %s", self.dump_req())
             res["status"] = error_codes.EC_DEVICE_NOT_EXIST

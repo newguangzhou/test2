@@ -104,7 +104,6 @@ class UserMongoDAO(MongoDAOBase):
         def _callback(mongo_client, **kwargs):
             tb = mongo_client[user_def.USER_DATABASE][user_def.USER_INFOS_TB]
             qcols = {"_id":0}
-            logging.info("add device :cols:%s",cols)
             for v in cols: 
                 if not user_def.has_user_infos_col(v):
                     raise UserMongoDAOException("Unknown user infos row column \"%s\"", v)

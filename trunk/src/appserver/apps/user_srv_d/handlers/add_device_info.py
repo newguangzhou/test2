@@ -55,17 +55,20 @@ class AddDeviceInfo(HelperHandler):
         try:
             bind_res = yield pet_dao.bind_device(uid, imei)
         except pymongo.errors.DuplicateKeyError, e:
+            res["status"] = error_codes.EC_EXIST
             try:
                 user_dao = self.settings["user_dao"]
                 old_user_info = yield pet_dao.get_pet_info(("uid",),
                                                            device_imei=imei)
-                old_uid = old_user_info["uid"]
-
-                res["old_account"] = ""
-                res["status"] = error_codes.EC_EXIST
-                info = yield user_dao.get_user_info(old_uid, ("phone_num",))
-                logging.info("AddDeviceInfo,get phone num:%s",info)
-                res["old_account"] = info.get("phone_num", "")
+                old_uid = old_user_info.get("uid","")
+                if old_uid == "":
+                    logging.warning("AddDeviceInfo, error, imei has exit but can't get the old account: %s",
+                                    self.dump_req())
+                else:
+                    res["old_account"] = ""
+                    info = yield user_dao.get_user_info(old_uid, ("phone_num",))
+                    logging.info("AddDeviceInfo,get phone num:%s",info)
+                    res["old_account"] = info.get("phone_num", "")
             except Exception, ee:
                 logging.warning("AddDeviceInfo, error, imei has exit but can't get the old account: %s %s",
                                 self.dump_req(),

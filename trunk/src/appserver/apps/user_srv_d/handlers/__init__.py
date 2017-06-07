@@ -44,6 +44,7 @@ from get_base_info import GetBaseInfo
 from send_get_wifi_list_cmd import SendGetWifiListCmd
 from get_wifi_list import GetWifiList
 from reboot_device_cmd import RebootDeviceCmd
+from push_message import PushMessageCmd
 #from get_sale_info import GetSaleInfo
 #from get_sale_statist import GetSaleStatist
 #from get_user_recommand_activities import GetUserRecommandActivities

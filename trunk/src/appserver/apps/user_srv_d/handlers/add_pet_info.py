@@ -149,7 +149,7 @@ class AddPetInfo(HelperHandler):
         #     return
 
         try:
-            yield pet_dao.update_pet_info(pet_id, **info)
+            yield pet_dao.update_pet_info_by_uid(uid, **info)
         except pymongo.errors.DuplicateKeyError, e:
             res["status"] = error_codes.EC_EXIST
             self.res_and_fini(res)

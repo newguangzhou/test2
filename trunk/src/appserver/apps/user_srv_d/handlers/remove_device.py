@@ -63,14 +63,14 @@ class RemoveDeviceInfo(HelperHandler):
             self.res_and_fini(res)
             return
 
-        try:
-            yield device_dao.unbind_device_imei(device_imei)
-        except Exception, e:
-            logging.warning("RemoveDeviceInfo, device_dao.unbind_device_imei error, %s %s", self.dump_req(),
-                            self.dump_exp(e))
-            res["status"] = error_codes.EC_SYS_ERROR
-            self.res_and_fini(res)
-            return
+        # try:
+        #     yield device_dao.unbind_device_imei(device_imei)
+        # except Exception, e:
+        #     logging.warning("RemoveDeviceInfo, device_dao.unbind_device_imei error, %s %s", self.dump_req(),
+        #                     self.dump_exp(e))
+        #     res["status"] = error_codes.EC_SYS_ERROR
+        #     self.res_and_fini(res)
+        #     return
 
 # 成功
         logging.debug("RemoveDeviceInfo, success %s", self.dump_req())

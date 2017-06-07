@@ -77,6 +77,24 @@ class PetMongoDAO(MongoDAOBase):
         raise gen.Return(ret)
 
     @gen.coroutine
+    def update_pet_info_by_uid(self, uid, **kwargs):
+        info = kwargs
+        # validate_ret, exp_col = pet_def.validate_pet_infos_cols(**kwargs)
+        # if not validate_ret:
+        #    raise PetMongoDAOException(
+        #        "Validate pet infos columns error, invalid column \"%s\"",
+        #        exp_col)
+
+        def _callback(mongo_client, **kwargs):
+            tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_INFOS_TB]
+            res = tb.update_one({"uid": uid}, {"$set": info},
+                                upsert=True)
+            return res.modified_count
+
+        ret = yield self.submit(_callback)
+        raise gen.Return(ret)
+
+    @gen.coroutine
     def unbind_device_imei(self, pet_id):
         def _callback(mongo_client, **kwargs):
             tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_INFOS_TB]
@@ -152,7 +170,7 @@ class PetMongoDAO(MongoDAOBase):
     def bind_device(self, uid, imei):
         def _callback(mongo_client, **kwargs):
             tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_INFOS_TB]
-            res = tb.update_one({"uid": uid}, {"$set": {"device_imei": imei}})
+            res = tb.insert_one({"uid": uid}, {"device_imei": imei})
             return res
 
         ret = yield self.submit(_callback)

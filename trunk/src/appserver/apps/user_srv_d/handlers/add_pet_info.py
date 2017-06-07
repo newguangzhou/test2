@@ -122,14 +122,15 @@ class AddPetInfo(HelperHandler):
             msg.battery_threshold = 25
             send_weight = weight
             send_sex = sex
-            msg.light_flash = ((0, 0),)
+            msg.light_flash = ((0, 0),(0, 0))
             msg.pet_weight = "%.2f" % (send_weight)
             msg.pet_gender = send_sex
+            logging.info("add_pet_info send_command_j03 msg:%s",msg)
             get_res = yield terminal_rpc.send_command_params(
                 imei=device_imei, command_content=str(msg))
 
             if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
-                logging.warning("send_command_params, fail status:%d",
+                logging.warning("add_pet_info send_command_params, fail status:%d",
                                 error_codes.EC_SEND_CMD_FAIL)
                 res["status"] = error_codes.EC_SEND_CMD_FAIL
                 self.res_and_fini(res)

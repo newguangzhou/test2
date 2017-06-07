@@ -60,6 +60,7 @@ if support_setptitle:
 webapp = Application(
     [
         (r"/user/get_verify_code", handlers.GetVerifyCode),
+        (r"/user/push_message_cmd", handlers.PushMessageCmd),
         (r"/user/login", handlers.Login),
         (r"/user/register", handlers.Register),
         (r"/user/logout", handlers.Logout),

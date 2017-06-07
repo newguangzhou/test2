@@ -51,6 +51,7 @@ class AddDeviceInfo(HelperHandler):
             res["status"] = error_codes.EC_INVALID_ARGS
             self.res_and_fini(res)
             return
+
         try:
             bind_res = yield pet_dao.bind_device(uid, imei)
         except pymongo.errors.DuplicateKeyError, e:

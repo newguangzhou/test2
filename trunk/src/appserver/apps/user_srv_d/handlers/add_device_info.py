@@ -58,7 +58,7 @@ class AddDeviceInfo(HelperHandler):
             user_dao = self.settings["user_dao"]
             res["status"] = error_codes.EC_EXIST
             try:
-                info = yield user_dao.get_user_info(uid, ("phone_num"))
+                info = yield user_dao.get_user_info(uid, ("phone_num",))
                 res["old_account"] = info["phone_num"]
             except Exception, ee:
                 logging.warning("AddDeviceInfo, error, imei has exit but can't get the old account: %s %s",

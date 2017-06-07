@@ -112,6 +112,7 @@ class PetFind(HelperHandler):
             msg.light_flash = ((0, 0), (0, 0))
             msg.pet_weight = "%.2f" % (send_weight)
             msg.pet_gender = send_sex
+            logging.info("pet_find send_command_j03 msg:%s", msg)
             get_res = yield terminal_rpc.send_command_params(
                 imei=device_imei, command_content=str(msg))
 

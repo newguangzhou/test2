@@ -103,7 +103,6 @@ class AddPetInfo(HelperHandler):
         info = {"pet_type_id": pet_type_id, "uid": uid}
         info["target_energy"] = target_energy
         info["device_imei"] = imei
-        info["uid"] = uid
         if nick is not None:
             info["nick"] = nick
         if logo_url is not None:

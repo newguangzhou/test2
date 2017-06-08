@@ -271,6 +271,9 @@ def is_in_home(home_wifi,common_wifi,wifi_list):
     return False
 
 def get_new_common_wifi(common_wifi,wifi_info,home_wifi):
+    if home_wifi is None:
+        common_wifi = []
+        return common_wifi
     alpha = 2
     beta = 1
     home_wifi_power = None

@@ -129,7 +129,7 @@ class AddPetInfo(HelperHandler):
             msg.battery_threshold = 25
             send_weight = weight
             send_sex = sex
-            msg.light_flash = ((0, 0),)
+            msg.light_flash = ((0, 0),(0, 0))
             msg.pet_weight = "%.2f" % (send_weight)
             msg.pet_gender = send_sex
             logging.info("add_pet_info send_command_j03 msg:%s",msg)

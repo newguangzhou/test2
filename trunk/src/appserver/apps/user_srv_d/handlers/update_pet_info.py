@@ -135,7 +135,7 @@ class UpdatePetInfo(HelperHandler):
                 send_sex = sex
             else:
                 send_sex = int(pet_info.get("sex", 1))
-            msg.light_flash = ((0, 0),)
+            msg.light_flash = ((0, 0),(0, 0))
             msg.pet_weight = "%.2f" % (send_weight)
             msg.pet_gender = send_sex
             logging.info("update_pet_info send_command_j03 msg:%s", msg)
@@ -146,8 +146,8 @@ class UpdatePetInfo(HelperHandler):
                 logging.warning("send_command_params write pet info, fail status:%d",
                                 error_codes.EC_SEND_CMD_FAIL)
                 res["status"] = error_codes.EC_SEND_CMD_FAIL
-                self.res_and_fini(res)
-                return
+                # self.res_and_fini(res)
+                # return
 
         info["has_reboot"] = 1
         # 重启
@@ -159,8 +159,8 @@ class UpdatePetInfo(HelperHandler):
                                 error_codes.EC_SEND_CMD_FAIL)
                 res["status"] = error_codes.EC_SEND_CMD_FAIL
                 info["has_reboot"] = 0
-                self.res_and_fini(res)
-                return
+                # self.res_and_fini(res)
+                # return
 
         # @017,25%1%0,3#2,5%15.3%1
         # try:

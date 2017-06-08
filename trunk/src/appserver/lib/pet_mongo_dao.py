@@ -99,7 +99,6 @@ class PetMongoDAO(MongoDAOBase):
         def _callback(mongo_client, **kwargs):
             tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_INFOS_TB]
             res = tb.delete_one({"pet_id": pet_id})
-            return res.modified_count
 
         ret = yield self.submit(_callback)
         raise gen.Return(ret)

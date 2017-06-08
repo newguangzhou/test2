@@ -140,8 +140,8 @@ class AddPetInfo(HelperHandler):
                 logging.warning("add_pet_info send_command_params, fail status:%d",
                                 error_codes.EC_SEND_CMD_FAIL)
                 res["status"] = error_codes.EC_SEND_CMD_FAIL
-                self.res_and_fini(res)
-                return
+                # self.res_and_fini(res)
+                # return
         # @017,25%1%0,3#2,5%15.3%1
         # try:
         #     command = "017,25%%0%%0,0#0,0%%%f%%%d" % (info["weight"], info["sex"])
@@ -157,6 +157,7 @@ class AddPetInfo(HelperHandler):
 
         try:
             yield pet_dao.update_pet_info_by_uid(uid, **info)
+            res["status"] = error_codes.EC_SUCCESS
         except pymongo.errors.DuplicateKeyError, e:
             res["status"] = error_codes.EC_EXIST
             self.res_and_fini(res)

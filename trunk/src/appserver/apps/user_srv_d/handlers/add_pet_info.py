@@ -133,27 +133,16 @@ class AddPetInfo(HelperHandler):
             msg.pet_weight = "%.2f" % (send_weight)
             msg.pet_gender = send_sex
             logging.info("add_pet_info send_command_j03 msg:%s",msg)
-            get_res = yield terminal_rpc.send_command_params(
-                imei=device_imei, command_content=str(msg))
-
-            if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
-                logging.warning("add_pet_info send_command_params, fail status:%d",
-                                error_codes.EC_SEND_CMD_FAIL)
-                res["status"] = error_codes.EC_SEND_CMD_FAIL
+            
+            # get_res = yield terminal_rpc.send_command_params(
+            #     imei=device_imei, command_content=str(msg))
+            #
+            # if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
+            #     logging.warning("add_pet_info send_command_params, fail status:%d",
+            #                     error_codes.EC_SEND_CMD_FAIL)
+            #     res["status"] = error_codes.EC_SEND_CMD_FAIL
                 # self.res_and_fini(res)
                 # return
-        # @017,25%1%0,3#2,5%15.3%1
-        # try:
-        #     command = "017,25%%0%%0,0#0,0%%%f%%%d" % (info["weight"], info["sex"])
-        #     print command
-        #     get_res = yield terminal_rpc.send_j03(imei, command)
-        #     res["status"] = get_res["status"]
-        # except Exception, e:
-        #     logging.warning("add_pet_info to device, error, %s %s",
-        #                     self.dump_req(), str(e))
-        #     res["status"] = error_codes.EC_SEND_CMD_FAIL
-        #     self.res_and_fini(res)
-        #     return
 
         try:
             yield pet_dao.update_pet_info_by_uid(uid, **info)

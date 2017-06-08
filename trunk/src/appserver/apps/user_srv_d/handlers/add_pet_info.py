@@ -100,7 +100,7 @@ class AddPetInfo(HelperHandler):
             return
 
         pet_id = yield gid_rpc.alloc_pet_gid()
-        info = {"pet_type_id": pet_type_id, "uid": uid}
+        info = {"pet_type_id": pet_type_id}
         info["target_energy"] = target_energy
         info["device_imei"] = imei
         if nick is not None:

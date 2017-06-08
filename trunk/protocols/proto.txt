@@ -187,6 +187,7 @@ EC_NODATA = 32                                      #没有数据
                    
                    以下参数可以多选或者单选，但是必须至少有一个:
                    nick
+                   target_energy
                    logo_url
                    birthday
                    sex
@@ -217,6 +218,7 @@ EC_NODATA = 32                                      #没有数据
 
                    以下参数可以多选或者单选，但是必须至少有一个:
                    nick
+                   target_energy
                    logo_url
                    logo_small_url
                    birthday(2014-02-22)

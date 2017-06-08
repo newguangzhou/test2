@@ -33,6 +33,7 @@ _PET_INFOS_TB_ROW_DEFINE = {
     "mod_date": (None, datetime.datetime),
     "device_imei": (None, unicode),
     "target_step": (0, int),
+    "target_energy": (0, float),
     "pet_status": (0, int),
     "home_wifi": (None, dict),
     "common_wifi": ([], list),

@@ -288,18 +288,19 @@ class TerminalHandler:
                                                         pass_through=1)
                     except Exception, e:
                         logger.exception(e)
-
+        now_time = datetime.datetime.now()
         yield self.new_device_dao.update_device_info(
             pk.imei,
             status=pk.status,
             electric_quantity=pk.electric_quantity,
-            j01_repoter_date = datetime.datetime.now())
+            j01_repoter_date = now_time)
 
+        battery_status = 0
         if pk.electric_quantity < LOW_BATTERY:
-            if_ultra = False
+            battery_status = 1
             if pk.electric_quantity < ULTRA_LOW_BATTERY:
-                if_ultra = True
-            yield self._SendBatteryMsg(pk.imei, pk.electric_quantity, if_ultra)
+                battery_status = 2
+            yield self._SendBatteryMsg(pk.imei, pk.electric_quantity, battery_status, now_time)
 
         if pet_info is not None:
             sport_info = {}
@@ -403,7 +404,7 @@ class TerminalHandler:
         raise gen.Return(True)
 
     @gen.coroutine
-    def _SendBatteryMsg(self, imei, battery, if_ultra):
+    def _SendBatteryMsg(self, imei, battery, battery_statue, datetime):
         pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
                                                    device_imei=imei)
         if pet_info is not None:
@@ -411,7 +412,7 @@ class TerminalHandler:
             if uid is None:
                 logger.warning("imei:%s uid not find", imei)
                 return
-            msg = push_msg.new_low_battery_msg(battery, if_ultra)
+            msg = push_msg.new_low_battery_msg(datetime, battery, battery_statue)
             try:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,

@@ -412,7 +412,7 @@ class TerminalHandler:
             if uid is None:
                 logger.warning("imei:%s uid not find", imei)
                 return
-            msg = push_msg.new_now_battery_msg(datetime, battery, battery_statue)
+            msg = push_msg.new_now_battery_msg(utils.date2str(datetime), battery, battery_statue)
             try:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,

@@ -35,9 +35,9 @@ class SetTargetStep(HelperHandler):
         try:
             uid = int(self.get_argument("uid"))
             token = self.get_argument("token")
-            #st = yield self.check_token("OnSetTargetStep", res, uid, token)
-            #if not st:
-            #    return
+            st = yield self.check_token("OnSetTargetStep", res, uid, token)
+            if not st:
+               return
             target_energy = float(self.get_argument("target_energy"))
             pet_id = int(self.get_argument("pet_id", -1))
             target_step = int(self.get_argument("target_step"))

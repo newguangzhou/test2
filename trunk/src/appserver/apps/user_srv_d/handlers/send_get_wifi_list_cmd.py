@@ -33,8 +33,8 @@ class SendGetWifiListCmd(HelperHandler):
         try:
             uid = int(self.get_argument("uid"))
             token = self.get_argument("token")
-            #st = yield self.check_token("OnSetTargetStep", res, uid, token)
-            #if not st:
+            # st = yield self.check_token("OnSetTargetStep", res, uid, token)
+            # if not st:
             #    return
 
             info = yield pet_dao.get_user_pets(uid, ("pet_id", "device_imei"))

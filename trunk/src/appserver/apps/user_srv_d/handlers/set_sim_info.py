@@ -35,9 +35,9 @@ class SetSimInfo(HelperHandler):
         try:
             uid = int(self.get_argument("uid"))
             token = self.get_argument("token")
-            #st = yield self.check_token("SetSimInfo", res, uid, token)
-            #if not st:
-            #    return
+            st = yield self.check_token("SetSimInfo", res, uid, token)
+            if not st:
+               return
  
             device_imei = self.get_argument("imei")
             iccid = self.get_argument("iccid")

@@ -35,9 +35,9 @@ class GetSleepInfo(HelperHandler):
         try:
             uid = int(self.get_argument("uid"))
             token = self.get_argument("token")
-            #st = yield self.check_token("GetSleepInfo", res, uid, token)
-            #if not st:
-            #    return
+            st = yield self.check_token("GetSleepInfo", res, uid, token)
+            if not st:
+               return
 
             pet_id = int(self.get_argument("pet_id", -1))
             start_date = self.get_argument("start_date", "2015-04-12")

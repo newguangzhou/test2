@@ -41,9 +41,9 @@ class GetDeviceInfo(HelperHandler):
             return
 
         try:
-            #st = yield self.check_token("OnGetPetInfo", res, uid, token)
-            #if not st:
-            #    return
+            st = yield self.check_token("OnGetDeviceInfo", res, uid, token)
+            if not st:
+               return
             if device_imei is None:
                 info = yield pet_dao.get_user_pets(uid, ("device_imei", ))
                 if not info:

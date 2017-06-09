@@ -51,7 +51,7 @@ class UpdateUInfo(HelperHandler):
                     self.arg_error("sex")
             if self.request.arguments.has_key("birthday"):
                 birthday = self.get_argument("birthday")
-                birthday = lib.utils.str2date(start_date, "%Y-%m-%d")
+                birthday = lib.utils.str2date(birthday, "%Y-%m-%d")
                 birthday = datetime.datetime(birthday.year, birthday.month, birthday.day)
             if not nick and not logo_url and not sex and not birthday:
                 self.arg_error("All update props was not given")

@@ -41,9 +41,9 @@ class GetBaseInfo(HelperHandler):
             return
 
         try:
-            # st = yield self.check_token("OnGetBaseInfo", res, uid, token)
-            # if not st:
-            #    return
+            st = yield self.check_token("OnGetBaseInfo", res, uid, token)
+            if not st:
+               return
             res["pet_id"] = 0
             res["device_imei"] = ""
             res["wifi_bssid"] = ""

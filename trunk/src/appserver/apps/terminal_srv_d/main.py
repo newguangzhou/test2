@@ -98,6 +98,7 @@ if __name__ == '__main__':
             (r"/send_command3", http_handlers.SendCommandHandler3),
             (r"/send_command4", http_handlers.SendCommandHandler4),
             (r"/send_command_params", http_handlers.SendParamsCommandHandler),
+            (r"/send_commandj03", http_handlers.SendCommandHandlerJ03),
             (r"/send_commandj13", http_handlers.SendCommandHandlerJ13),
         ],
         autoreload=True,

@@ -80,29 +80,9 @@ class AddPetInfo(HelperHandler):
             self.res_and_fini(res)
             return
 
-        try:
-            device_info = yield pet_dao.get_user_pets(uid, ("device_imei",))
-            if device_info is None:
-                logging.warning("AddPetInfo, can't find imei, %s", self.dump_req())
-                res["status"] = error_codes.EC_DEVICE_NOT_EXIST
-                self.res_and_fini(res)
-                return
-        except Exception,e:
-            logging.warning("AddPetInfo, error, %s", self.dump_req())
-            res["status"] = error_codes.EC_SYS_ERROR
-            self.res_and_fini(res)
-            return
-        imei = device_info.get("device_imei",None)
-        if imei is None:
-            logging.warning("AddPetInfo, can't find imei, %s", self.dump_req())
-            res["status"] = error_codes.EC_DEVICE_NOT_EXIST
-            self.res_and_fini(res)
-            return
-
         pet_id = yield gid_rpc.alloc_pet_gid()
-        info = {"pet_type_id": pet_type_id}
+        info = {"pet_type_id": pet_type_id,"pet_id":pet_id}
         info["target_energy"] = target_energy
-        info["device_imei"] = imei
         if nick is not None:
             info["nick"] = nick
         if logo_url is not None:

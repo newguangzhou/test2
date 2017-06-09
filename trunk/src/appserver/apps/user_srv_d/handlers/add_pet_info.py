@@ -48,7 +48,7 @@ class AddPetInfo(HelperHandler):
             st = yield self.check_token("OnAddPetInfo", res, uid, token)
             if not st:
                 return
-            # imei = self.get_argument("imei",None)
+            imei = self.get_argument("imei",None)
             # target_energy = float(self.get_argument("target_energy",0))
             nick = self.get_argument("nick", None)
             logo_url = self.get_argument("logo_url", None)
@@ -102,7 +102,7 @@ class AddPetInfo(HelperHandler):
         if weight is not None and sex is not None:
             device_imei = imei
             if device_imei is None:
-                logging.warning("UpdatePetInfo, not found, %s",
+                logging.warning("AddPetInfo, not found, %s",
                                 self.dump_req())
                 return
             msg = terminal_commands.PetLocation()

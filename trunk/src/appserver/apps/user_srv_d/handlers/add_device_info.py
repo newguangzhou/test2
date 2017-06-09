@@ -25,6 +25,7 @@ class AddDeviceInfo(HelperHandler):
         device_dao = self.settings["device_dao"]
         pet_dao = self.settings["pet_dao"]
         conf = self.settings["appconfig"]
+        terminal_rpc = self.settings["terminal_rpc"]
         res = {"status": error_codes.EC_SUCCESS}
 
         uid = None
@@ -96,6 +97,12 @@ class AddDeviceInfo(HelperHandler):
             res["status"] = error_codes.EC_SYS_ERROR
             self.res_and_fini(res)
             return
+
+        try:
+            yield terminal_rpc.send_j13(imei)
+        except Exception, e:
+            logging.warning("get wifi list in add_pet_info, error, %s %s",
+                    self.dump_req(), str(e))
 
 # 成功
         logging.debug("AddDeviceInfo, success %s", self.dump_req())

@@ -48,7 +48,7 @@ class UpdatePetInfo(HelperHandler):
                 return
             pet_id = int(self.get_argument("pet_id"))
             target_energy = float(self.get_argument("target_energy", 0))
-            #imei = self.get_argument("imei")
+            # imei = self.get_argument("imei")
             nick = self.get_argument("nick", None)
             logo_url = self.get_argument("logo_url", None)
             logo_small_url = self.get_argument("logo_small_url", None)

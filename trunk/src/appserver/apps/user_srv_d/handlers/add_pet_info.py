@@ -139,12 +139,6 @@ class AddPetInfo(HelperHandler):
             return
         res["pet_id"] = pet_id
 
-        try:
-            yield terminal_rpc.send_j13(imei)
-        except Exception, e:
-            logging.warning("get wifi list in add_pet_info, error, %s %s",
-                    self.dump_req(), str(e))
-
         # 成功
         logging.debug("AddPetInfo, success %s", self.dump_req())
         self.res_and_fini(res)

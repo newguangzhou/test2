@@ -213,7 +213,7 @@ class ProtoIO:
             body = self.read_buff.Read(header.content_length)
             end_tag = self.read_buff.Read(1)
             if end_tag != "]":
-                raise ProtoException("Invalid terminal packet")
+                raise ProtoException("Invalid terminal packet in Read")
         if body is None:
             self.read_buff.Seek(pos)
             header = None
@@ -233,7 +233,7 @@ class ProtoIO:
             return None
 
         if pkData[0] != "[":
-            raise ProtoException("Invalid terminal packet")
+            raise ProtoException("Invalid terminal packet in _ReadHeader")
         if pkData[1] == "]":
             self.read_buff.Seek(pos + 2)
             return SIMPLE_HEART

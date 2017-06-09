@@ -254,6 +254,8 @@ def is_imei_valide(imei):
 
 def is_in_home(home_wifi,common_wifi,wifi_list):
     wifi_list_names = []
+    if home_wifi is None:
+        return True
     for item in wifi_list:
         wifi_list_names.append(item["wifi_ssid"])
         if home_wifi is not None and home_wifi[

@@ -300,7 +300,7 @@ class TerminalHandler:
             battery_status = 1
             if pk.electric_quantity < ULTRA_LOW_BATTERY:
                 battery_status = 2
-            yield self._SendBatteryMsg(pk.imei, pk.electric_quantity, battery_status, now_time)
+        yield self._SendBatteryMsg(pk.imei, pk.electric_quantity, battery_status, now_time)
 
         if pet_info is not None:
             sport_info = {}
@@ -412,7 +412,7 @@ class TerminalHandler:
             if uid is None:
                 logger.warning("imei:%s uid not find", imei)
                 return
-            msg = push_msg.new_low_battery_msg(datetime, battery, battery_statue)
+            msg = push_msg.new_now_battery_msg(datetime, battery, battery_statue)
             try:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,

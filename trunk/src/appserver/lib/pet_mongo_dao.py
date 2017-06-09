@@ -231,6 +231,7 @@ class PetMongoDAO(MongoDAOBase):
             row["step_count"] = sport_data["step_count"]
             row["distance"] = sport_data["distance"]
             row["calorie"] = sport_data["calorie"]
+            row["target_energy"] = sport_data["target_energy"]
             tb.update_one({"pet_id": pet_id,
                            "diary": sport_data["diary"]}, {"$set": row},
                           upsert=True)

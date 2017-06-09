@@ -65,6 +65,7 @@ PET_SPORT_TB_ROW_DEFINE = {
     "diary": (None, datetime.datetime),
     "step_count": (0, int),
     "distance": (0, int),
+    "target_energy": (0,float),
     "calorie": (0, int),
     #"location"
 }

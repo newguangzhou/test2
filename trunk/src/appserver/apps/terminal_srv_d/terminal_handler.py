@@ -258,7 +258,7 @@ class TerminalHandler:
 
         else:
             logger.warning("imei:%s location fail", pk.imei)
-        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid", "home_wifi", "common_wifi"),
+        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid", "home_wifi", "common_wifi", "target_energy"),
                                                    device_imei=pk.imei)
         if pet_info is None:
             logger.error("imei:%s pk:%s not found pet_info", pk, str_pk)
@@ -309,7 +309,7 @@ class TerminalHandler:
             sport_info["step_count"] = pk.step_count
             sport_info["distance"] = pk.distance
             sport_info["calorie"] = pk.calorie
-
+            sport_info["target_energy"] = pet_info["target_energy"]
             yield self.pet_dao.add_sport_info(pet_info["pet_id"], pk.imei,
                                               sport_info)
 
@@ -600,14 +600,17 @@ class TerminalHandler:
             status=pk.status,
             electric_quantity=pk.electric_quantity)
 
-        sport_info = {}
-        sport_info["diary"] = datetime.datetime.combine(datetime.date.today(),
-                                                        datetime.time.min)
-        sport_info["step_count"] = pk.step_count
-        sport_info["distance"] = pk.distance
-        sport_info["calorie"] = pk.calorie
-
-        yield self.new_device_dao.add_sport_info(pk.imei, sport_info)
+        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid", "home_wifi", "common_wifi", "target_energy"),
+                                                   device_imei=pk.imei)
+        if pet_info is not None:
+            sport_info = {}
+            sport_info["diary"] = datetime.datetime.combine(datetime.date.today(),
+                                                            datetime.time.min)
+            sport_info["step_count"] = pk.step_count
+            sport_info["distance"] = pk.distance
+            sport_info["calorie"] = pk.calorie
+            sport_info["target_energy"] = pet_info["target_energy"]
+            yield self.new_device_dao.add_sport_info(pk.imei, sport_info)
         raise gen.Return(True)
 
     @gen.coroutine

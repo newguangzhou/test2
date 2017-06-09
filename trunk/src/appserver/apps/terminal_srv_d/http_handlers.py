@@ -173,6 +173,7 @@ class SendParamsCommandHandler(tornado.web.RequestHandler):
     @gen.coroutine
     def do_request(self):
         res = {"status": error_codes.EC_SUCCESS}
+        logger.info("post in senc_command_params_j03")
         try:
             imei = self.get_argument("imei")
             content = self.get_argument("command_content")
@@ -181,6 +182,7 @@ class SendParamsCommandHandler(tornado.web.RequestHandler):
             res["status"] = error_codes.EC_INVALID_ARGS
         else:
             broadcastor = self.settings["broadcastor"]
+            logger.info("post in senc_command_params_j03:imei:%s,content:%s", imei, content)
             pk = terminal_packets.SendCommandReq(imei, content)
             send_data = str(pk)
             ret = yield broadcastor.send_msg_multicast((imei, ), send_data)
@@ -249,14 +251,14 @@ class SendCommandHandlerJ03(tornado.web.RequestHandler):
 
     @gen.coroutine
     def post(self):
-        logger.info("post in senc_command_params_j03")
+
         try:
             imei = self.get_argument("imei")
             content = self.get_argument("command_content")
         except Exception as e:
             self.write("arg error ")
             return
-        logger.info("post in senc_command_params_j03:imei:%s,content:%s",imei,content)
+
         content = base64.decodestring(content)
         logger.info("content :%s", content)
         broadcastor = self.settings["broadcastor"]

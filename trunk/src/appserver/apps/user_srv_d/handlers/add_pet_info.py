@@ -49,7 +49,7 @@ class AddPetInfo(HelperHandler):
             if not st:
                 return
             # imei = self.get_argument("imei",None)
-            target_energy = float(self.get_argument("target_energy",0))
+            # target_energy = float(self.get_argument("target_energy",0))
             nick = self.get_argument("nick", None)
             logo_url = self.get_argument("logo_url", None)
             logo_small_url = self.get_argument("logo_small_url", None)

@@ -63,13 +63,14 @@ class GetActivityInfo(HelperHandler):
                 print item
                 date_data = {}
                 date_data["date"] = utils.date2str(item["diary"].date())
-                date_data["target_amount"] = "%.2f" % item.get("target_energy",0)
+                date_data["target_amount"] = item.get("target_energy",0)
                 #date_data["reality_amount"] = '{:.1f}'.format(item["calorie"] /1000)
                 date_data["reality_amount"] = int(item["calorie"] / 1000)
 
                 date_data["percentage"] = int(
                     (date_data["reality_amount"] / date_data["target_amount"])
                     * 100)
+                date_data["target_amount"] = "%.2f" % date_data["target_amount"]
                 res["data"].append(date_data)
         # 成功
         logging.debug("GetActivityInfo, success %s", self.dump_req())

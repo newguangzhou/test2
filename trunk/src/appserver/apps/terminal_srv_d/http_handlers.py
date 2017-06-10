@@ -258,7 +258,6 @@ class SendCommandHandlerJ03(tornado.web.RequestHandler):
         except Exception as e:
             self.write("arg error ")
             return
-
         content = base64.decodestring(content)
         logger.info("content :%s", content)
         broadcastor = self.settings["broadcastor"]

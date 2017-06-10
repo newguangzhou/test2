@@ -98,6 +98,24 @@ class AddPetInfo(HelperHandler):
         if weight is not None:
             info["weight"] = weight
 
+        # get imei
+        try:
+
+            pet_info = yield pet_dao.get_user_pets(uid, ("device_imei",))
+            if pet_info is not None:
+                imei = pet_info["device_imei"]
+                if imei is None:
+                    logging.warning("AddPetInfo, error, %s", self.dump_req())
+                    res["status"] = error_codes.EC_DEVICE_NOT_EXIST
+                    self.res_and_fini(res)
+                    return
+        except Exception, e:
+            logging.warning("AddPetInfo, error, %s %s", self.dump_req(),
+                            self.dump_exp(e))
+            res["status"] = error_codes.EC_SYS_ERROR
+            self.res_and_fini(res)
+            return
+
         # 发给终端
         if weight is not None and sex is not None:
             device_imei = imei

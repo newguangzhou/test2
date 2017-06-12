@@ -66,10 +66,14 @@ class GetActivityInfo(HelperHandler):
                 date_data["target_amount"] = item.get("target_energy",0)
                 #date_data["reality_amount"] = '{:.1f}'.format(item["calorie"] /1000)
                 date_data["reality_amount"] = int(item["calorie"] / 1000)
-
-                date_data["percentage"] = int(
+                percentage = 0
+                if date_data["target_amount"] <= 0:
+                    percentage = 100
+                else:
+                    percentage = int(
                     (date_data["reality_amount"] / date_data["target_amount"])
                     * 100)
+                date_data["percentage"] = percentage
                 date_data["target_amount"] = "%.2f" % date_data["target_amount"]
                 res["data"].append(date_data)
         # 成功

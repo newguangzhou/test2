@@ -444,13 +444,15 @@ class TerminalHandler:
             software_version=unicode(pk.software_version),
             electric_quantity=pk.electric_quantity)
 
+        now_time = datetime.datetime.now()
+        battery_status = 0
         if pk.electric_quantity < LOW_BATTERY:
-            if_ultra = False
+            battery_status = 1
             if pk.electric_quantity < ULTRA_LOW_BATTERY:
-                if_ultra = True
-            yield self._SendBatteryMsg(pk.imei, pk.electric_quantity, if_ultra)
+                battery_status = 2
+        yield self._SendBatteryMsg(pk.imei, pk.electric_quantity, battery_status, now_time)
 
-        yield self._SendOnlineMsg(pk.imei)
+        yield self._SendOnlineMsg(pk.imei, pk.electric_quantity, now_time)
 
         # Ack
         ack = terminal_packets.ReportTerminalStatusAck(header.sn, 0)
@@ -634,7 +636,7 @@ class TerminalHandler:
             logger.warning("imei:%s uid not find", imei)
 
     @gen.coroutine
-    def _SendOnlineMsg(self, imei):
+    def _SendOnlineMsg(self, imei, battery, datetime):
         pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
                                                    device_imei=imei)
         if pet_info is not None:
@@ -642,7 +644,7 @@ class TerminalHandler:
             if uid is None:
                 logger.warning("imei:%s uid not find", imei)
                 return
-            msg = push_msg.new_device_on_line_msg()
+            msg = push_msg.new_device_on_line_msg(battery, utils.date2str(datetime))
             try:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,

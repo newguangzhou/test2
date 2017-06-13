@@ -53,24 +53,30 @@ class TerminalHandler:
         self.pet_dao = kwargs.get("pet_dao", None)
         self.msg_rpc = kwargs.get("msg_rpc", None)
 
-        self.terminal_proto_ios = {}
+        #self.terminal_proto_ios = {}
+
+        self.terminal_proto_guarder = {}
 
     def OnOpen(self, conn_id):
         conn = self.conn_mgr.GetConn(conn_id)
         logger.info("Terminal conn is opened, id=%u peer=%s", conn_id,
                     conn.GetPeer())
-
-        self.terminal_proto_ios[conn_id] = terminal_proto.ProtoIO()
+        proto_io = terminal_proto.ProtoIO()
+        self.terminal_proto_guarder[conn_id] = terminal_proto.ProtoIoGuarder(
+            proto_io)
         return True
 
     @gen.coroutine
     def OnData(self, conn_id, data):
         conn = self.conn_mgr.GetConn(conn_id)
-        # Get proto io
-        proto_io = self.terminal_proto_ios[conn_id]
 
         logger.debug("onData conn_id:%d data:%s hex_data:%s ", conn_id, data,
                      data.encode('hex'))
+        guarder = self.terminal_proto_guarder.get(conn_id, None)
+        if guarder is None:
+            return
+        proto_io = yield guarder.get()
+
         # Check buffer
         if proto_io.read_buff.GetSize() + len(
                 data) >= _TERMINAL_CONN_MAX_BUFFER_SIZE:
@@ -80,8 +86,8 @@ class TerminalHandler:
             conn.close()
             return
             # Write to buffer
-        proto_io.read_buff.AppendData(data)
-
+        proto_io.read_buff.AppendData2(data)
+        #logger.debug("dump1:%s", proto_io.read_buff.Dump())
         # Read packets
         try:
             while True:
@@ -142,13 +148,11 @@ class TerminalHandler:
                     conn.close()
                     return
         except Exception, e:
-            logger.exception(e)
+            logger.exception("id=%u peer=%s,Exception:%s", conn_id, conn.GetPeer(), e)
             conn.close()
             return
 
-        # Rewind buffer
-        proto_io.read_buff.Rewind()
-
+        guarder.release()
         return
 
     def OnError(self, conn_id, errno):
@@ -165,8 +169,8 @@ class TerminalHandler:
             logger.warning("Terminal conn is closed, info=\"%s\"",
                            conn.GetPeer())
 
-        if self.terminal_proto_ios.has_key(conn_id):
-            del self.terminal_proto_ios[conn_id]
+        if self.terminal_proto_guarder.has_key(conn_id):
+            del self.terminal_proto_guarder[conn_id]
 
         self._broadcastor.un_register_conn(conn_id)
 

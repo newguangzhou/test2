@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """ 
 @biref simple buffer io implemet
 @file buffer_io.py
@@ -22,42 +21,18 @@ class BufferIO:
         self.sio.write(data)
         self.sio.seek(pos)
 
-    def GetLine(self, *args, **kwargs):
-        pos = self.sio.tell()
-        line = self.sio.readline()
-        if not line.endswith("\r\n"):
-            self.sio.seek(pos)
-            return None
-        else:
-            return line
-
-    def GetLines(self, *args, **kwargs):
-        count = 1
-        if len(args) > 0:
-            count = args[0]
-        else:
-            count = kwargs["count"]
-
-        pos = self.sio.tell()
-        lines = []
-        for i in range(0, count):
-            tmp = self.sio.readline()
-            if not tmp.endswith("\r\n"):
-                break
-            else:
-                lines.append(tmp)
-        if len(lines) != count:
-            self.sio.seek(pos)
-            return None
-        else:
-            return lines
+    def AppendData2(self, data):
+        remain = self.sio.read()
+        self.sio.truncate(0)
+        self.sio.write(remain)
+        self.sio.write(data)
+        self.sio.seek(0)
 
     def GetSize(self):
         pos = self.sio.tell()
         self.sio.seek(-1, 2)
         ret = self.sio.tell()
         self.sio.seek(pos)
-
         if ret > 0:
             return (ret - pos) + 1
         else:
@@ -97,3 +72,5 @@ class BufferIO:
     def Read(self, count):
         return self.sio.read(count)
 
+    def Dump(self):
+        return self.sio.getvalue()

@@ -4,12 +4,13 @@ import buffer_io
 import datetime
 import time
 import pdb
-
+from tornado import gen
+from tornado.locks import Lock
 INTEGER_FIELD = 1
 STRING_FIELD = 2
 DATE_FIELD = 3
 FLOAT_FIELD = 4
-
+import logging
 SIMPLE_HEART = "[]"
 _field_tps = set([INTEGER_FIELD, STRING_FIELD, DATE_FIELD, FLOAT_FIELD])
 
@@ -196,7 +197,6 @@ class ProtoIO:
     """
 
     def Read(self):
-        #pdb.set_trace()
 
         pos = self.read_buff.GetPos()
 
@@ -225,20 +225,22 @@ class ProtoIO:
     """
 
     def _ReadHeader(self):
-        #pdb.set_trace()
+        # pdb.set_trace()
 
         pos = self.read_buff.GetPos()
         pkData = self.read_buff.Read(40)
         if len(pkData) < 2:
+            self.read_buff.Seek(pos)
             return None
 
         if pkData[0] != "[":
-            raise ProtoException("Invalid terminal packet")
+            raise ProtoException("Invalid terminal packet:%s" % (pkData))
         if pkData[1] == "]":
             self.read_buff.Seek(pos + 2)
             return SIMPLE_HEART
 
         if len(pkData) < 25:
+            self.read_buff.Seek(pos)
             return None
 
         sn = pkData[1:19]
@@ -252,6 +254,7 @@ class ProtoIO:
             tmp = pkData[24:]
         i = tmp.find(",")
         if i < 0:
+            self.read_buff.Seek(pos)
             return None
 
         content_length = int(tmp[:i])
@@ -264,3 +267,17 @@ class ProtoIO:
         ret.content_length = content_length
 
         return ret
+
+
+class ProtoIoGuarder:
+    def __init__(self, proto_io):
+        self.lock = Lock()
+        self.proto_io = proto_io
+
+    @gen.coroutine
+    def get(self):
+        yield self.lock.acquire()
+        raise gen.Return(self.proto_io)
+
+    def release(self):
+        self.lock.release()

@@ -48,7 +48,7 @@ class AddPetInfo(HelperHandler):
             st = yield self.check_token("OnAddPetInfo", res, uid, token)
             if not st:
                 return
-            # imei = self.get_argument("imei",None)
+            imei = self.get_argument("imei",None)
             target_energy = float(self.get_argument("target_energy",0))
             nick = self.get_argument("nick", None)
             logo_url = self.get_argument("logo_url", None)
@@ -80,29 +80,9 @@ class AddPetInfo(HelperHandler):
             self.res_and_fini(res)
             return
 
-        try:
-            device_info = yield pet_dao.get_user_pets(uid, ("device_imei",))
-            if device_info is None:
-                logging.warning("AddPetInfo, can't find imei, %s", self.dump_req())
-                res["status"] = error_codes.EC_DEVICE_NOT_EXIST
-                self.res_and_fini(res)
-                return
-        except Exception,e:
-            logging.warning("AddPetInfo, error, %s", self.dump_req())
-            res["status"] = error_codes.EC_SYS_ERROR
-            self.res_and_fini(res)
-            return
-        imei = device_info.get("device_imei",None)
-        if imei is None:
-            logging.warning("AddPetInfo, can't find imei, %s", self.dump_req())
-            res["status"] = error_codes.EC_DEVICE_NOT_EXIST
-            self.res_and_fini(res)
-            return
-
         pet_id = yield gid_rpc.alloc_pet_gid()
-        info = {"pet_type_id": pet_type_id}
+        info = {"pet_type_id": pet_type_id,"pet_id":pet_id}
         info["target_energy"] = target_energy
-        info["device_imei"] = imei
         if nick is not None:
             info["nick"] = nick
         if logo_url is not None:
@@ -118,11 +98,29 @@ class AddPetInfo(HelperHandler):
         if weight is not None:
             info["weight"] = weight
 
+        # get imei
+        try:
+
+            pet_info = yield pet_dao.get_user_pets(uid, ("device_imei",))
+            if pet_info is not None:
+                imei = pet_info["device_imei"]
+                if imei is None:
+                    logging.warning("AddPetInfo, error, %s", self.dump_req())
+                    res["status"] = error_codes.EC_DEVICE_NOT_EXIST
+                    self.res_and_fini(res)
+                    return
+        except Exception, e:
+            logging.warning("AddPetInfo, error, %s %s", self.dump_req(),
+                            self.dump_exp(e))
+            res["status"] = error_codes.EC_SYS_ERROR
+            self.res_and_fini(res)
+            return
+
         # 发给终端
         if weight is not None and sex is not None:
             device_imei = imei
             if device_imei is None:
-                logging.warning("UpdatePetInfo, not found, %s",
+                logging.warning("AddPetInfo, not found, %s",
                                 self.dump_req())
                 return
             msg = terminal_commands.PetLocation()
@@ -158,21 +156,6 @@ class AddPetInfo(HelperHandler):
             self.res_and_fini(res)
             return
         res["pet_id"] = pet_id
-
-        # if reboot:
-        #     try:
-        #         terminal_rpc.send_j03(imei, "020")
-        #     except Exception, e:
-        #         logging.warning("reboot device in add_pet_info, error, %s %s",
-        #                 self.dump_req(), str(e))
-        #         res["status"] = error_codes.EC_SYS_ERROR
-        #         self.res_and_fini(res)
-        # else:
-        # try:
-        #     yield terminal_rpc.send_j13(imei)
-        # except Exception, e:
-        #     logging.warning("get wifi list in add_pet_info, error, %s %s",
-        #             self.dump_req(), str(e))
 
         # 成功
         logging.debug("AddPetInfo, success %s", self.dump_req())

@@ -231,6 +231,7 @@ class PetMongoDAO(MongoDAOBase):
             row["step_count"] = sport_data["step_count"]
             row["distance"] = sport_data["distance"]
             row["calorie"] = sport_data["calorie"]
+            row["target_energy"] = sport_data["target_energy"]
             tb.update_one({"pet_id": pet_id,
                            "diary": sport_data["diary"]}, {"$set": row},
                           upsert=True)
@@ -292,11 +293,7 @@ class PetMongoDAO(MongoDAOBase):
     def add_common_wifi_info(self, pet_id, common_wifi_info):
         def _callback(mongo_client, **kwargs):
             tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_INFOS_TB]
-            push_all_dict = {}
-            info = tb.find
-            if common_wifi_info:
-                push_all_dict["common_wifi"] = common_wifi_info
-            tb.update_one({"pet_id": pet_id}, {"$set": push_all_dict})
+            tb.update_one({"pet_id": pet_id}, {"$set": {"common_wifi":common_wifi_info}})
 
         yield self.submit(_callback)
 

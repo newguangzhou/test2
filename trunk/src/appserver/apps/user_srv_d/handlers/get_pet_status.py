@@ -41,7 +41,9 @@ class GetPetStatusInfo(HelperHandler):
             return
 
         try:
-
+            st = yield self.check_token("OnGetPetStatusInfo", res, uid, token)
+            if not st:
+                return
             info = yield pet_dao.get_user_pets(uid, ("pet_id",
                                                      "pet_status", ))
             if not info:

@@ -3,6 +3,7 @@
 import json
 import traceback
 import logging
+import error_codes
 import tornado.web
 from type_defines import *
 logger = logging.getLogger(__name__)
@@ -51,6 +52,8 @@ class XMQWebHandler(tornado.web.RequestHandler):
         return "exp=\"%s\" trace=\"%s\"" % (str(e), traceback.format_exc())
 
     def res_and_fini(self, res):
+        # if res["status"] == error_codes.EC_LOGIN_IN_OTHER_PHONE:
+            # res["x_os_name"] =
         data = json.dumps(res, ensure_ascii=False, encoding='utf8')
         self.write(data)
         self.finish()
@@ -73,6 +76,5 @@ class XMQWebHandler(tornado.web.RequestHandler):
 
         ret["platform"] = platform
         ret["app_version"] = self.request.headers.get(HTTP_HD_APPVERSION, "")
-        ret["device_model"] = self.request.headers.get(HTTP_HD_DEVICE_MODEL,
-                                                       "")
+        ret["device_model"] = self.request.headers.get(HTTP_HD_DEVICE_MODEL, "")
         return ret

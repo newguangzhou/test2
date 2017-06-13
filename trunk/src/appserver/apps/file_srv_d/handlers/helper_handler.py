@@ -79,6 +79,7 @@ class HelperHandler(xmq_web_handler.XMQWebHandler):
             res["status"] = ec
             if ec == error_codes.EC_LOGIN_IN_OTHER_PHONE:
                 res["msg"] = "您的账号已经在另一台手机登陆"
+                res["x_os_name"] = info["device_model"]
             self.res_and_fini(res)
             raise gen.Return(False)
         raise gen.Return(True)

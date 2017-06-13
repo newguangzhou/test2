@@ -34,9 +34,9 @@ class SetHomeWifi(HelperHandler):
         try:
             uid = int(self.get_argument("uid"))
             token = self.get_argument("token")
-            #st = yield self.check_token("SetSimInfo", res, uid, token)
-            #if not st:
-            #    return
+            st = yield self.check_token("SetHomeWifi", res, uid, token)
+            if not st:
+               return
             wifi_ssid = self.get_argument("wifi_ssid")
             wifi_bssid = self.get_argument("wifi_bssid")
             # wifi_power = self.get_argument("wifi_power")

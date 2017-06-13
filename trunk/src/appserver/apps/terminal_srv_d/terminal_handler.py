@@ -262,7 +262,7 @@ class TerminalHandler:
 
         else:
             logger.warning("imei:%s location fail", pk.imei)
-        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid", "home_wifi", "common_wifi"),
+        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid", "home_wifi", "common_wifi", "target_energy"),
                                                    device_imei=pk.imei)
         if pet_info is None:
             logger.error("imei:%s pk:%s not found pet_info", pk, str_pk)
@@ -292,18 +292,19 @@ class TerminalHandler:
                                                         pass_through=1)
                     except Exception, e:
                         logger.exception(e)
-
+        now_time = datetime.datetime.now()
         yield self.new_device_dao.update_device_info(
             pk.imei,
             status=pk.status,
             electric_quantity=pk.electric_quantity,
-            j01_repoter_date = datetime.datetime.now())
+            j01_repoter_date = now_time)
 
+        battery_status = 0
         if pk.electric_quantity < LOW_BATTERY:
-            if_ultra = False
+            battery_status = 1
             if pk.electric_quantity < ULTRA_LOW_BATTERY:
-                if_ultra = True
-            yield self._SendBatteryMsg(pk.imei, pk.electric_quantity, if_ultra)
+                battery_status = 2
+        yield self._SendBatteryMsg(pk.imei, pk.electric_quantity, battery_status, now_time)
 
         if pet_info is not None:
             sport_info = {}
@@ -312,7 +313,7 @@ class TerminalHandler:
             sport_info["step_count"] = pk.step_count
             sport_info["distance"] = pk.distance
             sport_info["calorie"] = pk.calorie
-
+            sport_info["target_energy"] = pet_info.get("target_energy",0)
             yield self.pet_dao.add_sport_info(pet_info["pet_id"], pk.imei,
                                               sport_info)
 
@@ -325,7 +326,7 @@ class TerminalHandler:
                 if uid is not None:
                     if not utils.is_in_home(home_wifi, new_common_wifi, wifi_info):
                         logging.warning("pet is not home!")
-                        self._SendPetNoHomeMsg()
+                        self._SendPetNoHomeMsg(pk.imei)
                 yield self.pet_dao.add_common_wifi_info(pet_info["pet_id"],
                                                         new_common_wifi)
 
@@ -407,7 +408,7 @@ class TerminalHandler:
         raise gen.Return(True)
 
     @gen.coroutine
-    def _SendBatteryMsg(self, imei, battery, if_ultra):
+    def _SendBatteryMsg(self, imei, battery, battery_statue, datetime):
         pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
                                                    device_imei=imei)
         if pet_info is not None:
@@ -415,7 +416,7 @@ class TerminalHandler:
             if uid is None:
                 logger.warning("imei:%s uid not find", imei)
                 return
-            msg = push_msg.new_low_battery_msg(battery, if_ultra)
+            msg = push_msg.new_now_battery_msg(utils.date2str(datetime), battery, battery_statue)
             try:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,
@@ -447,13 +448,15 @@ class TerminalHandler:
             software_version=unicode(pk.software_version),
             electric_quantity=pk.electric_quantity)
 
+        now_time = datetime.datetime.now()
+        battery_status = 0
         if pk.electric_quantity < LOW_BATTERY:
-            if_ultra = False
+            battery_status = 1
             if pk.electric_quantity < ULTRA_LOW_BATTERY:
-                if_ultra = True
-            yield self._SendBatteryMsg(pk.imei, pk.electric_quantity, if_ultra)
+                battery_status = 2
+        yield self._SendBatteryMsg(pk.imei, pk.electric_quantity, battery_status, now_time)
 
-        yield self._SendOnlineMsg(pk.imei)
+        yield self._SendOnlineMsg(pk.imei, pk.electric_quantity, now_time)
 
         # Ack
         ack = terminal_packets.ReportTerminalStatusAck(header.sn, 0)
@@ -603,57 +606,58 @@ class TerminalHandler:
             status=pk.status,
             electric_quantity=pk.electric_quantity)
 
-        sport_info = {}
-        sport_info["diary"] = datetime.datetime.combine(datetime.date.today(),
-                                                        datetime.time.min)
-        sport_info["step_count"] = pk.step_count
-        sport_info["distance"] = pk.distance
-        sport_info["calorie"] = pk.calorie
-
-        yield self.new_device_dao.add_sport_info(pk.imei, sport_info)
+        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid", "home_wifi", "common_wifi", "target_energy"),
+                                                   device_imei=pk.imei)
+        if pet_info is not None:
+            sport_info = {}
+            sport_info["diary"] = datetime.datetime.combine(datetime.date.today(),
+                                                            datetime.time.min)
+            sport_info["step_count"] = pk.step_count
+            sport_info["distance"] = pk.distance
+            sport_info["calorie"] = pk.calorie
+            sport_info["target_energy"] = pet_info.get("target_energy",0)
+            yield self.new_device_dao.add_sport_info(pk.imei, sport_info)
         raise gen.Return(True)
 
     @gen.coroutine
-    def _SendPetNoHomeMsg(self, imeis):
-        for imei in imeis:
-            pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
-                                                       device_imei=imei)
-            if pet_info is not None:
-                uid = pet_info.get("uid", None)
-                if uid is None:
-                    logger.warning("imei:%s uid not find", imei)
-                    continue
-                msg = push_msg.new_pet_not_home_msg()
-                try:
-                    yield self.msg_rpc.push_android(uids=str(uid),
-                                                    payload=msg,
-                                                    pass_through=1)
-                except Exception, e:
-                    logger.exception(e)
-
-            else:
+    def _SendPetNoHomeMsg(self, imei):
+        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
+                                                   device_imei=imei)
+        if pet_info is not None:
+            uid = pet_info.get("uid", None)
+            if uid is None:
                 logger.warning("imei:%s uid not find", imei)
+                return
+            msg = push_msg.new_pet_not_home_msg()
+            try:
+                yield self.msg_rpc.push_android(uids=str(uid),
+                                                payload=msg,
+                                                pass_through=1)
+            except Exception, e:
+                logger.exception(e)
+
+        else:
+            logger.warning("imei:%s uid not find", imei)
 
     @gen.coroutine
-    def _SendOnlineMsg(self, imeis):
-        for imei in imeis:
-            pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
-                                                       device_imei=imei)
-            if pet_info is not None:
-                uid = pet_info.get("uid", None)
-                if uid is None:
-                    logger.warning("imei:%s uid not find", imei)
-                    continue
-                msg = push_msg.new_device_on_line_msg()
-                try:
-                    yield self.msg_rpc.push_android(uids=str(uid),
-                                                    payload=msg,
-                                                    pass_through=1)
-                except Exception, e:
-                    logger.exception(e)
-
-            else:
+    def _SendOnlineMsg(self, imei, battery, datetime):
+        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
+                                                   device_imei=imei)
+        if pet_info is not None:
+            uid = pet_info.get("uid", None)
+            if uid is None:
                 logger.warning("imei:%s uid not find", imei)
+                return
+            msg = push_msg.new_device_on_line_msg(battery, utils.date2str(datetime))
+            try:
+                yield self.msg_rpc.push_android(uids=str(uid),
+                                                payload=msg,
+                                                pass_through=1)
+            except Exception, e:
+                logger.exception(e)
+
+        else:
+            logger.warning("imei:%s uid not find", imei)
 
     @gen.coroutine
     def _OnImeiExpires(self, imeis):

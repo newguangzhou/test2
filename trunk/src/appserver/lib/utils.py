@@ -254,6 +254,8 @@ def is_imei_valide(imei):
 
 def is_in_home(home_wifi,common_wifi,wifi_list):
     wifi_list_names = []
+    if home_wifi is None:
+        return True
     for item in wifi_list:
         wifi_list_names.append(item["wifi_ssid"])
         if home_wifi is not None and home_wifi[
@@ -280,7 +282,7 @@ def get_new_common_wifi(common_wifi,wifi_info,home_wifi):
     home_wifi_bssid = home_wifi["wifi_bssid"]
     for item in wifi_info:
         if item["wifi_bssid"] == home_wifi_bssid:
-            home_wifi_power = int(item["deep"])
+            home_wifi_power = int(item.get("deep",-100))
             break
 
     if common_wifi is None:
@@ -297,13 +299,13 @@ def get_new_common_wifi(common_wifi,wifi_info,home_wifi):
                 item_cal = alpha * home_wifi_power+ beta * item_power
                 item["cal"] = item_cal
 
-    if home_wifi_power is None:
+    if home_wifi_power is None or home_wifi_power < -99:
         return common_wifi
 
 
     create_time = datetime.datetime.now()
     for item in wifi_info:
-        item_power = int(item["deep"])
+        item_power = int(item.get("deep",-100))
         item_cal = alpha * home_wifi_power+ beta * item_power
         item["cal"] = item_cal
         item["create_time"] = create_time

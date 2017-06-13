@@ -34,8 +34,8 @@ class PetLocation2(HelperHandler):
             return
 
         # 检查token
-        #st = yield self.check_token("PetLocation2", res, uid, token)
-        #if not st:
+        # st = yield self.check_token("PetLocation2", res, uid, token)
+        # if not st:
         #    return
 
         try:

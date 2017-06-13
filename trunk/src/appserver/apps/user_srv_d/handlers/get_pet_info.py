@@ -58,6 +58,8 @@ class GetPetInfo(HelperHandler):
                     res[k] = utils.date2str(v, True)
                 elif k == "weight":
                     res[k] = "%.2f" % v
+                elif k== "target_energy":
+                    res[k] = "%f" % v
                 else:
                     res[k] = v
 

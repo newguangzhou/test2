@@ -197,6 +197,7 @@ class ProtoIO:
     """
 
     def Read(self):
+        #pdb.set_trace()
 
         pos = self.read_buff.GetPos()
 
@@ -213,7 +214,7 @@ class ProtoIO:
             body = self.read_buff.Read(header.content_length)
             end_tag = self.read_buff.Read(1)
             if end_tag != "]":
-                raise ProtoException("Invalid terminal packet")
+                raise ProtoException("Invalid terminal packet in Read")
         if body is None:
             self.read_buff.Seek(pos)
             header = None

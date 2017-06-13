@@ -260,7 +260,8 @@ EC_NODATA = 32                                      #没有数据
 参数:           uid
                 token
                 pet_id
-                target_step 步数    
+                target_step 步数
+                target_energy  卡路里
 返回:           {
                         status:状态，可能的只有:
                             EC_SUCCESS

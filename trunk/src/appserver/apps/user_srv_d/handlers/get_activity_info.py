@@ -35,9 +35,9 @@ class GetActivityInfo(HelperHandler):
         try:
             uid = int(self.get_argument("uid"))
             token = self.get_argument("token")
-            #st = yield self.check_token("GetActivityInfo", res, uid, token)
-            #if not st:
-            #    return
+            st = yield self.check_token("GetActivityInfo", res, uid, token)
+            if not st:
+               return
 
             pet_id = int(self.get_argument("pet_id", -1))
             start_date = self.get_argument("start_date", "2015-04-12")
@@ -63,13 +63,18 @@ class GetActivityInfo(HelperHandler):
                 print item
                 date_data = {}
                 date_data["date"] = utils.date2str(item["diary"].date())
-                date_data["target_amount"] = 1000
+                date_data["target_amount"] = item.get("target_energy",0)
                 #date_data["reality_amount"] = '{:.1f}'.format(item["calorie"] /1000)
                 date_data["reality_amount"] = int(item["calorie"] / 1000)
-
-                date_data["percentage"] = int(
+                percentage = 0
+                if date_data["target_amount"] <= 0:
+                    percentage = 100
+                else:
+                    percentage = int(
                     (date_data["reality_amount"] / date_data["target_amount"])
                     * 100)
+                date_data["percentage"] = percentage
+                date_data["target_amount"] = "%.2f" % date_data["target_amount"]
                 res["data"].append(date_data)
         # 成功
         logging.debug("GetActivityInfo, success %s", self.dump_req())

@@ -54,7 +54,8 @@ webapp = Application(
     [
         (r"/msg/send_sms", handlers.SendSMS),
         (r"/msg/send_verify_code", handlers.SendVerify),
-        (r"/msg/push_android", handlers.PushAndrod)
+        (r"/msg/push_android", handlers.PushAndrod),
+        (r"/msg/push_all", handlers.PushAll)
     ],
     autoreload=False,
     pyloader=pyloader,

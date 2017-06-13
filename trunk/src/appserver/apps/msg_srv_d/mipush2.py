@@ -29,3 +29,16 @@ class MiPush2:
             message = message.title(title).description(desc)
         recv = self._sender.send_to_alias(message.message_dict(), str_uids)
         logging.debug("on send_to_alias_android recv:%s", recv)
+
+
+    def send_to_alias_ios(self,
+                              str_uids,
+                              desc,
+                              extras):
+        message = PushMessage().description(desc) \
+                                .sound_url("default") \
+                                .badge(1) \
+                                .category("action") \
+                                .extra(extras)
+        recv = self._sender.send_to_alias(message.message_dict_ios(), str_uids)
+        logging.debug("on send_to_alias_ios recv:%s", recv)

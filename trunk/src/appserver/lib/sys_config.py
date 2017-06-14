@@ -46,7 +46,7 @@ _CONFIG_ITEMS = {  # Key is item key, value is (类型，默认值，验证器)
     SC_FILE_BASE_URL: (str, "http://120.24.152.121:9700/file/get", None),
     SC_VERIFY_CODE_LEN: (int, 6, None),
     SC_VERIFY_CODE_FREQ_SECS: (int, 60, None),
-    SC_VERIFY_CODE_FREQ_DAY_COUNT: (int, 5, None),
+    SC_VERIFY_CODE_FREQ_DAY_COUNT: (int, 20, None),
     SC_VERIFY_CODE_EXPIRE_SECS: (int, 1800, None),
     SC_TOKEN_EXPIRE_SECS: (int, 17280000, None),
     SC_LOGIN_FREQ_INTERVAL_SECS: (int, 120, None),

@@ -47,6 +47,7 @@ def new_now_battery_msg(datetime, battery, battery_status):
                     "datetime":datetime}}
     return json.dumps(msg, ensure_ascii=False, encoding="utf8")
 
+
 def new_remot_login_msg():
     msg = {"type": "user",
            "signal": "remote-login",

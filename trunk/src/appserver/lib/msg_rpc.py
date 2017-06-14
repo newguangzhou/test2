@@ -30,7 +30,7 @@ class MsgRPC:
             "push": "%s/msg/push" % (msg_url, ),
             "push_all": "%s/msg/push_all" % (msg_url, ),
             "push_android": "%s/msg/push_android" % (msg_url, ),
-            "push_ios": "%s/msg/push_ios" % (msg_url,),
+            "push_ios": "%s/msg/push_ios" % (msg_url, )
         }
 
     @gen.coroutine

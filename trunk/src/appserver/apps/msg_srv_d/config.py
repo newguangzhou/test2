@@ -15,6 +15,7 @@ class Config:
         self.default_push_title = "小毛球"
         self.mipush_host = "api.xmpush.xiaomi.com"
         self.mipush_appsecret = "aQLLX8h129sPKm3NeY9lcA=="
+        self.mipush_appsecret_ios = "Cy4/cc5TazG663ClQpkgJg=="
         self.mipush_pkg_name = "com.xiaomaoqiu.pet"
         self.dayu_appkey = "23566149"
         self.dayu_secret = "f95d87510975317c9539d858c010f5a0"

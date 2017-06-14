@@ -24,7 +24,7 @@ class PushIOS(xmq_web_handler.XMQWebHandler):
 
     @gen.coroutine
     def _deal_request(self):
-        logging.debug("PushAndrod, %s", self.dump_req())
+        logging.debug("PushIOS, %s", self.dump_req())
         self.set_header("Content-Type", "application/json; charset=utf-8")
         res = {"status": error_codes.EC_SUCCESS}
         uids = self.get_argument("uids", "")

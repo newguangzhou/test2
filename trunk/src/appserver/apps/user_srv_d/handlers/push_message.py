@@ -49,7 +49,7 @@ class PushMessageCmd(HelperHandler):
             yield msg_rpc.push_ios(uids=str(uid),
                                             payload=msg)
         except Exception, e:
-            logging.warning("OnPushMessage, invalid args, %s %s",
+            logging.warning("OnPushMessage, error, %s %s",
                             self.dump_req(), self.dump_exp(e))
             res["status"] = error_codes.EC_SYS_ERROR
             self.res_and_fini(res)

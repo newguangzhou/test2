@@ -7,6 +7,7 @@ from APISender import APISender
 from base.APIMessage import *
 from APITools import *
 from APISubscribe import *
+import json
 import logging
 
 
@@ -37,10 +38,11 @@ class MiPush2:
                               str_uids,
                               desc,
                               extras):
+        dict = json.loads(extras)
         message = PushMessage().description(desc) \
                                 .sound_url("default") \
                                 .badge(1) \
                                 .category("action") \
-                                .extra(extras)
+                                .extra(dict)
         recv = self._sender.send_to_alias(message.message_dict_ios(), str_uids)
         logging.debug("on send_to_alias_ios recv:%s", recv)

@@ -19,6 +19,7 @@ class MiPush2:
         self._app_pkg_name = app_pkg_name
         self._debug_mode = debug_mode
         self._sender = APISender(self._appsecret)
+        self._sender1 = APISender("Cy4/cc5TazG663ClQpkgJg==")
 
     def send_to_alias_android(self,
                               str_uids,
@@ -43,5 +44,5 @@ class MiPush2:
         message = PushMessage().description("test_desc").sound_url(
                                 "default").badge(1).category(
                                 "action").extra(dict).title("test_title")
-        recv = self._sender.send(message.message_dict_ios(), str_uids)
+        recv = self._sender1.send_to_alias(message.message_dict_ios(), str_uids)
         logging.debug("on send_to_alias_ios recv:%s", recv)

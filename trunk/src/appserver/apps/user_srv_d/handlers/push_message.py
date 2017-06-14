@@ -49,7 +49,7 @@ class PushMessageCmd(HelperHandler):
             #yield msg_rpc.push_android(uids=str(uid),
                                             # payload=msg,
                                             # pass_through=1)
-            yield msg_rpc.push_all("test", "testDes")
+            yield msg_rpc.push_all("test", "testDes", "data")
         except Exception, e:
             logging.warning("OnPushMessage, invalid args, %s %s",
                             self.dump_req(), self.dump_exp(e))

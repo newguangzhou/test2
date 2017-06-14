@@ -46,3 +46,10 @@ def new_now_battery_msg(datetime, battery, battery_status):
            "data": {"battery_level": battery,
                     "datetime":datetime}}
     return json.dumps(msg, ensure_ascii=False, encoding="utf8")
+
+def new_remot_login_msg():
+    msg = {"type": "user",
+           "signal": "remote-login",
+           "data": {"remote_login_time": "2017",
+                    "X_OS_Name": "xiaominote"}}
+    return json.dumps(msg, ensure_ascii=False, encoding="utf8")

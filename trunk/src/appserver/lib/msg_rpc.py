@@ -74,8 +74,8 @@ class MsgRPC:
         raise gen.Return(ret)
 
     @gen.coroutine
-    def push_all(self, title, desc):
-        ret = yield self.call("push_all", title=title, desc=desc)
+    def push_all(self, title, desc, extras):
+        ret = yield self.call("push_all", title=title, desc=desc, data = extras)
         raise gen.Return(ret)
 
     def gen_push_data(self, type, **extras):

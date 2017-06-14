@@ -33,7 +33,7 @@ class PushIOS(xmq_web_handler.XMQWebHandler):
         else:
             desc = self.get_str_arg("desc")
             payload = self.get_str_arg("payload")
-            yield self.send_to_alias_android(uids, desc, payload)
+            yield self.send_to_alias_ios(uids, desc, payload)
         self.res_and_fini(res)
         return
 

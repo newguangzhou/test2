@@ -32,7 +32,7 @@ class PushIOS(xmq_web_handler.XMQWebHandler):
             res["status"] = error_codes.EC_INVALID_ARGS
         else:
             desc = self.get_str_arg("desc")
-            payload = self.get_str_arg("payload")
+            payload = self.get_argument("payload", "{}")
             yield self.send_to_alias_ios(uids, desc, payload)
         self.res_and_fini(res)
         return

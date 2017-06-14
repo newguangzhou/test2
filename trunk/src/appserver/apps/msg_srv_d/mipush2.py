@@ -39,7 +39,8 @@ class MiPush2:
                               desc,
                               extras):
         dict = json.loads(extras)
-        message = PushMessage().description(desc) \
+        logging.info("on send_to_alias_ios:desc:%s,dict:%s", desc, extras)
+        message = PushMessage().description("test_desc") \
                                 .sound_url("default") \
                                 .badge(1) \
                                 .category("action") \

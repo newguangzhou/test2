@@ -15,7 +15,7 @@ class MiPush2:
     def __init__(self, appsecret, app_pkg_name, debug_mode):
         # Constants.use_official()
         # Constants.use_sandbox()
-        self._appsecret = appsecret
+        self._appsecret = "Cy4/cc5TazG663ClQpkgJg=="
         self._app_pkg_name = app_pkg_name
         self._debug_mode = debug_mode
         self._sender = APISender(self._appsecret)

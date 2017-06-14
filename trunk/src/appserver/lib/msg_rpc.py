@@ -30,6 +30,7 @@ class MsgRPC:
             "push": "%s/msg/push" % (msg_url, ),
             "push_all": "%s/msg/push_all" % (msg_url, ),
             "push_android": "%s/msg/push_android" % (msg_url, ),
+            "push_ios": "%s/msg/push_ios" % (msg_url,),
         }
 
     @gen.coroutine
@@ -63,6 +64,9 @@ class MsgRPC:
     def push_android(self, **args):
         return self.call("push_android",
                               **args)
+
+    def push_ios(self, **args):
+        return self.call("push_ios", **args)
 
     @gen.coroutine
     def push(self, uid, title, desc):

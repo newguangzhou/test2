@@ -18,6 +18,7 @@ class PetLocation(HelperHandler):
 
         logging.debug("OnPetLocation, %s", self.dump_req())
         self.set_header("Content-Type", "application/json; charset=utf-8")
+        terminal_rpc = self.settings["terminal_rpc"]
         pet_dao = self.settings["pet_dao"]
         uid = None
         token = None
@@ -47,6 +48,16 @@ class PetLocation(HelperHandler):
                 res["status"] = error_codes.EC_PET_NOT_EXIST
                 self.res_and_fini(res)
                 return
+            imei = info["device_imei"]
+            if imei is None:
+                logging.warning("OnPetLocation, not found, %s",
+                                self.dump_req())
+                res["status"] = error_codes.EC_PET_NOT_EXIST
+                self.res_and_fini(res)
+                return
+            else:
+                terminal_rpc.send_j13(imei)
+
             res_info = yield pet_dao.get_location_infos(pet_id)
             if res_info is not None:
                 length = res_info.count()

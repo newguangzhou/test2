@@ -39,9 +39,9 @@ class MiPush2:
                               desc,
                               extras):
         dict = json.loads(extras)
-        logging.info("on send_to_alias_ios:desc:%s,dict:%s", desc, extras)
+        logging.info("on send_%s,dict:%s", desc, extras)
         message = PushMessage().description("test_desc").sound_url(
                                 "default").badge(1).category(
-                                "action").extra(dict)
+                                "action").extra(dict).title("test_title")
         recv = self._sender.send(message.message_dict_ios(), str_uids)
         logging.debug("on send_to_alias_ios recv:%s", recv)

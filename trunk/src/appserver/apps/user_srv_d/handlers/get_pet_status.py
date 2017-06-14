@@ -56,7 +56,7 @@ class GetPetStatusInfo(HelperHandler):
                 res["status"] = error_codes.EC_PET_NOT_EXIST
                 self.res_and_fini(res)
                 return
-            res["pet_status"] = info["pet_status"]
+            res["pet_status"] = info.get("pet_status",0)
         except Exception, e:
             logging.error("GetPetStatusInfo, error, %s %s", self.dump_req(),
                           self.dump_exp(e))

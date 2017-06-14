@@ -71,7 +71,7 @@ class GetActivityInfo(HelperHandler):
                 date_data["reality_amount"] = int(item["calorie"] / 1000)
                 percentage = 0
                 if date_data["target_amount"] <= 0:
-                    percentage = 100
+                    percentage = 0
                 else:
                     percentage = int(
                     (date_data["reality_amount"] / date_data["target_amount"])

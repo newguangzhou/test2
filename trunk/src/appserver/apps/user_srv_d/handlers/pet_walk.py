@@ -64,7 +64,7 @@ class PetWalk(HelperHandler):
         pet_status = 1 if walk_status == 1 else 0
 
         try:
-            yield pet_dao.update_pet_info(pet_id, pet_status=pet_status)
+            yield pet_dao.update_pet_info(pet_id, pet_status=pet_status, pet_no_search_status = pet_status)
         except Exception, e:
             logging.warning("OnPetWalk, error, %s %s", self.dump_req(), self.dump_exp(e))
             res["status"] = error_codes.EC_SYS_ERROR

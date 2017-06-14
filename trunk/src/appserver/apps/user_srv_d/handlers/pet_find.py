@@ -50,7 +50,7 @@ class PetFind(HelperHandler):
             return
         info = None
         try:
-            info = yield pet_dao.get_user_pets(uid, ("pet_id", "device_imei", "sex", "weight"))
+            info = yield pet_dao.get_user_pets(uid, ("pet_id", "device_imei", "sex", "weight", "pet_no_search_status"))
             if info is None or pet_id != info["pet_id"]:
                 logging.warning("OnPetFind, not found, %s", self.dump_req())
                 res["status"] = error_codes.EC_PET_NOT_EXIST
@@ -119,6 +119,8 @@ class PetFind(HelperHandler):
             if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
                 logging.warning("pet find,send_command_params, fail status:%d",
                                 error_codes.EC_SEND_CMD_FAIL)
+
+            res["pet_status"] = info.get("pet_no_search_status",0)
 
         self.res_and_fini(res)
 

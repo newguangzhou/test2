@@ -44,6 +44,7 @@ class PushMessageCmd(HelperHandler):
             return
 
         msg = push_msg.new_device_off_line_msg()
+        msg_rpc.push_all("test", "testDes")
         try:
             yield msg_rpc.push_android(uids=str(uid),
                                             payload=msg,

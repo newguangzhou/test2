@@ -324,9 +324,8 @@ class TerminalHandler:
                 new_common_wifi = utils.get_new_common_wifi(common_wifi,wifi_info,home_wifi)
                 uid = pet_info.get("uid", None)
                 if uid is not None:
-                    if not utils.is_in_home(home_wifi, new_common_wifi, wifi_info):
-                        logging.warning("pet is not home!")
-                        self._SendPetNoHomeMsg(pk.imei)
+                    is_in_home = utils.is_in_home(home_wifi, new_common_wifi, wifi_info)
+                    self._SendPetInOrNotHomeMsg(pk.imei, is_in_home)
                 yield self.pet_dao.add_common_wifi_info(pet_info["pet_id"],
                                                         new_common_wifi)
 
@@ -620,7 +619,7 @@ class TerminalHandler:
         raise gen.Return(True)
 
     @gen.coroutine
-    def _SendPetNoHomeMsg(self, imei):
+    def _SendPetInOrNotHomeMsg(self, imei, is_in_home):
         pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
                                                    device_imei=imei)
         if pet_info is not None:
@@ -629,6 +628,8 @@ class TerminalHandler:
                 logger.warning("imei:%s uid not find", imei)
                 return
             msg = push_msg.new_pet_not_home_msg()
+            if is_in_home:
+                msg = push_msg.new_pet_in_home_msg()
             try:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,

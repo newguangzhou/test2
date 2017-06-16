@@ -438,12 +438,6 @@ class AuthMongoDAO(MongoDAOBase):
                 if info["state"] == 0:
                     ec = error_codes.EC_INVALID_TOKEN
                 elif info["token"] != token:
-                    tmp = tb.find_one({"auth_type": type,
-                                       "auth_id": auth_id,
-                                       "token": token})
-                    if tmp is not None:
-                        ec = error_codes.EC_INVALID_TOKEN
-                    else:
                         ec = error_codes.EC_LOGIN_IN_OTHER_PHONE
                 elif info["expire_times"] != 0:
                     tm = utils.date2int(info["mod_date"]) + info[

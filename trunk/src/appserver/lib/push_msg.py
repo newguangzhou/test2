@@ -20,6 +20,11 @@ def new_pet_not_home_msg():
            "signal": "not-home", }
     return json.dumps(msg, ensure_ascii=False, encoding="utf8")
 
+def new_pet_in_home_msg():
+    msg = {"type": "pet",
+           "signal": "home", }
+    return json.dumps(msg, ensure_ascii=False, encoding="utf8")
+
 
 def new_location_change_msg(latitude, longitude, location_time, radius):
     msg = {"type": "pet",

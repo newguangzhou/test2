@@ -80,6 +80,13 @@ class AddDeviceInfo(HelperHandler):
             self.res_and_fini(res)
             return
 
+        get_res = yield terminal_rpc.send_j13(imei)
+        if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
+            logging.warning("add_device_info send_command_j13, fail status:%d",
+                            error_codes.EC_SEND_CMD_FAIL)
+            res["status"] = error_codes.EC_SEND_CMD_FAIL
+            self.res_and_fini(res)
+            return
 
         info = {}
         if imei is not None:
@@ -97,12 +104,6 @@ class AddDeviceInfo(HelperHandler):
             res["status"] = error_codes.EC_SYS_ERROR
             self.res_and_fini(res)
             return
-
-        try:
-            yield terminal_rpc.send_j13(imei)
-        except Exception, e:
-            logging.warning("get wifi list in add_pet_info, error, %s %s",
-                    self.dump_req(), str(e))
 
 # 成功
         logging.debug("AddDeviceInfo, success %s", self.dump_req())

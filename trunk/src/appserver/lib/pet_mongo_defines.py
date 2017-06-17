@@ -25,6 +25,7 @@ _PET_INFOS_TB_ROW_DEFINE = {
     "logo_url": (u"", unicode),
     "logo_small_url": (u"", unicode),
     "birthday": (datetime.datetime(1970, 1, 1), datetime.datetime),
+    "device_type": None,  # 设备类型
     "sex": (0, int),
     "weight": (0, float),
     "pet_type_id": (None, int),

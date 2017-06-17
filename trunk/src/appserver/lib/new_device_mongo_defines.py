@@ -29,7 +29,6 @@ DEVICE_TB_ROW_DEFINE = {
     "light_status": (0, int),
     "device_name": (u"", unicode),  #设备名称
     "status": (0, int),  #报警状态
-    "sim_deadline": (None, datetime.datetime),
     #"location"
 }
 """

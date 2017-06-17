@@ -290,6 +290,8 @@ class TerminalHandler:
                         yield self.msg_rpc.push_android(uids=str(uid),
                                                         payload=msg,
                                                         pass_through=1)
+                        yield self.msg_rpc.push_ios(uids=str(uid),
+                                                        payload=msg)
                     except Exception, e:
                         logger.exception(e)
         now_time = datetime.datetime.now()
@@ -420,6 +422,8 @@ class TerminalHandler:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,
                                                 pass_through=1)
+                yield self.msg_rpc.push_ios(uids=str(uid),
+                                            payload=msg)
             except Exception, e:
                 logger.exception(e)
         else:
@@ -634,6 +638,8 @@ class TerminalHandler:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,
                                                 pass_through=1)
+                yield self.msg_rpc.push_ios(uids=str(uid),
+                                            payload=msg)
             except Exception, e:
                 logger.exception(e)
 
@@ -654,6 +660,8 @@ class TerminalHandler:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,
                                                 pass_through=1)
+                yield self.msg_rpc.push_ios(uids=str(uid),
+                                            payload=msg)
             except Exception, e:
                 logger.exception(e)
 
@@ -675,6 +683,8 @@ class TerminalHandler:
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     payload=msg,
                                                     pass_through=1)
+                    yield self.msg_rpc.push_ios(uids=str(uid),
+                                                payload=msg)
                 except Exception, e:
                     logger.exception(e)
 

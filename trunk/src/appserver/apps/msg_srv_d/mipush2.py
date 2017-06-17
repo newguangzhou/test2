@@ -46,5 +46,5 @@ class MiPush2:
                                 "default").badge(1).category(
                                 "action").extra(dict).title("test_title").restricted_package_name(self._app_pkg_name)
         # recv = self._sender1.send_to_alias(message.message_dict_ios(), str_uids)
-        recv = self._sender1.broadcast_all(message)
+        recv = self._sender1.broadcast_all(message.message_dict())
         logging.debug("on send_to_alias_ios recv:%s", recv)

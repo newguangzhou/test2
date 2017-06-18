@@ -14,7 +14,7 @@ import logging
 class MiPush2:
     def __init__(self, appsecret, app_pkg_name, debug_mode):
         # Constants.use_official()
-        # Constants.use_sandbox()
+        Constants.use_sandbox()
         self._appsecret = appsecret
         self._app_pkg_name = app_pkg_name
         self._debug_mode = debug_mode
@@ -44,7 +44,7 @@ class MiPush2:
         logging.info("on send_%s,dict:%s", desc, extras)
         message = PushMessage().description("test_desc").sound_url(
                                 "default").badge(1).category(
-                                "action").extra(dict).title("test_title").restricted_package_name("com.xiaomaoqiu.catchpet")
+                                "action").title("test_title").restricted_package_name("com.xiaomaoqiu.catchpet")
         # recv = self._sender1.send_to_alias(message.message_dict_ios(), str_uids)
         recv = self._sender1.broadcast_all(message.message_dict())
         logging.debug("on send_to_alias_ios recv:%s", recv)

@@ -66,7 +66,8 @@ webapp = Application(
     auth_dao=AuthDAO.new(mongo_meta=mongo_conf.auth_mongo_meta),
     sms_sender=sms_sender,
     verify_sender=send_verify,
-    xiaomi_push2= MiPush2(conf.mipush_appsecret, conf.mipush_pkg_name,True),
+    xiaomi_push2= MiPush2(conf.mipush_appsecret_android, conf.mipush_pkg_name,
+                          conf.mipush_appsecret_ios, conf.mipush_bundle_id, True),
     xiaomi_push=MIPush(conf.mipush_host, conf.mipush_appsecret,
                        conf.mipush_pkg_name))
 

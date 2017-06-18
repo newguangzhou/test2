@@ -46,5 +46,5 @@ class MiPush2:
                                 "default").badge(1).category(
                                 "action").title("test_title").restricted_package_name("com.xiaomaoqiu.catchpet")
         # recv = self._sender1.send_to_alias(message.message_dict_ios(), str_uids)
-        recv = self._sender1.send_to_alias(message.message_dict(),str_uids)
+        recv = self._sender1.send_to_alias(message.message_dict_ios(),str_uids)
         logging.debug("on send_to_alias_ios recv:%s", recv)

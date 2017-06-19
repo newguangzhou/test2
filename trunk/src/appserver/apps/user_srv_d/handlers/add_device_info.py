@@ -54,6 +54,14 @@ class AddDeviceInfo(HelperHandler):
             self.res_and_fini(res)
             return
 
+        get_res = yield terminal_rpc.send_j13(imei)
+        if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
+            logging.warning("add_device_info send_command_j13, fail status:%d",
+                            error_codes.EC_SEND_CMD_FAIL)
+            res["status"] = error_codes.EC_SEND_CMD_FAIL
+            self.res_and_fini(res)
+            return
+
         try:
             pet_id = int(time.time() * -1000)
             bind_res = yield pet_dao.bind_device(uid, imei, pet_id)
@@ -77,14 +85,6 @@ class AddDeviceInfo(HelperHandler):
                 logging.warning("AddDeviceInfo, error, imei has exit but can't get the old account: %s %s",
                                 self.dump_req(),
                                 self.dump_exp(ee))
-            self.res_and_fini(res)
-            return
-
-        get_res = yield terminal_rpc.send_j13(imei)
-        if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
-            logging.warning("add_device_info send_command_j13, fail status:%d",
-                            error_codes.EC_SEND_CMD_FAIL)
-            res["status"] = error_codes.EC_SEND_CMD_FAIL
             self.res_and_fini(res)
             return
 

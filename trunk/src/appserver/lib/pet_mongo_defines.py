@@ -38,6 +38,7 @@ _PET_INFOS_TB_ROW_DEFINE = {
     "pet_status": (0, int),
     "pet_no_search_status": (0, int),#只记录遛狗和在家两种状态
     "home_wifi": (None, dict),
+    "home_location": (None,dict),
     "common_wifi": ([], list),
     "has_reboot":(0,int)
 }

@@ -41,8 +41,8 @@ class SetHomeLocation(HelperHandler):
             st = yield self.check_token("SetHomeLocation", res, uid, token)
             if not st:
                return
-               longitude = self.get_argument("longitude")
-               latitude = self.get_argument("latitude")
+            longitude = self.get_argument("longitude")
+            latitude = self.get_argument("latitude")
         except Exception, e:
             logging.warning("SetHomeLocation, invalid args, %s %s",
                             self.dump_req(), str(e))
@@ -58,6 +58,7 @@ class SetHomeLocation(HelperHandler):
                 logging.warning("SetHomeLocation, set fail, %s", self.dump_req())
                 res["status"] = error_codes.EC_SYS_ERROR
                 self.res_and_fini(res)
+                return
         except Exception, e:
             logging.warning("SetHomeLocation, error, %s %s", self.dump_req(),
                             self.dump_exp(e))

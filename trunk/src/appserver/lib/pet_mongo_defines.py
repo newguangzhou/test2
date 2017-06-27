@@ -36,7 +36,8 @@ _PET_INFOS_TB_ROW_DEFINE = {
     "target_step": (0, int),
     "target_energy": (0, float),
     "pet_status": (0, int),
-    "pet_no_search_status": (0, int),#只记录遛狗和在家两种状态
+    "pet_no_search_status": (0, int),#只记录遛狗和在家两种状态  方便前台关闭gps后返回之前的状态
+    "pet_is_in_home": (1,int), # 1 在家  0 不在家
     "home_wifi": (None, dict),
     "home_location": (None,dict),
     "common_wifi": ([], list),

@@ -35,10 +35,22 @@ class PushAndrod(xmq_web_handler.XMQWebHandler):
             desc = self.get_str_arg("desc")
             payload = self.get_str_arg("payload")
             pass_through = int(self.get_argument("pass_through", 0))
-            yield self.send_to_alias_android(uids, title, desc, payload,
+            push_type = self.get_argument("push_type","alias")
+            if push_type == "alias":
+                yield self.send_to_alias_android(uids, title, desc, payload,
                                              pass_through)
+            elif push_type == "user_account":
+                yield self.send_to_useraccount_android(uids, title, desc, payload,
+                                                 pass_through)
         self.res_and_fini(res)
         return
+
+    @run_on_executor
+    def send_to_useraccount_android(self, str_uids, title, desc, payload,
+                              pass_through):
+        xiaomi_push2 = self.settings["xiaomi_push2"]
+        return xiaomi_push2.send_to_useraccount_android(str_uids, title, desc,
+                                                  payload, pass_through)
 
     @run_on_executor
     def send_to_alias_android(self, str_uids, title, desc, payload,

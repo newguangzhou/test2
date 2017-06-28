@@ -61,11 +61,25 @@ class MsgRPC:
                               product=product)
         raise gen.Return(ret)
 
+    # default is alias
     def push_android(self, **args):
+        args["push_type"] = "alias"
         return self.call("push_android",
                               **args)
-
+    # defalut is alias
     def push_ios(self, **args):
+        args["push_type"] = "alias"
+        return self.call("push_ios", **args)
+
+    # default is alias
+    def push_android_useraccount(self, **args):
+        args["push_type"] = "user_account"
+        return self.call("push_android",
+                         **args)
+
+    # defalut is alias
+    def push_ios_useraccount(self, **args):
+        args["push_type"] = "user_account"
         return self.call("push_ios", **args)
 
     @gen.coroutine

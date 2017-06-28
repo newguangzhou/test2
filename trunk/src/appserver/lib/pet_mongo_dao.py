@@ -307,3 +307,14 @@ class PetMongoDAO(MongoDAOBase):
 
         ret = yield self.submit(_callback)
         raise gen.Return(ret)
+
+    @gen.coroutine
+    def set_home_location(self, uid, home_location):
+        def _callback(mongo_client, **kwargs):
+            tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_INFOS_TB]
+            res = tb.update_one({"uid": uid},
+                                {"$set": {"home_location": home_location}})
+            return res
+
+        ret = yield self.submit(_callback)
+        raise gen.Return(ret)

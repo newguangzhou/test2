@@ -624,13 +624,18 @@ class TerminalHandler:
 
     @gen.coroutine
     def _SendPetInOrNotHomeMsg(self, imei, is_in_home):
-        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
+        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid", "pet_is_in_home"),
                                                    device_imei=imei)
         if pet_info is not None:
             uid = pet_info.get("uid", None)
             if uid is None:
                 logger.warning("imei:%s uid not find", imei)
                 return
+            pet_is_in_home = pet_info["pet_is_in_home"]
+            if (pet_is_in_home == 1 and is_in_home) or (pet_is_in_home == 0 and not is_in_home):
+                return
+            yield self.pet_dao.update_pet_info(pet_info["pet_id"], {"pet_is_in_home":1-pet_is_in_home})
+
             msg = push_msg.new_pet_not_home_msg()
             if is_in_home:
                 msg = push_msg.new_pet_in_home_msg()

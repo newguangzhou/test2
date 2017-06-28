@@ -66,6 +66,7 @@ webapp = Application(
         (r"/user/logout", handlers.Logout),
         (r"/user/regen_token", handlers.RegenToken),
         (r"/user/set_home_wifi", handlers.SetHomeWifi),
+        (r"/user/set_home_location", handlers.SetHomeLocation),
         (r"/user/get_base_infomation", handlers.GetBaseInfo),
         (r"/pet/location", handlers.PetLocation),
         (r"/pet/location_test", handlers.PetLocation2),

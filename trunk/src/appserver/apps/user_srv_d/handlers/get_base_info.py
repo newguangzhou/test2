@@ -49,8 +49,10 @@ class GetBaseInfo(HelperHandler):
             res["wifi_bssid"] = ""
             res["wifi_ssid"] = ""
             res["has_reboot"] = 0
+            res["longitude"]=-1
+            res["latitude"]=-1
             info = yield pet_dao.get_user_pets(uid, ("pet_id", "device_imei",
-                                                     "home_wifi","has_reboot"))
+                                                     "home_wifi","has_reboot","home_location",))
             if not info:
                 logging.warning("GetBaseInfo in pet dao, not found, %s", self.dump_req())
                 # device_info = yield device_dao.get_device_info_by_uid(uid,("imei",))
@@ -74,6 +76,10 @@ class GetBaseInfo(HelperHandler):
                 if home_wifi is not None:
                     res["wifi_bssid"] = home_wifi["wifi_bssid"]
                     res["wifi_ssid"] = home_wifi["wifi_ssid"]
+                home_location=info.get("home_location",None)
+                if home_location is not None:
+                    res["longitude"]=home_location["longitude"]
+                    res["latitude"]=home_location["latitude"]
 
         except Exception, e:
             logging.error("GetBaseInfo, error, %s %s", self.dump_req(),

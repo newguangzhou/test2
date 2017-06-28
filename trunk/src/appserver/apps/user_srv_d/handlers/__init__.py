@@ -35,6 +35,7 @@ from set_target_step import SetTargetStep
 from remove_device import RemoveDeviceInfo
 from set_sim_info import SetSimInfo
 from set_home_wifi import SetHomeWifi
+from set_home_location import SetHomeLocation
 from pet_find import PetFind
 from pet_walk import PetWalk
 from swicth_light import SwitchLight

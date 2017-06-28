@@ -227,7 +227,7 @@ def change_wifi_info(mac, need_deep=False):
     return ret
 
 def is_imei_valide(imei):
-    if imei is None or len(imei)<>15 or imei.index('35739608')<>0:
+    if imei is None or len(imei)<>15 or imei.find('35739608')<>0:
         return False
     list = []
     index = 0

@@ -46,14 +46,14 @@ class PushMessageCmd(HelperHandler):
         msg = push_msg.new_pet_not_home_msg()
 
         try:
-            yield msg_rpc.push_android(uids=str(uid),
-                                   payload=msg,
-                                       pass_through=1
-                                       )
-
-            yield msg_rpc.push_ios(uids=str(uid),
-                                   payload=msg
-                                   )
+            # yield msg_rpc.push_android(uids=str(uid),
+            #                        payload=msg,
+            #                            pass_through=1
+            #                            )
+            #
+            # yield msg_rpc.push_ios(uids=str(uid),
+            #                        payload=msg
+            #                        )
             yield msg_rpc.push_ios_useraccount(uids=str(uid),
                                             payload=msg)
         except Exception, e:

@@ -8,6 +8,9 @@ from tornado import gen
 from functools import partial
 logger = logging.getLogger(__name__)
 
+SEND_STATUS_CLOSED = "closed"
+SEND_STATUS_OK = "ok"
+
 
 class ServerConnDelegate(object):
     def on_close(self, conn_id):
@@ -58,10 +61,13 @@ class ServerConnMgr(TCPServer, ServerConnDelegate):
 
     @gen.coroutine
     def Send(self, conn_id, data):
+        ret = SEND_STATUS_OK
         conn = self.get_conn(conn_id)
         if conn is not None:
-            return conn.write(data)
-        raise gen.Return("closed")
+            yield conn.write(data)
+        else:
+            ret = SEND_STATUS_CLOSED
+        raise gen.Return(ret)
 
     def GetConn(self, conn_id):
         return self.get_conn(conn_id)

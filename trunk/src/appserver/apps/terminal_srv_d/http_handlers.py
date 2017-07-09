@@ -132,8 +132,9 @@ class SendCommandHandler3(tornado.web.RequestHandler):
         ret = yield broadcastor.send_msg_multicast((imei, ), send_data)
         ret_str = "send ok" if ret else "send fail"
         self._OnOpLog("s2c send_data:%s ret:%s" % (send_data, ret_str), imei)
-
         self.write(ret_str)
+        unreply_msg_mgr = self.settings["unreply_msg_mgr"]
+        unreply_msg_mgr.add_unreply_msg(pk.sn, imei, send_data)
 
     def _OnOpLog(self, content, imei):
         logger.info("content:%s imei:%s", content, imei)
@@ -176,7 +177,6 @@ class SendParamsCommandHandler(tornado.web.RequestHandler):
         try:
             imei = self.get_argument("imei")
             content = self.get_argument("command_content")
-            #gps_enable = int(self.get_argument("gps_enable"))
         except Exception as e:
             res["status"] = error_codes.EC_INVALID_ARGS
         else:
@@ -191,6 +191,8 @@ class SendParamsCommandHandler(tornado.web.RequestHandler):
                 res["status"] = error_codes.EC_SEND_CMD_FAIL
             self._OnOpLog("s2c send_data:%s ret:%s" % (send_data, ret_str),
                           imei)
+            unreply_msg_mgr = self.settings["unreply_msg_mgr"]
+            unreply_msg_mgr.add_unreply_msg(pk.sn, imei, send_data)
         data = json.dumps(res, ensure_ascii=False, encoding='utf8')
         self.write(data)
 
@@ -266,6 +268,8 @@ class SendCommandHandlerJ03(tornado.web.RequestHandler):
         ret_str = "send ok" if ret else "send fail"
         self._OnOpLog("s2c send_data:%s ret:%s" % (send_data, ret_str), imei)
         self.write(ret_str)
+        unreply_msg_mgr = self.settings["unreply_msg_mgr"]
+        unreply_msg_mgr.add_unreply_msg(pk.sn, imei, send_data)
 
     def _OnOpLog(self, content, imei):
         logger.info("content:%s imei:%s", content, imei)

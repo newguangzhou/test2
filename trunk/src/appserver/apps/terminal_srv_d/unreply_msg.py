@@ -62,7 +62,7 @@ class UnreplyMsgMgr:
                 except Exception, e:
                     logger.exception(e)
 
-    def get_un_reply_msg_and_clear(self, imei):
+    def get_un_reply_msg(self, imei):
         logger.debug("delete_unreply_msg imei:%s ", imei)
 
         msgs = []
@@ -72,8 +72,6 @@ class UnreplyMsgMgr:
                 msg_and_count = self.msg_dict.get((imei, sq), None)
                 if msg_and_count is not None:
                     msgs.append((sq, msg_and_count[0]))
-                    del self.msg_dict[(imei, sq)]
-            del self.imei_msg_dict[imei]
         return msgs
 
     def on_exire_keys(self, keys):

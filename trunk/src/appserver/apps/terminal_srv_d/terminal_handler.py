@@ -412,14 +412,17 @@ class TerminalHandler:
         # Ack
         ack = terminal_packets.HeatbeatAck(header.sn)
         yield self._send_res(conn_id, ack, pk.imei, peer)
-        msgs = self.unreply_msg_mgr.get_un_reply_msg_and_clear(pk.imei)
+        msgs = self.unreply_msg_mgr.get_un_reply_msg(pk.imei)
+        logger.info("_OnHeartbeatReq  get imei:%s unreply_msgs:%s", pk.imei,
+                    str(msgs))
         for msg in msgs:
-            ret = yield self._broadcastor.send_msg_multicast((pk.imei, ), msg)
+            ret = yield self._broadcastor.send_msg_multicast((pk.imei, ),
+                                                             msg[1])
             ret_str = "send ok" if ret else "send fail"
             self._OnOpLog("s2c on connected retry  send_data:%s ret:%s" %
                           (msg, ret_str), pk.imei)
-            logger.info("_OnHeartbeatReq s2c send_data:%s ret:%s imei:%s", msg,
-                        ret_str, pk.imei)
+            logger.info("_OnHeartbeatReq s2c send_data:%s ret:%s imei:%s",
+                        msg[1], ret_str, pk.imei)
 
         raise gen.Return(True)
 

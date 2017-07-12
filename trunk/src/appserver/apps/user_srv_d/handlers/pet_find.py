@@ -38,8 +38,6 @@ class PetFind(HelperHandler):
             return
 
         if find_status not in (1, 2):
-            logging.warning("OnPetFind, invalid args, %s, exception %s",
-                            self.dump_req(), str(e))
             res["status"] = error_codes.EC_INVALID_ARGS
             self.res_and_fini(res)
             return

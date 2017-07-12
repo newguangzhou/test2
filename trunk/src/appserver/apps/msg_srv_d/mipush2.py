@@ -40,7 +40,6 @@ class MiPush2:
                               str_uids,
                               desc,
                               extras):
-        dict = json.loads(extras)
 
         logging.info("on send_%s,dict:%s", desc, extras)
         message = PushMessage().description(extras).sound_url(

@@ -25,6 +25,8 @@ from lib.pet_dao import PetDAO
 import terminal_handler
 import http_handlers
 import imei_timer
+import unreply_msg
+import noheart_msg
 from lib.msg_rpc import MsgRPC
 from lib.sys_config import SysConfig
 from lib import sys_config
@@ -75,6 +77,8 @@ if __name__ == '__main__':
     thread_trace.trace_start("trace.html")
     broadcastor = broadcast.BroadCastor(conn_mgr)
     imei_timer_mgr = imei_timer.ImeiTimer()
+    unreply_msg_mgr = unreply_msg.UnreplyMsgMgr()
+    # no_heart_msg_mgr = noheart_msg.NoHeartMsgMgr()
     IOLoop.current().run_sync(_async_init)
     msg_rpc = MsgRPC(SysConfig.current().get(sys_config.SC_MSG_RPC_URL))
 
@@ -87,7 +91,10 @@ if __name__ == '__main__':
         pet_dao=PetDAO.new(mongo_meta=mongo_conf.op_log_mongo_meta),
         new_device_dao=NewDeviceDAO.new(
             mongo_meta=mongo_conf.op_log_mongo_meta),
-        msg_rpc=msg_rpc)
+        msg_rpc=msg_rpc,
+        unreply_msg_mgr=unreply_msg_mgr,
+        # no_heart_msg_mgr=no_heart_msg_mgr
+    )
 
     conn_mgr.CreateTcpServer("", listen_port, handler)
     webapp = Application(
@@ -105,9 +112,13 @@ if __name__ == '__main__':
         debug=True,
         broadcastor=broadcastor,
         msg_rpc=msg_rpc,
+        unreply_msg_mgr=unreply_msg_mgr,
+        # no_heart_msg_mgr=no_heart_msg_mgr,
         op_log_dao=OPLogDAO.new(mongo_meta=mongo_conf.op_log_mongo_meta), )
 
     webapp.listen(http_listen_port)
     imei_timer_mgr.set_on_imeis_expire(handler._OnImeiExpires)
     imei_timer_mgr.start()
+    unreply_msg_mgr.set_on_un_reply_msg_retry_func(handler._OnUnreplyMsgsSend)
+    # no_heart_msg_mgr.set_on_no_heart_func(handler._OnImeiExpires)
     IOLoop.current().start()

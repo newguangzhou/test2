@@ -4,6 +4,7 @@ import logging
 from tornado import gen
 logger = logging.getLogger(__name__)
 import time
+from conn_mgr2 import SEND_STATUS_CLOSED
 
 
 class BroadException(Exception):
@@ -63,6 +64,6 @@ class BroadCastor(object):
                 tmp = yield self.conn_mgr.Send(conn_id, data)
                 logger.info("on send_msg_multicast imei:%s send res:%s", imei,
                             str(tmp))
-                if tmp == "closed":
+                if tmp == SEND_STATUS_CLOSED:
                     ret = False
         raise gen.Return(ret)

@@ -167,9 +167,12 @@ def _gen_sn(seq):
     return sn
 
 
+def GetSeqBySn(sn):
+    return int(sn[-4:])
+
+
 def GenReturnSn(sn):
-    seq = sn[-4:]
-    return _gen_sn(int(seq))
+    return _gen_sn(GetSeqBySn(sn))
 
 
 class Header:

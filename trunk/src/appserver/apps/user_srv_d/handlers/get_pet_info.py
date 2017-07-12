@@ -59,7 +59,7 @@ class GetPetInfo(HelperHandler):
                 elif k == "weight":
                     res[k] = "%.2f" % v
                 elif k== "target_energy":
-                    res[k] = "%f" % v
+                    res[k] = "%.2f" % v
                 else:
                     res[k] = v
 

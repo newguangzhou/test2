@@ -373,6 +373,7 @@ class SendCommandReq:
     def __init__(self, *args, **kwargs):
         self.imei = None  # IMEI号
         self.command_pk = None  # 指令
+        self.sn = terminal_proto.GenSN()
 
         if len(args) > 0:
             self.imei = args[0]
@@ -387,7 +388,7 @@ class SendCommandReq:
     def __str__(self):
         body = "%s@%s" % (self.imei, self.command_pk)
 
-        return "[%s,J03,%d,%s]" % (terminal_proto.GenSN(), len(body), body)
+        return "[%s,J03,%d,%s]" % (self.sn, len(body), body)
 
     def orgin_data(self):
         return self.__str__()

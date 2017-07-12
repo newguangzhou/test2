@@ -7,7 +7,7 @@ for pk in gcc g++ virtualenv
 do
     pk_path=`which $pk`
     if [ -z "$pk_path" ]; then
-        echo "Please install $pk first"
+        echo "Please install -y $pk first"
         exit 1
     fi
 done

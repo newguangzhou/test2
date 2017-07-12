@@ -3,12 +3,11 @@
 使用官方的sdk
 """
 
-from APISender import APISender
-from base.APIMessage import *
-from APITools import *
-from APISubscribe import *
 import json
 import logging
+
+from APISender import APISender
+from base.APIMessage import *
 
 
 class MiPush2:
@@ -73,5 +72,6 @@ class MiPush2:
             "default").badge(1).category(
             "action").title("test_title")
         # recv = self._sender1.send_to_alias(message.message_dict_ios(), str_uids)
+        logging.debug("ios_push_useraccount_message:%s" % message.message_dict_ios())
         recv = self._sender_ios.send_to_user_account(message.message_dict_ios(), str_uids)
         logging.debug("on send_to_alias_ios recv:%s", recv)

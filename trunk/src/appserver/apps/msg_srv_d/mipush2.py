@@ -75,3 +75,24 @@ class MiPush2:
         # recv = self._sender1.send_to_alias(message.message_dict_ios(), str_uids)
         recv = self._sender_ios.send_to_user_account(message.message_dict_ios(), str_uids)
         logging.debug("on send_to_alias_ios recv:%s", recv)
+
+    def test_send_to_useraccount_ios(self,
+                                str_uids,
+                                extras):
+        message = PushMessage().description(extras).sound_url(
+            "default").badge(1).category(
+            "action").title("test_title")
+        # recv = self._sender1.send_to_alias(message.message_dict_ios(), str_uids)
+        recv = self._sender_ios.send_to_user_account(message.message_dict_ios(), str_uids)
+        logging.debug("on send_to_alias_ios recv:%s", recv)
+    def test_send_to_alias_ios(self,
+                              str_uids,
+                              extras):
+        dict = json.loads(extras)
+
+        message = PushMessage().description(extras).sound_url(
+                                "default").badge(1).category(
+                                "action").title("test_title")
+        # recv = self._sender1.send_to_alias(message.message_dict_ios(), str_uids)
+        recv = self._sender_ios.send_to_alias(message.message_dict_ios(),str_uids)
+        logging.debug("on send_to_alias_ios recv:%s", recv)

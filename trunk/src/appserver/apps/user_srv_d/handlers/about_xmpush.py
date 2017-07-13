@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 from helper_handler import HelperHandler
+
 
 # 设置alias
 class SetAliasHandler(HelperHandler):

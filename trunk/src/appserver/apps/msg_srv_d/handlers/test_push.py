@@ -4,7 +4,7 @@ import logging
 from tornado import gen
 from tornado.web import asynchronous
 
-from src.appserver.lib import error_codes, xmq_web_handler
+from lib import error_codes, xmq_web_handler
 
 
 class PushTest(xmq_web_handler.XMQWebHandler):

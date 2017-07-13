@@ -57,8 +57,7 @@ webapp = Application(
         (r"/msg/push_android", handlers.PushAndrod),
         (r"/msg/push_all", handlers.PushAll),
         (r"/msg/push_ios_alias", handlers.PushIOS),
-        (r"/msg/push", handlers.Push)
-
+        (r"/msg/push", handlers.Push),
         (r"/user/push_message_cmd", handlers.PushTest),
 
     ],

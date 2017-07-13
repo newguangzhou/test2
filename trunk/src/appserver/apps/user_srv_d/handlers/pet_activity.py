@@ -37,9 +37,16 @@ class PetActivity(HelperHandler):
                 return
             pet_id = int(self.get_argument("pet_id"))
             activity_type = int(self.get_argument("activity_type"))
-            if activity_type not in (1, 2):
+            if activity_type not in (1, 2) or pet_id == -1:
                 self.arg_error("activity_type")
-                return
+            else:
+                try:
+                    yield pet_dao.update_pet_info(pet_id,pet_status=activity_type)
+                except Exception, e:
+                    logging.warning("OnPetActivity, error, %s %s", self.dump_req(), self.dump_exp(e))
+                    res["status"] = error_codes.EC_SYS_ERROR
+                    self.res_and_fini(res)
+                    return
         except Exception,e:
             logging.warning("OnPetActivity, invalid args, %s", self.dump_req())
             res["status"] = error_codes.EC_INVALID_ARGS

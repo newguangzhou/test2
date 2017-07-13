@@ -718,6 +718,7 @@ class TerminalHandler:
                                                     payload=msg,
                                                     pass_through=1)
                     yield self.msg_rpc.push_ios(uids=str(uid), payload=msg)
+                    logger.debug("_OnImeiExpires imeis success:%s", str(imeis))
                 except Exception, e:
                     logger.exception(e)
 

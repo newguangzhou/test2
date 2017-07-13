@@ -63,7 +63,7 @@ class UnreplyMsgMgr:
                     logger.exception(e)
 
     def get_un_reply_msg(self, imei):
-        logger.debug("delete_unreply_msg imei:%s ", imei)
+        logger.debug("get_un_reply_msg imei:%s ", imei)
 
         msgs = []
         seqs = self.imei_msg_dict.get(imei, None)

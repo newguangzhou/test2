@@ -157,6 +157,7 @@ def main():
     print 's.zadd("c",7)', s.zadd('c', 7)
     print 'zcard', s.zcard
     print 'zrevrange all', s.zrevrange(0, -1, withscores=True)
+    print 'zrange(0,5,withscores=True)', s.zrange(0, 5, withscores=True)
 
 
 if __name__ == '__main__':

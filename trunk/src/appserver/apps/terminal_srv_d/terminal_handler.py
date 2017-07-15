@@ -653,15 +653,12 @@ class TerminalHandler:
             if uid is None:
                 logger.warning("imei:%s uid not find", imei)
                 return
-            pet_is_in_home = pet_info.get("pet_is_in_home", None)
-            if pet_is_in_home is None:
-                logger.warning("pet_is_in_home is None")
-            else:
-                if (pet_is_in_home == 1 and is_in_home) or (
-                        pet_is_in_home == 0 and not is_in_home):
-                    return
-                yield self.pet_dao.update_pet_info(
-                    pet_info["pet_id"], {"pet_is_in_home": 1 - pet_is_in_home})
+            pet_is_in_home = pet_info.get("pet_is_in_home", 1)
+            if (pet_is_in_home == 1 and is_in_home) or (
+                    pet_is_in_home == 0 and not is_in_home):
+                return
+            yield self.pet_dao.update_pet_info(
+                pet_info["pet_id"], {"pet_is_in_home": 1 - pet_is_in_home})
 
             msg = push_msg.new_pet_not_home_msg()
             if is_in_home:

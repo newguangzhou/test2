@@ -658,7 +658,7 @@ class TerminalHandler:
                     pet_is_in_home == 0 and not is_in_home):
                 return
             yield self.pet_dao.update_pet_info(
-                pet_info["pet_id"], {"pet_is_in_home": 1 - pet_is_in_home})
+                pet_info["pet_id"], pet_is_in_home = 1 - pet_is_in_home)
 
             msg = push_msg.new_pet_not_home_msg()
             if is_in_home:

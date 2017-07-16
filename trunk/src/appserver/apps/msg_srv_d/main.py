@@ -59,7 +59,7 @@ webapp = Application(
         (r"/msg/push_ios", handlers.PushIOS),
         (r"/msg/push", handlers.Push)
     ],
-    autoreload=False,
+    autoreload=True,
     pyloader=pyloader,
     appconfig=conf,
     sms_registered=True,

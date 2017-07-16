@@ -265,11 +265,12 @@ def is_in_home(home_wifi,common_wifi,wifi_list):
             "wifi_bssid"]:
             return True
     num = 0;
-    for item in common_wifi:
-        if item["wifi_ssid"] in wifi_list_names:
-            num += 1;
-            if num > 2:
-                return True
+    if common_wifi is not None:
+         for item in common_wifi:
+             if item["wifi_ssid"] in wifi_list_names:
+                 num += 1;
+                 if num > 2:
+                     return True
     return False
 
 def get_new_common_wifi(common_wifi,wifi_info,home_wifi):

@@ -676,12 +676,14 @@ class TerminalHandler:
                 if (is_in_home):
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     title="小毛球智能提醒",
-                                                    payload="宠物现在回家了",
+                                                    desc="宠物现在回家了",
+                                                    payload=msg,
                                                     pass_through=0)
                 else:
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     title="小毛球智能提醒",
-                                                    payload="宠物现在离家了，请确定安全",
+                                                    desc="宠物现在离家了，请确定安全",
+                                                    payload=msg,
                                                     pass_through=0)
 
             except Exception,e:

@@ -34,8 +34,12 @@ class PushMessageCmd(HelperHandler):
 
         # 获取请求参数
         uid = None
+        push_type = None
+        pass_through = None
         try:
             uid = self.get_argument("uid")
+            push_type = self.get_argument("push_type","alias")
+            pass_through = self.get_argument("push_through",1)
         except Exception, e:
             logging.warning("OnPushMessage, invalid args, %s %s",
                             self.dump_req(), self.dump_exp(e))
@@ -46,16 +50,19 @@ class PushMessageCmd(HelperHandler):
         msg = push_msg.new_pet_not_home_msg()
 
         try:
-            # yield msg_rpc.push_android(uids=str(uid),
-            #                        payload=msg,
-            #                            pass_through=1
-            #                            )
-            #
-            # yield msg_rpc.push_ios(uids=str(uid),
-            #                        payload=msg
-            #                        )
-            yield msg_rpc.push_ios_useraccount(uids=str(uid),
-                                            payload=msg)
+            yield msg_rpc.push_android(uids=str(uid),
+                                       title="小毛球智能提醒",
+                                       desc="宠物现在离家了，请确定安全",
+                                       payload=msg,
+                                       pass_through=pass_through
+                                       )
+            if push_type == "alias":
+                yield msg_rpc.push_ios(uids=str(uid),
+                                       payload=msg
+                                       )
+            else:
+                yield msg_rpc.push_ios_useraccount(uids=str(uid),
+                                                payload=msg)
         except Exception, e:
             logging.warning("OnPushMessage, error, %s %s",
                             self.dump_req(), self.dump_exp(e))

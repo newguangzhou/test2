@@ -45,7 +45,9 @@ class GetPetStatusInfo(HelperHandler):
             if not st:
                 return
             info = yield pet_dao.get_user_pets(uid, ("pet_id",
-                                                     "pet_status", ))
+                                                     "pet_status",
+                                                     "pet_is_in_home"
+                                                     ))
             if not info:
                 logging.warning("GetPetStatusInfo, not found, %s",
                                 self.dump_req())
@@ -57,6 +59,7 @@ class GetPetStatusInfo(HelperHandler):
                 self.res_and_fini(res)
                 return
             res["pet_status"] = info.get("pet_status",0)
+            res["pet_is_in_home"]=info.get("pet_is_in_home",1)
         except Exception, e:
             logging.error("GetPetStatusInfo, error, %s %s", self.dump_req(),
                           self.dump_exp(e))

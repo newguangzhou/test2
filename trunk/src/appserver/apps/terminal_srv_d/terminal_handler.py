@@ -653,15 +653,12 @@ class TerminalHandler:
             if uid is None:
                 logger.warning("imei:%s uid not find", imei)
                 return
-            pet_is_in_home = pet_info.get("pet_is_in_home", None)
-            if pet_is_in_home is None:
-                logger.warning("pet_is_in_home is None")
-            else:
-                if (pet_is_in_home == 1 and is_in_home) or (
-                        pet_is_in_home == 0 and not is_in_home):
-                    return
-                yield self.pet_dao.update_pet_info(
-                    pet_info["pet_id"], {"pet_is_in_home": 1 - pet_is_in_home})
+            pet_is_in_home = pet_info.get("pet_is_in_home", 1)
+            if (pet_is_in_home == 1 and is_in_home) or (
+                    pet_is_in_home == 0 and not is_in_home):
+                return
+            yield self.pet_dao.update_pet_info(
+                pet_info["pet_id"], pet_is_in_home = 1 - pet_is_in_home)
 
             msg = push_msg.new_pet_not_home_msg()
             if is_in_home:
@@ -675,6 +672,22 @@ class TerminalHandler:
             except Exception, e:
                 logger.exception(e)
 
+            try:
+                if (is_in_home):
+                    yield self.msg_rpc.push_android(uids=str(uid),
+                                                    title="小毛球智能提醒",
+                                                    desc="宠物现在回家了",
+                                                    payload=msg,
+                                                    pass_through=0)
+                else:
+                    yield self.msg_rpc.push_android(uids=str(uid),
+                                                    title="小毛球智能提醒",
+                                                    desc="宠物现在离家了，请确定安全",
+                                                    payload=msg,
+                                                    pass_through=0)
+
+            except Exception,e:
+                logger.exception(e)
         else:
             logger.warning("imei:%s uid not find", imei)
 

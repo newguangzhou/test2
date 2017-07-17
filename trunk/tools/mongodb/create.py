@@ -164,6 +164,6 @@ if __name__ == "__main__":
         print "Set repl other hosts, error=\"%s\"" % (str(e),)
         _shutdown_inst(mongod_path, db_dir)
         sys.exit(1)
-    
+
     sys.exit(0)
     

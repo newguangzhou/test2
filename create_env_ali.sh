@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check system requires
-for pk in gcc g++ libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk wget python-pip
+for pk in gcc g++ libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk wget python-pip unzip
 do
     pk_path=`which $pk`
     if [ -z "$pk_path" ]; then
@@ -30,6 +30,7 @@ if [ "`uname -s`" = "Darwin" ]; then
 else
 	pip install -i http://mirrors.aliyun.com/pypi/simple/ -r ./requirements.txt
 fi
+
 
 
 

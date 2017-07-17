@@ -56,12 +56,10 @@ webapp = Application(
         (r"/msg/send_verify_code", handlers.SendVerify),
         (r"/msg/push_android", handlers.PushAndrod),
         (r"/msg/push_all", handlers.PushAll),
-        (r"/msg/push_ios_alias", handlers.PushIOS),
-        (r"/msg/push", handlers.Push),
-        (r"/user/push_message_cmd", handlers.PushTest),
-
+        (r"/msg/push_ios", handlers.PushIOS),
+        (r"/msg/push", handlers.Push)
     ],
-    autoreload=False,
+    autoreload=True,
     pyloader=pyloader,
     appconfig=conf,
     sms_registered=True,

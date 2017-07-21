@@ -8,6 +8,7 @@ import logging
 
 from APISender import APISender
 from base.APIMessage import *
+from base.APIConstants import Constants
 
 
 class MiPush2:
@@ -31,7 +32,8 @@ class MiPush2:
         message = PushMessage().restricted_package_name(
             self._app_pkg_name).payload(payload).pass_through(pass_through)
         if pass_through == 0:
-            message = message.title(title).description(desc)
+            message = message.title(title).description(desc).notify_type(1).extra_element(
+                Constants.extra_param_sound_uri, "android.resource://com.xiaomaoqiu.pet/raw/beep")
         recv = self._sender_android.send_to_alias(message.message_dict(), str_uids)
         logging.debug("on send_to_alias_android recv:%s", recv)
 
@@ -73,4 +75,25 @@ class MiPush2:
         # recv = self._sender1.send_to_alias(message.message_dict_ios(), str_uids)
         logging.debug("ios_push_useraccount_message:%s" % message.message_dict_ios())
         recv = self._sender_ios.send_to_user_account(message.message_dict_ios(), str_uids)
+        logging.debug("on send_to_alias_ios recv:%s", recv)
+
+    def test_send_to_useraccount_ios(self,
+                                str_uids,
+                                extras):
+        message = PushMessage().description(extras).sound_url(
+            "default").badge(1).category(
+            "action").title("test_title")
+        # recv = self._sender1.send_to_alias(message.message_dict_ios(), str_uids)
+        recv = self._sender_ios.send_to_user_account(message.message_dict_ios(), str_uids)
+        logging.debug("on send_to_alias_ios recv:%s", recv)
+    def test_send_to_alias_ios(self,
+                              str_uids,
+                              extras):
+        dict = json.loads(extras)
+
+        message = PushMessage().description(extras).sound_url(
+                                "default").badge(1).category(
+                                "action").title("test_title")
+        # recv = self._sender1.send_to_alias(message.message_dict_ios(), str_uids)
+        recv = self._sender_ios.send_to_alias(message.message_dict_ios(),str_uids)
         logging.debug("on send_to_alias_ios recv:%s", recv)

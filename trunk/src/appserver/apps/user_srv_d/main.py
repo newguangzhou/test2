@@ -59,6 +59,10 @@ if support_setptitle:
 # Init web application
 webapp = Application(
     [
+        (r"/push/set_alias", handlers.SetAliasHandler),
+        (r"/push/unset_alias", handlers.UnSetAliasHandler),
+        (r"/push/set_account", handlers.SetAccountHandler),
+        (r"/push/unset_account", handlers.UnSetAccountHandler),
         (r"/user/get_verify_code", handlers.GetVerifyCode),
         (r"/user/push_message_cmd", handlers.PushMessageCmd),
         (r"/user/login", handlers.Login),
@@ -68,6 +72,7 @@ webapp = Application(
         (r"/user/set_home_wifi", handlers.SetHomeWifi),
         (r"/user/set_home_location", handlers.SetHomeLocation),
         (r"/user/get_base_infomation", handlers.GetBaseInfo),
+        (r"/user/suggest",handlers.Suggest),
         (r"/pet/location", handlers.PetLocation),
         (r"/pet/location_test", handlers.PetLocation2),
         (r"/pet/walk", handlers.PetWalk),
@@ -100,6 +105,7 @@ webapp = Application(
     auth_dao=AuthDAO.new(mongo_meta=mongo_conf.auth_mongo_meta),
     pet_dao=PetDAO.new(mongo_meta=mongo_conf.pet_mongo_meta),
     device_dao=NewDeviceDAO.new(mongo_meta=mongo_conf.pet_mongo_meta),
+
     appconfig=conf, )
 
 

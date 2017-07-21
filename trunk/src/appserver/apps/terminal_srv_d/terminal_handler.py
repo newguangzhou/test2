@@ -323,7 +323,7 @@ class TerminalHandler:
                                               sport_info)
 
             if pk.location_info.locator_status == terminal_packets.LOCATOR_STATUS_MIXED:
-                wifi_info = utils.change_wifi_info(pk.location_info.mac)
+                wifi_info = utils.change_wifi_info(pk.location_info.mac, True)
                 common_wifi = pet_info.get("common_wifi", None)
                 home_wifi = pet_info.get("home_wifi", None)
                 new_common_wifi = utils.get_new_common_wifi(

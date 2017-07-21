@@ -305,7 +305,7 @@ def get_new_common_wifi(common_wifi,wifi_info,home_wifi):
         if home_wifi_power is None:
             logging.debug("home_wifi_power is None in get_new_common_wifi")
         else:
-            logging.debug("home_wifi_power < 99 in get_new_common_wifi")
+            logging.debug("home_wifi_power < -99 in get_new_common_wifi：%d" % home_wifi_power)
         return common_wifi
 
 

@@ -2,10 +2,11 @@ version: '2'
 services:
   mongodb:
     image: yawei/ubuntu14.04-mongodb:pwd
-    ports:
-      - "27018:27018"
-      - "27019:27019"
-      - "27020:27020"
+#    ports:
+#      - "27018:27018"
+#      - "27019:27019"
+#      - "27020:27020"
+    network_mode: "host"
 #                volumes:
 #                        - /data/mongodb : /data/mongodb
 
@@ -13,11 +14,12 @@ services:
     image: yawei/ubuntu14.04-tornado:latest
     depends_on:
       - mongodb
-    ports:
-      - "9100:9100"
-      - "5050:5050"
-      - "5052:5052"
-      - "9700:9700"
+#    ports:
+#      - "9100:9100"
+#      - "5050:5050"
+#      - "5052:5052"
+#      - "9700:9700"
+    network_mode: "host"
 #                volumes:
 #                        - /data/server : /data/server
 #                        - /data/logs : /data/logs

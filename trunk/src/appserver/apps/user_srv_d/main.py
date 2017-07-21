@@ -72,6 +72,7 @@ webapp = Application(
         (r"/user/set_home_wifi", handlers.SetHomeWifi),
         (r"/user/set_home_location", handlers.SetHomeLocation),
         (r"/user/get_base_infomation", handlers.GetBaseInfo),
+        (r"/user/suggest",handlers.Suggest)
         (r"/pet/location", handlers.PetLocation),
         (r"/pet/location_test", handlers.PetLocation2),
         (r"/pet/walk", handlers.PetWalk),

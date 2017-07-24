@@ -1,0 +1,152 @@
+[33m67659ac[m 添加home_location
+[33m0ad3664[m 修改header名称device_model
+[33m492d907[m add devicew info
+[33mcb47f60[m complete mi push
+[33m09b1867[m complete mi push
+[33m61b55c0[m push ios, cancel package name
+[33mc7217cf[m push ios
+[33mb49ca63[m broadcast all
+[33mf309fbe[m broadcast all
+[33m37a06d2[m broadcast all
+[33m4ecadf4[m broadcast all
+[33m3aaa847[m broadcast all
+[33md220cbb[m broadcast all
+[33m8789ed7[m broadcast all
+[33mf1cc657[m broadcast all
+[33md4a1fab[m broadcast all
+[33m28281c4[m broadcast all
+[33ma79d181[m broadcast all
+[33m9123fe5[m broadcast all
+[33md59749b[m broadcast all
+[33m51e5bff[m add ios push
+[33mc34454b[m remote login again
+[33m0be4e26[m push ios
+[33m518b82c[m can't bind device if device offline
+[33m3f55602[m can't bind device if device offline
+[33md8f5943[m login on remote
+[33m2091248[m push_msg online add battery and datetime
+[33m3df4755[m push ios
+[33m0c94c6f[m push ios
+[33me0bbc49[m push ios
+[33m8f3bf3f[m push ios
+[33med89c6f[m push ios
+[33m6b64a61[m push ios
+[33m9ebc214[m push ios
+[33m15ebea3[m push ios
+[33m18cc3b8[m push ios
+[33mf95c65a[m push ios
+[33mb2f66e0[m push ios
+[33m21599c5[m get_activity_info  percent
+[33mb4f17fa[m push ios
+[33m87a8c59[m push all
+[33m3b7acef[m 20 msg a day
+[33md528a7f[m get_activity_info target energy
+[33m65fc91f[m api: find, add pet status
+[33mdc7fc4a[m Merge branch 'master' of github.com:xiaomaoqiu-gz/server
+[33m5df68fe[m Merge branch 'master' of github.com:xiaomaoqiu-gz/server
+[33m26b2140[m Merge branch 'master' of github.com:xiaomaoqiu-gz/server
+[33m923bd29[m Merge branch 'master' of github.com:xiaomaoqiu-gz/server
+[33mfbfb582[m svn 625 626
+[33m7432e6a[m push_msg online add battery and datetime
+[33mf0e3d26[m get activity info
+[33m3247f61[m get activity info
+[33m7d64aa4[m add pet info, get imei
+[33m92e1256[m send j03
+[33m608bc10[m add send command params log
+[33m9143ad4[m add send command params log
+[33m973355f[m target_amount
+[33m4f48522[m float to string
+[33m0cbb4de[m float to string
+[33m414fd68[m common list bug
+[33m5752ddf[m cancel send command
+[33m1bc30fc[m send push msg logic
+[33m0d0f7ba[m bind logic send command to device
+[33mbb52c9c[m bind logic-cancel send command to device
+[33mfca2661[m bind logic
+[33m7fa6b9e[m imei
+[33m440c5b1[m 恢复发送终端命令
+[33mac47fbb[m 恢复发送终端命令
+[33mc100dbf[m active check token update getuinfo birthday
+[33m2172c34[m add live battery push
+[33m932b4cc[m add live battery push
+[33m13ef353[m set sport info
+[33mf340b08[m add pet info
+[33me2c2ee4[m add pet info
+[33m522b424[m add pet info
+[33mc256cd5[m add pet info
+[33m30f6dd2[m add two flash light add pet info
+[33mc3346f8[m add two flash light add pet info
+[33m1fa0b40[m add pet info
+[33m127ddeb[m flash light
+[33m1443739[m add pet info
+[33m4f6278d[m Merge branch 'master' of github.com:xiaomaoqiu-gz/server
+[33ma2e502f[m add target energy
+[33m9403ecf[m remove delete's modified_count
+[33mdeb5750[m fix get pet info bug
+[33m9339bce[m bind pet info
+[33m5a35f27[m fix bind account
+[33m04b55e9[m fix get old account bug
+[33mf60e88b[m fix get old account bug
+[33m116bef2[m fix get old account bug
+[33mb254163[m add push message
+[33m8bbe6b2[m push message
+[33m5acf4a4[m bind logic update
+[33m8a94a19[m Merge branch 'master' of github.com:xiaomaoqiu-gz/server
+[33m5e424de[m unbind device
+[33m8f01773[m send jo3
+[33ma17ce06[m fix common wifi bug
+[33ma1912b0[m record j01 time
+[33m3f95514[m upload logo
+[33m5512bc4[m upload logo
+[33m19e2e69[m alter get base info
+[33m74abbb2[m terminal_handler
+[33m0965b31[m update device reboot
+[33m14f78f3[m get_base_info update
+[33m8f81d27[m set home wifi
+[33m8ad3fd4[m implement at home
+[33m276a038[m implement at home
+[33m8d240cc[m create indexes delete pet_wifi_info
+[33m4ba25df[m alter low battery to 30 add pet no home and device launch push msg if open gps, close the signal light alter light params alter database name implement pet at home logic
+[33mb740935[m update sort of wifi list
+[33m93bfd0f[m ten minutes wifi
+[33m9be4063[m add pet info
+[33md63ffb2[m add pet info
+[33m34d179b[m update add_pet_info add imei valide
+[33mc50e5d6[m svn_1.06 4:37 622
+[33m3b9ab71[m svn_5.31 1:20 620
+[33mada1392[m svn_5.31 12:52 619
+[33m2d5a6a0[m svn_5.31 12:52 618
+[33m3af6355[m svn_5.31 12:52 617
+[33mf563e5a[m svn_5.31 12:52 613
+[33mf8b1c8f[m svn_5.31 12:52 612
+[33m78a6e4a[m svn_5.31 12:52 611
+[33m784e564[m svn_5.31 12:51 610
+[33m6eb70fb[m svn_5.31 12:51 609
+[33m9ffe037[m svn_5.31 12:50 608
+[33m23ca3f6[m svn_5.31 12:50
+[33mccf11f2[m svn_5.25
+[33m0cec0ab[m svn_5.24
+[33m3d11931[m update proto add has_reboot to get pet info
+[33mb130778[m update reboot
+[33m1c2e482[m update api proto add pet_type_id validate alter send_device_cmd error add has_reboot key
+[33m62c1cd3[m add pet info
+[33m72996e3[m add reboot api add ten minutes wifi list logic
+[33m0aa594a[m alter logic of binding
+[33m66617a8[m use mongo replset
+[33mbff4474[m add mongo Replset add validation of pet_type_id add try...catch to search user
+[33mef6db4c[m update protxt
+[33me98c599[m /pet/add_pet_info   pet_type_id（1:狗  2:猫 -1 其他） /pet/update_pet_info   pet_type_id（1:狗  2:猫 -1 其他） /device/get_info hardware_version:硬件版本 sim_deadline:sim卡过期时间 /device/add_device_info  old_account:18825180264
+[33m70b9ff0[m add PET type id
+[33mbf914a2[m remove pyc and out
+[33m80eb561[m alter logo server
+[33ma6fb8ce[m conflict
+[33ma6f1320[m remove pyc out
+[33mec4be20[m add launch script
+[33m571c39b[m Merge branch 'master' of github.com:xiaomaoqiu-gz/server
+[33m65b453e[m remove idea
+[33mae0a735[m change mongodb address
+[33md5049e6[m add start.sh
+[33md97f818[m gitignore
+[33m4e4a933[m merge
+[33mcd59be9[m first
+[33m16c7082[m 初始化

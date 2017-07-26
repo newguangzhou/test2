@@ -265,15 +265,17 @@ def is_in_home(home_wifi,common_wifi,wifi_list):
             "wifi_bssid"]:
             return True
     num = 0;
-    for item in common_wifi:
-        if item["wifi_ssid"] in wifi_list_names:
-            num += 1;
-            if num > 2:
-                return True
+    if common_wifi is not None:
+         for item in common_wifi:
+             if item["wifi_ssid"] in wifi_list_names:
+                 num += 1;
+                 if num > 2:
+                     return True
     return False
 
 def get_new_common_wifi(common_wifi,wifi_info,home_wifi):
     if home_wifi is None:
+        logging.debug("home_wifi is None in get_new_common_wifi")
         common_wifi = []
         return common_wifi
     alpha = 2
@@ -300,6 +302,10 @@ def get_new_common_wifi(common_wifi,wifi_info,home_wifi):
                 item["cal"] = item_cal
 
     if home_wifi_power is None or home_wifi_power < -99:
+        if home_wifi_power is None:
+            logging.debug("home_wifi_power is None in get_new_common_wifi")
+        else:
+            logging.debug("home_wifi_power < -99 in get_new_common_wifi：%d" % home_wifi_power)
         return common_wifi
 
 

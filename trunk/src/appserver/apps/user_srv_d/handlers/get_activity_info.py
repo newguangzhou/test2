@@ -68,7 +68,7 @@ class GetActivityInfo(HelperHandler):
                 date_data["date"] = utils.date2str(item["diary"].date())
                 date_data["target_amount"] = target_amount
                 #date_data["reality_amount"] = '{:.1f}'.format(item["calorie"] /1000)
-                date_data["reality_amount"] = int(item["calorie"] / 1000)
+                date_data["reality_amount"] = (item["calorie"] / 1000.0)
                 percentage = 0
                 if date_data["target_amount"] <= 0:
                     percentage = 0

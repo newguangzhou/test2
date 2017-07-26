@@ -293,7 +293,8 @@ class TerminalHandler:
                         yield self.msg_rpc.push_android(uids=str(uid),
                                                         payload=msg,
                                                         pass_through=1)
-                        yield self.msg_rpc.push_ios(uids=str(uid), payload=msg)
+                        #ios去掉推送
+                        # yield self.msg_rpc.push_ios(uids=str(uid), payload=msg)
                     except Exception, e:
                         logger.exception(e)
         now_time = datetime.datetime.now()
@@ -323,7 +324,7 @@ class TerminalHandler:
                                               sport_info)
 
             if pk.location_info.locator_status == terminal_packets.LOCATOR_STATUS_MIXED:
-                wifi_info = utils.change_wifi_info(pk.location_info.mac)
+                wifi_info = utils.change_wifi_info(pk.location_info.mac, True)
                 common_wifi = pet_info.get("common_wifi", None)
                 home_wifi = pet_info.get("home_wifi", None)
                 new_common_wifi = utils.get_new_common_wifi(
@@ -441,8 +442,9 @@ class TerminalHandler:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,
                                                 pass_through=1)
-                yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                        payload=msg)
+                # ios去掉推送
+                # yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
+                #                                         payload=msg)
             except Exception, e:
                 logger.exception(e)
         else:
@@ -653,15 +655,12 @@ class TerminalHandler:
             if uid is None:
                 logger.warning("imei:%s uid not find", imei)
                 return
-            pet_is_in_home = pet_info.get("pet_is_in_home", None)
-            if pet_is_in_home is None:
-                logger.warning("pet_is_in_home is None")
-            else:
-                if (pet_is_in_home == 1 and is_in_home) or (
-                        pet_is_in_home == 0 and not is_in_home):
-                    return
-                yield self.pet_dao.update_pet_info(
-                    pet_info["pet_id"], {"pet_is_in_home": 1 - pet_is_in_home})
+            pet_is_in_home = pet_info.get("pet_is_in_home", 1)
+            if (pet_is_in_home == 1 and is_in_home) or (
+                    pet_is_in_home == 0 and not is_in_home):
+                return
+            yield self.pet_dao.update_pet_info(
+                pet_info["pet_id"], pet_is_in_home = 1 - pet_is_in_home)
 
             msg = push_msg.new_pet_not_home_msg()
             if is_in_home:
@@ -670,11 +669,31 @@ class TerminalHandler:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,
                                                 pass_through=1)
-                yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                        payload=msg)
+                # yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
+                #                                         payload=msg)
             except Exception, e:
                 logger.exception(e)
 
+            try:
+                if (is_in_home):
+                    yield self.msg_rpc.push_android(uids=str(uid),
+                                                    title="小毛球智能提醒",
+                                                    desc="宠物现在回家了",
+                                                    payload=msg,
+                                                    pass_through=0)
+                    yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
+                                                            payload="宠物现在回家了")
+                else:
+                    yield self.msg_rpc.push_android(uids=str(uid),
+                                                    title="小毛球智能提醒",
+                                                    desc="宠物现在离家了，请确定安全",
+                                                    payload=msg,
+                                                    pass_through=0)
+                    yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
+                                                            payload="宠物现在离家了，请确定安全")
+
+            except Exception,e:
+                logger.exception(e)
         else:
             logger.warning("imei:%s uid not find", imei)
 

@@ -9,15 +9,17 @@ class MongoConfig:
         if kwargs.has_key("debug_mode"):
             debug_mode = kwargs["debug_mode"]
 
+        # hosts = "192.168.111.169:27018,192.168.111.169:27019,192.168.111.169:27020"
+        hosts = "127.0.0.1:27018,127.0.0.1:27019,127.0.0.1:27020"
         #self.default_meta = MongoMeta(hosts="172.19.101.61", port=27017, username="root", passwd="mgdb8w34asdadat51!((")
-        self.default_meta = MongoMeta(hosts="127.0.0.1:27018,127.0.0.1:27019,127.0.0.1:27020",
+        self.default_meta = MongoMeta(hosts=hosts,
                                       port=27020,
                                       username="root",
                                       passwd="mgdb8w34asdadat51!((",
                                       repl_set_name="mongo_shard1")
 
         if debug_mode != 0:
-            self.default_meta = MongoMeta(hosts="127.0.0.1:27018,127.0.0.1:27019,127.0.0.1:27020",
+            self.default_meta = MongoMeta(hosts=hosts,
                                           port=27020,
                                           username="root",
                                           passwd="mgdb8w34asdadat51!((",

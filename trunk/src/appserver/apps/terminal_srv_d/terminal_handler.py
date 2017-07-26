@@ -669,8 +669,8 @@ class TerminalHandler:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,
                                                 pass_through=1)
-                yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                        payload=msg)
+                # yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
+                #                                         payload=msg)
             except Exception, e:
                 logger.exception(e)
 
@@ -681,12 +681,16 @@ class TerminalHandler:
                                                     desc="宠物现在回家了",
                                                     payload=msg,
                                                     pass_through=0)
+                    yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
+                                                            payload="宠物现在回家了")
                 else:
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     title="小毛球智能提醒",
                                                     desc="宠物现在离家了，请确定安全",
                                                     payload=msg,
                                                     pass_through=0)
+                    yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
+                                                            payload="宠物现在离家了，请确定安全")
 
             except Exception,e:
                 logger.exception(e)

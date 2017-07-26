@@ -37,7 +37,7 @@ class PetActivity(HelperHandler):
                 return
             pet_id = int(self.get_argument("pet_id"))
             activity_type = int(self.get_argument("activity_type"))
-            if activity_type not in (1, 2) or pet_id == -1:
+            if activity_type not in (0,1,2) or pet_id == -1:
                 self.arg_error("activity_type")
             else:
                 try:

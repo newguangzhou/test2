@@ -62,7 +62,7 @@ class PushMessageCmd(HelperHandler):
                                        )
             else:
                 yield msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                payload=msg)
+                                                payload="宠物现在回家了")
         except Exception, e:
             logging.warning("OnPushMessage, error, %s %s",
                             self.dump_req(), self.dump_exp(e))

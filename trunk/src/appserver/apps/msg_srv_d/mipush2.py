@@ -70,7 +70,7 @@ class MiPush2:
                               desc,
                               extras):
         message = PushMessage().description(extras).sound_url(
-            "default").badge(1).category(
+            "default").badge(0).category(
             "action").title("test_title")
         # recv = self._sender1.send_to_alias(message.message_dict_ios(), str_uids)
         logging.debug("ios_push_useraccount_message:%s" % message.message_dict_ios())

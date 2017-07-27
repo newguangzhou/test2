@@ -445,6 +445,24 @@ class TerminalHandler:
                 # ios去掉推送
                 # yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
                 #                                         payload=msg)
+                if battery_statue == 1:
+                    yield self.msg_rpc.push_android(uids=str(uid),
+                                                    title="小毛球智能提醒",
+                                                    desc="设备低电量，请注意充电",
+                                                    payload=msg,
+                                                    pass_through=0)
+                    yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
+                                                       payload="设备低电量，请注意充电")
+                elif battery_statue ==2 :
+                    yield self.msg_rpc.push_android(uids=str(uid),
+                                                    title="小毛球智能提醒",
+                                                    desc="设备超低电量，请注意充电",
+                                                    payload=msg,
+                                                    pass_through=0)
+                    yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
+                                                            payload="设备超低电量，请注意充电")
+
+
             except Exception, e:
                 logger.exception(e)
         else:
@@ -708,6 +726,10 @@ class TerminalHandler:
                 return
             msg = push_msg.new_device_on_line_msg(battery,
                                                   utils.date2str(datetime))
+            self.pet_dao.update_pet_info(pet_info["pet_id"],
+                                         device_status=1
+                                         )
+
             try:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,
@@ -732,6 +754,9 @@ class TerminalHandler:
                     logger.warning("imei:%s uid not find", imei)
                     continue
                 msg = push_msg.new_device_off_line_msg()
+                self.pet_dao.update_pet_info(pet_info["pet_id"],
+                                             device_status=0
+                                             )
                 try:
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     payload=msg,

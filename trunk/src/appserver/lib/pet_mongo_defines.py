@@ -41,7 +41,9 @@ _PET_INFOS_TB_ROW_DEFINE = {
     "home_wifi": (None, dict),
     "home_location": (None,dict),
     "common_wifi": ([], list),
-    "has_reboot":(0,int)
+    "has_reboot":(0,int),
+    "device_status":(1,int) #设备状态  0表示离线，1表示在线
+
 }
 
 """

@@ -18,6 +18,7 @@ from logout import Logout
 #from favour_goods import FavourGoods
 #from get_my_sale_records import GetMySaleRecords
 #from mark_shop import MarkShop
+from device_status import DeviceStatus
 from regen_token import RegenToken
 from pet_location import PetLocation
 from pet_location2 import PetLocation2

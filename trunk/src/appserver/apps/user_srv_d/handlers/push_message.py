@@ -50,44 +50,44 @@ class PushMessageCmd(HelperHandler):
         msg = push_msg.new_pet_not_home_msg()
 
         battery_statue=self.get_argument("battery_statue",0)
-        if battery_statue == 1:
-            yield self.msg_rpc.push_android(uids=str(uid),
+        if battery_statue == '1':
+            yield msg_rpc.push_android(uids=str(uid),
                                             title="小毛球智能提醒",
                                             desc="设备低电量，请注意充电",
                                             payload=msg,
                                             pass_through=0)
-            yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
+            yield msg_rpc.push_ios_useraccount(uids=str(uid),
                                                     payload="设备低电量，请注意充电")
-        elif battery_statue == 2:
-            yield self.msg_rpc.push_android(uids=str(uid),
+        elif battery_statue == '2':
+            yield msg_rpc.push_android(uids=str(uid),
                                             title="小毛球智能提醒",
                                             desc="设备超低电量，请注意充电",
                                             payload=msg,
                                             pass_through=0)
-            yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
+            yield msg_rpc.push_ios_useraccount(uids=str(uid),
                                                     payload="设备超低电量，请注意充电")
 
 
-        try:
-            yield msg_rpc.push_android(uids=str(uid),
-                                       title="小毛球智能提醒",
-                                       desc="宠物现在离家了，请确定安全",
-                                       payload=msg,
-                                       pass_through=pass_through
-                                       )
-            if push_type == "alias":
-                yield msg_rpc.push_ios(uids=str(uid),
-                                       payload=msg
-                                       )
-            else:
-                yield msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                payload="宠物现在回家了")
-        except Exception, e:
-            logging.warning("OnPushMessage, error, %s %s",
-                            self.dump_req(), self.dump_exp(e))
-            res["status"] = error_codes.EC_SYS_ERROR
-            self.res_and_fini(res)
-            return
+        # try:
+        #     yield msg_rpc.push_android(uids=str(uid),
+        #                                title="小毛球智能提醒",
+        #                                desc="宠物现在离家了，请确定安全",
+        #                                payload=msg,
+        #                                pass_through=pass_through
+        #                                )
+        #     if push_type == "alias":
+        #         yield msg_rpc.push_ios(uids=str(uid),
+        #                                payload=msg
+        #                                )
+        #     else:
+        #         yield msg_rpc.push_ios_useraccount(uids=str(uid),
+        #                                         payload="宠物现在回家了")
+        # except Exception, e:
+        #     logging.warning("OnPushMessage, error, %s %s",
+        #                     self.dump_req(), self.dump_exp(e))
+        #     res["status"] = error_codes.EC_SYS_ERROR
+        #     self.res_and_fini(res)
+        #     return
         # 成功
         logging.debug("OnPushmessage, success %s",
                       self.dump_req())

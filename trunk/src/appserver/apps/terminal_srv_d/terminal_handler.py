@@ -726,6 +726,10 @@ class TerminalHandler:
                 return
             msg = push_msg.new_device_on_line_msg(battery,
                                                   utils.date2str(datetime))
+            self.pet_dao.update_pet_info(pet_info["pet_id"],
+                                         device_status=1
+                                         )
+
             try:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,
@@ -750,6 +754,9 @@ class TerminalHandler:
                     logger.warning("imei:%s uid not find", imei)
                     continue
                 msg = push_msg.new_device_off_line_msg()
+                self.pet_dao.update_pet_info(pet_info["pet_id"],
+                                             device_status=0
+                                             )
                 try:
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     payload=msg,

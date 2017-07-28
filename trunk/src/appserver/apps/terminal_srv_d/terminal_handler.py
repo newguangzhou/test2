@@ -212,6 +212,7 @@ class TerminalHandler:
         self._OnOpLog('c2s header=%s pk=%s peer=%s' % (header, str_pk, peer),
                       pk.imei)
 
+        self.updateDeviceStatus(pk.imei)
         if need_send_ack:
             ack = terminal_packets.ReportLocationInfoAck(header.sn)
             yield self._send_res(conn_id, ack, pk.imei, peer)
@@ -359,6 +360,7 @@ class TerminalHandler:
             str_pk, conn_id, peer)
         self._broadcastor.register_conn(conn_id, pk.imei)
         self.imei_timer_mgr.add_imei(pk.imei)
+        self.updateDeviceStatus(pk.imei)
         # Ack
         sleep_data = []
         pet_info = yield self.pet_dao.get_pet_info(("pet_id", ),
@@ -408,6 +410,7 @@ class TerminalHandler:
                       (header, body, str_pk, peer), pk.imei)
         self._broadcastor.register_conn(conn_id, pk.imei)
         self.imei_timer_mgr.add_imei(pk.imei)
+        self.updateDeviceStatus(pk.imei)
 
         logger.info(
             "OnHeartbeatReq, parse packet success, pk=\"%s\" id=%u peer=%s",
@@ -733,9 +736,7 @@ class TerminalHandler:
                 return
             msg = push_msg.new_device_on_line_msg(battery,
                                                   utils.date2str(datetime))
-            self.pet_dao.update_pet_info(pet_info["pet_id"],
-                                         device_status=1
-                                         )
+            self.updateDeviceStatus(imei)
 
             try:
                 yield self.msg_rpc.push_android(uids=str(uid),
@@ -747,6 +748,15 @@ class TerminalHandler:
 
         else:
             logger.warning("imei:%s uid not find", imei)
+
+#更新在线状态
+    @gen.coroutine
+    def updateDeviceStatus(self,imei):
+        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
+                                                   device_imei=imei)
+        yield self.pet_dao.update_pet_info(pet_info["pet_id"],
+                                     device_status=1
+                                     )
 
     @gen.coroutine
     def _OnImeiExpires(self, imeis):

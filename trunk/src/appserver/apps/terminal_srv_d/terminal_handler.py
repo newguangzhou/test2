@@ -309,9 +309,12 @@ class TerminalHandler:
             battery_status = 1
             if pk.electric_quantity < ULTRA_LOW_BATTERY:
                 battery_status = 2
-        yield self._SendBatteryMsg(pk.imei, pk.electric_quantity,
-                                   battery_status, now_time)
-
+        device_info= yield  self.new_device_dao.get_device_info(pk.imei,("battery_status",))
+        if device_info is not None:
+            if not utils.battery_status_isequal(device_info["battery_status"],battery_status) :
+                yield self.update_device_info(pk.imei,{"battery_status":battery_status})
+                yield self._SendBatteryMsg(pk.imei, pk.electric_quantity,
+                                           battery_status, now_time)
         if pet_info is not None:
             sport_info = {}
             sport_info["diary"] = datetime.datetime.combine(
@@ -496,8 +499,12 @@ class TerminalHandler:
             battery_status = 1
             if pk.electric_quantity < ULTRA_LOW_BATTERY:
                 battery_status = 2
-        yield self._SendBatteryMsg(pk.imei, pk.electric_quantity,
-                                   battery_status, now_time)
+        device_info= yield  self.new_device_dao.get_device_info(pk.imei,("battery_status",))
+        if device_info is not None:
+            if not utils.battery_status_isequal(device_info["battery_status"],battery_status) :
+                yield self.update_device_info(pk.imei,{"battery_status":battery_status})
+                yield self._SendBatteryMsg(pk.imei, pk.electric_quantity,
+                                           battery_status, now_time)
 
         yield self._SendOnlineMsg(pk.imei, pk.electric_quantity, now_time)
 

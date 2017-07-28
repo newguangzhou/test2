@@ -21,6 +21,7 @@ class GetPetStatusInfo(HelperHandler):
 
         self.set_header("Content-Type", "application/json; charset=utf-8")
         pet_dao = self.settings["pet_dao"]
+        device_dao=self.settings["device_dao"]
         conf = self.settings["appconfig"]
 
         res = {"status": error_codes.EC_SUCCESS}
@@ -28,6 +29,7 @@ class GetPetStatusInfo(HelperHandler):
         uid = None
         token = None
         pet_id = -1
+        device_imei=None
 
         try:
             uid = int(self.get_argument("uid"))
@@ -47,7 +49,7 @@ class GetPetStatusInfo(HelperHandler):
             info = yield pet_dao.get_user_pets(uid, ("pet_id",
                                                      "pet_status",
                                                      "pet_is_in_home",
-                                                     "device_status"
+                                                     "device_status","device_imei"
                                                      ))
             if not info:
                 logging.warning("GetPetStatusInfo, not found, %s",
@@ -55,6 +57,7 @@ class GetPetStatusInfo(HelperHandler):
                 res["status"] = error_codes.EC_PET_NOT_EXIST
                 self.res_and_fini(res)
                 return
+            device_imei=info["device_imei"]
             if pet_id != info["pet_id"]:
                 res["status"] = error_codes.EC_PET_NOT_EXIST
                 self.res_and_fini(res)
@@ -66,6 +69,25 @@ class GetPetStatusInfo(HelperHandler):
             logging.error("GetPetStatusInfo, error, %s %s", self.dump_req(),
                           self.dump_exp(e))
             res["status"] = error_codes.EC_SYS_ERROR
+            self.res_and_fini(res)
+            return
+        try:
+            info = yield device_dao.get_device_info(
+                device_imei, ("electric_quantity","j01_repoter_date","battery_status"))
+            if not info:
+                logging.warning("GetPetStatusInfo, not found, %s",
+                                self.dump_req())
+                res["status"] = error_codes.EC_DEVICE_NOT_EXIST
+                self.res_and_fini(res)
+                return
+            battery_last_get_time = info.get("j01_repoter_date", "")
+            if battery_last_get_time != "":
+                battery_last_get_time = utils.date2str(battery_last_get_time)
+            res["battery_last_get_time"] = battery_last_get_time
+            res["battery_level"] = info.get("electric_quantity", -1)
+            res["battery_status"]=info.get("battery_status",0)
+        except Exception,e:
+            logging.debug("GetPetStatusInfo, error %s", self.dump_req())
             self.res_and_fini(res)
             return
 

@@ -29,6 +29,7 @@ DEVICE_TB_ROW_DEFINE = {
     "light_status": (0, int),
     "device_name": (u"", unicode),  #设备名称
     "status": (0, int),  #报警状态
+    "battery_status":(0,int), #电量状态 0 正常，1，低电量  2，超低电量
     #"location"
 }
 """

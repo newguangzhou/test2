@@ -325,6 +325,13 @@ def get_new_common_wifi(common_wifi,wifi_info,home_wifi):
                     common_wifi.append(item)
                     break
     return common_wifi
+#电量级别是否相等
+def battery_status_isequal(localbattery_status,nowbattery_status):
+    if (localbattery_status is None or localbattery_status ==0) and nowbattery_status==0:
+        return True
+    if localbattery_status == nowbattery_status:
+        return True
+    return False
 
 
 

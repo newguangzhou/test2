@@ -41,7 +41,7 @@ class PetLocation(HelperHandler):
             return
 
         try:
-            info = yield pet_dao.get_user_pets(uid, ("pet_id", "device_imei"))
+            info = yield pet_dao.get_user_pets(uid, ("pet_id", "device_imei","pet_status"))
             if info is None or pet_id != info["pet_id"]:
                 logging.warning("OnPetLocation, not found, %s",
                                 self.dump_req())
@@ -56,7 +56,8 @@ class PetLocation(HelperHandler):
                 self.res_and_fini(res)
                 return
             else:
-                terminal_rpc.send_j13(imei)
+                if info["pet_status"] != 2:
+                    terminal_rpc.send_j13(imei)
 
             res_info = yield pet_dao.get_location_infos(pet_id)
             if res_info is not None:

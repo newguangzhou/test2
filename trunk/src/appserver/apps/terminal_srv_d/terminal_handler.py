@@ -310,9 +310,9 @@ class TerminalHandler:
             battery_status = 1
             if pk.electric_quantity < ULTRA_LOW_BATTERY:
                 battery_status = 2
-        device_info= yield  self.new_device_dao.get_device_info(pk.imei,("battery_status",))
+        device_info= yield self.new_device_dao.get_device_info(pk.imei,("battery_status",))
         if device_info is not None:
-            if not utils.battery_status_isequal(device_info["battery_status"],battery_status) :
+            if not utils.battery_status_isequal(device_info.get("battery_status",0),battery_status) :
                 yield self.update_device_info(pk.imei,{"battery_status":battery_status})
                 yield self._SendBatteryMsg(pk.imei, pk.electric_quantity,
                                            battery_status, now_time)

@@ -35,6 +35,7 @@ _PET_INFOS_TB_ROW_DEFINE = {
     "device_imei": (None, unicode),
     "target_step": (0, int),
     "target_energy": (0, float),
+    "recommend_energy": (0, float),
     "pet_status": (0, int),
     "pet_no_search_status": (0, int),#只记录遛狗和在家两种状态  方便前台关闭gps后返回之前的状态
     "pet_is_in_home": (1,int), # 1 在家  0 不在家
@@ -43,7 +44,6 @@ _PET_INFOS_TB_ROW_DEFINE = {
     "common_wifi": ([], list),
     "has_reboot":(0,int),
     "device_status":(1,int) #设备状态  0表示离线，1表示在线
-
 }
 
 """

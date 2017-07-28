@@ -39,6 +39,7 @@ class UpdatePetInfo(HelperHandler):
         description = None
         imei = None
         target_energy = 0
+        recommend_energy = 0
 
         try:
             uid = int(self.get_argument("uid"))
@@ -48,6 +49,7 @@ class UpdatePetInfo(HelperHandler):
                 return
             pet_id = int(self.get_argument("pet_id"))
             target_energy = float(self.get_argument("target_energy", 0))
+            recommend_energy=float(self.get_argument("recommend_energy",0))
             # imei = self.get_argument("imei")
             nick = self.get_argument("nick", None)
             logo_url = self.get_argument("logo_url", None)
@@ -102,6 +104,7 @@ class UpdatePetInfo(HelperHandler):
             return
         info = {"mod_date": datetime.datetime.today()}
         info["target_energy"] = target_energy
+        info["recommend_energy"]=recommend_energy
         if pet_type_id is not None:
             info["pet_type_id"] = pet_type_id
         if nick is not None:

@@ -46,7 +46,7 @@ class GetPetInfo(HelperHandler):
 
             info = yield pet_dao.get_user_pets(uid, (
                 "pet_id", "nick", "logo_url", "birthday", "sex", "device_imei",
-                "target_step", "weight", "pet_type_id", "description", "target_energy"))
+                "target_step", "weight", "pet_type_id", "description", "target_energy","recommend_energy"))
             if not info:
                 logging.warning("OnGetPetInfo, not found, %s", self.dump_req())
                 res["status"] = error_codes.EC_PET_NOT_EXIST
@@ -60,6 +60,8 @@ class GetPetInfo(HelperHandler):
                     res[k] = "%.2f" % v
                 elif k== "target_energy":
                     res[k] = "%.2f" % v
+                elif k=="recommend_energy":
+                    res[k]="%.2f" % v
                 else:
                     res[k] = v
 

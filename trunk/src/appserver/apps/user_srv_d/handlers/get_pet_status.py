@@ -61,7 +61,7 @@ class GetPetStatusInfo(HelperHandler):
                 return
             res["pet_status"] = info.get("pet_status",0)
             res["pet_is_in_home"]=info.get("pet_is_in_home",1)
-            res["device_status"]=info.get("device_status")
+            res["device_status"]=info.get("device_status",1)
         except Exception, e:
             logging.error("GetPetStatusInfo, error, %s %s", self.dump_req(),
                           self.dump_exp(e))

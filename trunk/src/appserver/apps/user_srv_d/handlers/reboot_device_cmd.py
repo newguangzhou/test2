@@ -71,7 +71,7 @@ class RebootDeviceCmd(HelperHandler):
             self.res_and_fini(res)
             return
 
-        info = {"has_reboot":1}
+        info = {"has_reboot":1,"device_status":0}
         try:
             yield pet_dao.update_pet_info(pet_id, **info)
         except Exception, e:

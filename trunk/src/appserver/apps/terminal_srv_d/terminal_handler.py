@@ -122,7 +122,7 @@ class TerminalHandler:
                 elif header.directive == "J12":  # 设备发送的心跳请求
                     disp_status = yield self._OnHeartbeatReq(
                         conn_id, header, body, conn.GetPeer())
-                elif header.directive == "J17":  # 设备上传状态数据
+                elif header.directive == "J17":  # 设备上传状态数据F
                     disp_status = yield self._OnReportTerminalStatusReq(
                         conn_id, header, body, conn.GetPeer())
                 elif header.directive == "J18":  # 设备上传日志数据
@@ -754,7 +754,8 @@ class TerminalHandler:
     def updateDeviceStatus(self,imei):
         pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
                                                    device_imei=imei)
-        yield self.pet_dao.update_pet_info(pet_info["pet_id"],
+        if pet_info is not None:
+            yield self.pet_dao.update_pet_info(pet_info["pet_id"],
                                      device_status=1
                                      )
 

@@ -505,7 +505,7 @@ class TerminalHandler:
         yield self._SendOnlineMsg(pk.imei, pk.electric_quantity, now_time)
         device_info= yield  self.new_device_dao.get_device_info(pk.imei,("battery_status",))
         if device_info is not None:
-            if not utils.battery_status_isequal(device_info["battery_status"],battery_status) :
+            if not utils.battery_status_isequal(device_info.get("battery_status", 0),battery_status) :
                 yield self.update_device_info(pk.imei,{"battery_status":battery_status})
                 yield self._SendBatteryMsg(pk.imei, pk.electric_quantity,
                                            battery_status, now_time)

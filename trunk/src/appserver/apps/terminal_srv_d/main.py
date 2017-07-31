@@ -25,8 +25,7 @@ from lib.pet_dao import PetDAO
 import terminal_handler
 import http_handlers
 import imei_timer
-import unreply_msg
-import noheart_msg
+import unreply_msg2
 from lib.msg_rpc import MsgRPC
 from lib.sys_config import SysConfig
 from lib import sys_config
@@ -77,7 +76,7 @@ if __name__ == '__main__':
     thread_trace.trace_start("trace.html")
     broadcastor = broadcast.BroadCastor(conn_mgr)
     imei_timer_mgr = imei_timer.ImeiTimer()
-    unreply_msg_mgr = unreply_msg.UnreplyMsgMgr()
+    unreply_msg_mgr = unreply_msg2.UnreplyMsgMgr2()
     # no_heart_msg_mgr = noheart_msg.NoHeartMsgMgr()
     IOLoop.current().run_sync(_async_init)
     msg_rpc = MsgRPC(SysConfig.current().get(sys_config.SC_MSG_RPC_URL))

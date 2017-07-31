@@ -81,7 +81,7 @@ class Login(HelperHandler):
             expire_secs = SysConfig.current().get(
                 sys_config.SC_TOKEN_EXPIRE_SECS)
             token = yield auth_dao.gen_user_token(uid, True, device_type,device_token,
-                expire_secs, custom_headers["platform"], custom_headers["device_model"])
+                expire_secs, custom_headers["platform"], custom_headers["device_model"],custom_headers.get("x_os_int",23))
             res["uid"] = uid
             res["token"] = token
             res["token_expire_secs"] = expire_secs

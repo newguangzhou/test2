@@ -367,7 +367,7 @@ class AuthMongoDAO(MongoDAOBase):
         raise gen.Return(ret)
 
     def gen_token(self, type, auth_id, multi_login, device_type, device_token,
-                  expire_times, platform, device_model):
+                  expire_times, platform, device_model,device_os_int):
         def _callback(mongo_client, **kwargs):
             tb = mongo_client[auth_def.AUTH_DATABASE][auth_def.AUTH_STATUS_TB]
 
@@ -395,6 +395,7 @@ class AuthMongoDAO(MongoDAOBase):
             row["expire_times"] = expire_times
             row["platform"] = platform
             row["device_model"] = device_model
+            row["device_os_int"]=device_os_int
 
             if not multi_login:
                 tb.delete_many(cond)
@@ -410,10 +411,10 @@ class AuthMongoDAO(MongoDAOBase):
     """
 
     def gen_user_token(self, uid, multi_login, device_type, device_token,
-                       expire_times, platform, device_model):
+                       expire_times, platform, device_model,device_os_int):
         return self.gen_token(type_defines.USER_AUTH, uid, multi_login,
                               device_type, device_token, expire_times,
-                              platform, device_model)
+                              platform, device_model,device_os_int)
 
     # def get_cur_login_info(self, type, auth_id):
     #    info = {}

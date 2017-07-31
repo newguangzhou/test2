@@ -82,6 +82,8 @@ DEVICE_IOS = 2
 
 
 HTTP_HD_OS = "X-OS"
+#android系统版本号,默认23
+HTTP_HD_OS_INT="x_os_int"
 HTTP_HD_APPVERSION = "X-App-Version"
 # HTTP_HD_DEVICE_MODEL = "X-OS-Name"
 HTTP_HD_DEVICE_MODEL = "device_model"

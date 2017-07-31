@@ -59,7 +59,7 @@ class RegenToken(HelperHandler):
             
             new_token = yield auth_dao.gen_user_token(uid, True, device_type, device_token,
                                                       SysConfig.current().get(sys_config.SC_TOKEN_EXPIRE_SECS),
-                                                      custom_headers["platform"], custom_headers["device_model"])
+                                                      custom_headers["platform"], custom_headers["device_model"],custom_headers.get("x_os_int",23))
 
             res["new_token"] = new_token
             res["token_expire_secs"] = SysConfig.current().get(sys_config.SC_TOKEN_EXPIRE_SECS)

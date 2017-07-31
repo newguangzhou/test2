@@ -56,7 +56,7 @@ class PetLocation(HelperHandler):
                 self.res_and_fini(res)
                 return
             else:
-                if info["pet_status"] != 2:
+                if info.get("pet_status",0) != 2:
                     terminal_rpc.send_j13(imei)
 
             res_info = yield pet_dao.get_location_infos(pet_id)

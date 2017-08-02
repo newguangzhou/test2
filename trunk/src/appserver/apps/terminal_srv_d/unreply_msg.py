@@ -64,7 +64,6 @@ class UnreplyMsgMgr:
 
     def get_un_reply_msg(self, imei):
         logger.debug("get_un_reply_msg imei:%s ", imei)
-
         msgs = []
         seqs = self.imei_msg_dict.get(imei, None)
         if seqs is not None:
@@ -95,4 +94,4 @@ class UnreplyMsgMgr:
         if len(need_retry_msgs) > 0:
             self.on_un_reply_msg_retry_func(need_retry_msgs)
         for retry_msg in need_retry_msgs:
-            self.timer.add_key((imei, seq), self.key_expires)
+            self.timer.add_key((retry_msg[1], retry_msg[0]), self.key_expires)

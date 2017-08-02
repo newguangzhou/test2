@@ -69,6 +69,7 @@ class PetLocation(HelperHandler):
                     res["radius"] = tmp.get("radius", -1)
                     res["location_time"] = int(time.mktime(tmp[
                         "locator_time"].timetuple()))
+                    res["locator_status"]=tmp.get("locator_status",5)
             else:
                 res["status"] = error_codes.EC_NODATA
         except Exception, e:

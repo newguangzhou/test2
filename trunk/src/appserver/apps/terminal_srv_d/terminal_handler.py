@@ -26,7 +26,7 @@ ULTRA_LOW_BATTERY = 15
 class TerminalHandler:
     executor = ThreadPoolExecutor(5)
 
-    def __init__(self, *args, **kwargs):
+    def  __init__(self, *args, **kwargs):
         if len(args) > 0:
             self.conn_mgr = args[0]
         else:
@@ -147,6 +147,8 @@ class TerminalHandler:
 
                 if not disp_status:
                     conn.close()
+                    #设备离线消息
+
                     return
         except Exception, e:
             logger.exception("id=%u peer=%s,Exception:%s", conn_id,
@@ -218,6 +220,7 @@ class TerminalHandler:
             yield self._send_res(conn_id, ack, pk.imei, peer)
 
         locator_time = pk.location_info.locator_time
+        locator_status=pk.location_info.locator_status
         lnglat = []
         lnglat2 = []
         lnglat3 = []
@@ -273,7 +276,9 @@ class TerminalHandler:
         if len(lnglat) != 0:
             location_info = {"lnglat": lnglat,
                              "radius": radius,
-                             "locator_time": locator_time}
+                             "locator_time": locator_time,
+                             "locator_status":locator_status
+                             }
             if len(lnglat2) != 0:
                 location_info["lnglat2"] = lnglat2
                 location_info["radius2"] = radius2

@@ -91,6 +91,7 @@ PET_LOCATION_TB_ROW_DEFINE = {
     "radius": (0, int),
     "radius2": (0, int),
     "radius3": (0, int),
+    "locator_status":(5,int),
     #"location"
 }
 

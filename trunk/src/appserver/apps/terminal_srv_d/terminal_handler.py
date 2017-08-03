@@ -440,13 +440,26 @@ class TerminalHandler:
 
     @gen.coroutine
     def _SendBatteryMsg(self, imei, battery, battery_statue, datetime):
-        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
+        pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid","device_os_int","mobile_num"),
                                                    device_imei=imei)
         if pet_info is not None:
             uid = pet_info.get("uid", None)
             if uid is None:
                 logger.warning("imei:%s uid not find", imei)
                 return
+
+            message=''
+            if battery_statue == 1:
+                message="设备低电量，请注意充电"
+                if pet_info.get('device_os_int', 23) > 23 and pet_info.get('mobile_num') is not None:
+                    self.msg_rpc.send_sms(pet_info.get('mobile_num'), message)
+                    return
+            elif battery_statue == 2:
+                message="设备超低电量，请注意充电"
+                if pet_info.get('device_os_int', 23) > 23 and pet_info.get('mobile_num') is not None:
+                    self.msg_rpc.send_sms(pet_info.get('mobile_num'), message)
+                    return
+
             msg = push_msg.new_now_battery_msg(
                 utils.date2str(datetime), battery, battery_statue)
             try:
@@ -681,7 +694,7 @@ class TerminalHandler:
     @gen.coroutine
     def _SendPetInOrNotHomeMsg(self, imei, is_in_home):
         pet_info = yield self.pet_dao.get_pet_info(
-            ("pet_id", "uid", "pet_is_in_home"),
+            ("pet_id", "uid", "pet_is_in_home","device_os_int","mobile_num"),
             device_imei=imei)
         if pet_info is not None:
             uid = pet_info.get("uid", None)
@@ -707,6 +720,16 @@ class TerminalHandler:
             except Exception, e:
                 logger.exception(e)
 
+            message=""
+            if is_in_home:
+                message="宠物现在回家了"
+            else:
+                message="宠物现在离家了，请确定安全"
+
+            if pet_info.get('device_os_int',23) > 23 and pet_info.get('mobile_num') is not None:
+                self.msg_rpc.send_sms(pet_info.get('mobile_num'),message)
+                return
+
             try:
                 if (is_in_home):
                     yield self.msg_rpc.push_android(uids=str(uid),
@@ -724,6 +747,9 @@ class TerminalHandler:
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
                                                             payload="宠物现在离家了，请确定安全")
+
+
+
 
             except Exception,e:
                 logger.exception(e)

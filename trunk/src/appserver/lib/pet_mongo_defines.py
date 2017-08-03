@@ -43,7 +43,9 @@ _PET_INFOS_TB_ROW_DEFINE = {
     "home_location": (None,dict),
     "common_wifi": ([], list),
     "has_reboot":(0,int),
-    "device_status":(1,int) #设备状态  0表示离线，1表示在线
+    "device_status":(1,int), #设备状态  0表示离线，1表示在线
+    "device_os_int": (23, int),  # android 设备os  int 值
+    "mobile_num": None,  # 手机号码
 }
 
 """

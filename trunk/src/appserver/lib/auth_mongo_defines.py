@@ -94,6 +94,7 @@ _AUTH_STATUS_TB_ROW_DEFINE = {
     "expire_times": 0,  # 过期时间，为0代表为永不过期，以秒为单位
     "device_type": None,  # 设备类型
     "device_token": None,  # 设备token
+    "device_os_int":(23,int),  #android 设备os  int 值
     "device_model": None,  # 设备型号
     "platform": 0,  #平台
     "state": 1,  # 状态，1正常，0无效

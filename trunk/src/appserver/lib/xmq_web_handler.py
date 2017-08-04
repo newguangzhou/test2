@@ -74,6 +74,7 @@ class XMQWebHandler(tornado.web.RequestHandler):
         else:
             platform = PLATFORM_IOS
 
+        ret["x_os_int"]=self.request.headers.get(HTTP_HD_OS_INT,"23")
         ret["platform"] = platform
         ret["app_version"] = self.request.headers.get(HTTP_HD_APPVERSION, "")
         ret["device_model"] = self.request.headers.get(HTTP_HD_DEVICE_MODEL, "")

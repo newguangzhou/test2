@@ -29,6 +29,7 @@ class Login(HelperHandler):
 
         res = {"status": error_codes.EC_SUCCESS}
         auth_dao = self.settings["auth_dao"]
+        pet_dao=self.settings["pet_dao"]
         custom_headers = self.custom_headers()
         conf = self.settings["appconfig"]
 
@@ -80,11 +81,13 @@ class Login(HelperHandler):
         # 生成token
             expire_secs = SysConfig.current().get(
                 sys_config.SC_TOKEN_EXPIRE_SECS)
+            x_os_int=custom_headers.get("x_os_int",23)
             token = yield auth_dao.gen_user_token(uid, True, device_type,device_token,
-                expire_secs, custom_headers["platform"], custom_headers["device_model"])
+                expire_secs, custom_headers["platform"], custom_headers["device_model"],x_os_int)
             res["uid"] = uid
             res["token"] = token
             res["token_expire_secs"] = expire_secs
+            yield pet_dao.update_pet_info_by_uid(uid,mobile_num=phone_num,device_os_int=x_os_int)
         except Exception, e:
             logging.error("OnLogin, error, %s %s", self.dump_req(),
                           self.dump_exp(e))

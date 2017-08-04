@@ -24,7 +24,6 @@ class SendSMS(xmq_web_handler.XMQWebHandler):
         self.set_header("Content-Type", "application/json; charset=utf-8")
         
         res = {"status":error_codes.EC_SUCCESS}
-        conf = self.settings["appconfig"]
         sms_sender = self.settings["sms_sender"]
         
         # 获取请求参数
@@ -38,28 +37,11 @@ class SendSMS(xmq_web_handler.XMQWebHandler):
             logging.warning("OnSendSMS, invalid args, %s", self.dump_req())
             res["status"] = error_codes.EC_INVALID_ARGS
             self.res_and_fini(res)
-            return 
-        
-        # 检查短信平台是否初始化过
-        if not self.settings["sms_registered"]:
-            try:
-                yield sms_sender.open()
-            except Exception,e:
-                logging.warning("OnSendSMS, open error, %s %s", self.dump_req(), self.dump_exp(e))
-                res["status"] = error_codes.EC_SYS_ERROR 
-                self.res_and_fini(res)
-                return  
-            self.settings["sms_registered"] = True 
-            
-        # 发送短信
-        try:
-            yield sms_sender.send_sms(phone_num, sms)
-        except Exception,e:
-            logging.warning("OnSendSMS, failed, %s %s", self.dump_req(), self.dump_exp(e))
-            res["status"] = error_codes.EC_SYS_ERROR
-            self.res_and_fini(res)
-            return 
-        
+            return
+        else:
+            ok = yield sms_sender(sms,phone_num)
+            if not ok:
+                res = {"status": error_codes.EC_FAIL}
         # 发送成功
         logging.debug("OnSendSMS, success, %s", self.dump_req())
         self.res_and_fini(res)

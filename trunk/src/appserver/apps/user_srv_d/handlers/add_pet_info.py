@@ -40,6 +40,7 @@ class AddPetInfo(HelperHandler):
         description = None
         imei = None
         target_energy = 0
+        recommend_energy=0
 
         try:
             uid = int(self.get_argument("uid"))
@@ -50,6 +51,7 @@ class AddPetInfo(HelperHandler):
                 return
             imei = self.get_argument("imei",None)
             target_energy = float(self.get_argument("target_energy",0))
+            recommend_energy=float(self.get_argument("recommend_energy",0))
             nick = self.get_argument("nick", None)
             logo_url = self.get_argument("logo_url", None)
             logo_small_url = self.get_argument("logo_small_url", None)
@@ -83,6 +85,7 @@ class AddPetInfo(HelperHandler):
         pet_id = yield gid_rpc.alloc_pet_gid()
         info = {"pet_type_id": pet_type_id,"pet_id":pet_id}
         info["target_energy"] = target_energy
+        info["recommend_energy"]=recommend_energy
         if nick is not None:
             info["nick"] = nick
         if logo_url is not None:

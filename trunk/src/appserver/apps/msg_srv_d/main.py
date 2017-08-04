@@ -23,7 +23,7 @@ from sms_ymrt import YMRTSMS
 from sms_nexmo import NEXMOSMS
 from mipush import MIPush
 from mipush2 import MiPush2
-from sms_dayu import send_verify
+from sms_dayu import send_verify,send_message
 import handlers
 
 define("debug_mode", 0, int,
@@ -46,8 +46,8 @@ mongo_conf = mongo_pyloader.ReloadInst("MongoConfig",
 # Set process title
 setproctitle.setproctitle(conf.proctitle)
 
-# Init sms
-sms_sender = NEXMOSMS(pyloader)
+# # Init sms
+# sms_sender = NEXMOSMS(pyloader)
 
 # Init web application
 webapp = Application(
@@ -64,7 +64,7 @@ webapp = Application(
     appconfig=conf,
     sms_registered=True,
     auth_dao=AuthDAO.new(mongo_meta=mongo_conf.auth_mongo_meta),
-    sms_sender=sms_sender,
+    sms_sender=send_message,
     verify_sender=send_verify,
     xiaomi_push2= MiPush2(conf.mipush_appsecret_android, conf.mipush_pkg_name,
                           conf.mipush_appsecret_ios, conf.mipush_bundle_id, True),

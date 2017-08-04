@@ -98,6 +98,7 @@ webapp = Application(
         (r"/device/send_get_wifi_list_cmd", handlers.SendGetWifiListCmd),
         (r"/device/get_wifi_list", handlers.GetWifiList),
         (r"/device/reboot_device_cmd", handlers.RebootDeviceCmd),
+        (r"/device/get_device_status",handlers.GetPetStatusInfo),
     ],
     autoreload=True,
     pyloader=pyloader,

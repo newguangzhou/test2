@@ -106,7 +106,7 @@ class AddPetInfo(HelperHandler):
 
             pet_info = yield pet_dao.get_user_pets(uid, ("device_imei",))
             if pet_info is not None:
-                imei = pet_info["device_imei"]
+                imei = pet_info.get("device_imei")
                 if imei is None:
                     logging.warning("AddPetInfo, error, %s", self.dump_req())
                     res["status"] = error_codes.EC_DEVICE_NOT_EXIST

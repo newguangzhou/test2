@@ -451,12 +451,12 @@ class TerminalHandler:
             message=''
             if battery_statue == 1:
                 message="设备低电量，请注意充电"
-                if pet_info.get('device_os_int', 23) > 23 and pet_info.get('mobile_num') is not None:
+                if (int)(pet_info.get('device_os_int', 23)) > 23 and pet_info.get('mobile_num') is not None:
                     self.msg_rpc.send_sms(pet_info.get('mobile_num'), message)
                     return
             elif battery_statue == 2:
                 message="设备超低电量，请注意充电"
-                if pet_info.get('device_os_int', 23) > 23 and pet_info.get('mobile_num') is not None:
+                if (int)(pet_info.get('device_os_int', 23)) > 23 and pet_info.get('mobile_num') is not None:
                     self.msg_rpc.send_sms(pet_info.get('mobile_num'), message)
                     return
 
@@ -726,7 +726,7 @@ class TerminalHandler:
             else:
                 message="宠物现在离家了，请确定安全"
 
-            if pet_info.get('device_os_int',23) > 23 and pet_info.get('mobile_num') is not None:
+            if (int)(pet_info.get('device_os_int',23)) > 23 and pet_info.get('mobile_num') is not None:
                 self.msg_rpc.send_sms(pet_info.get('mobile_num'),message)
                 return
 

@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class ImeiTimer:
-    def __init__(self, imei_timeout=8 * 60, check_timeout=10, check_num=5):
+    def __init__(self, imei_timeout=6 * 60, check_timeout=10, check_num=5):
         self.real_timer = SimpleTimer(None, check_num, check_timeout)
         self.imei_timeout = imei_timeout
 

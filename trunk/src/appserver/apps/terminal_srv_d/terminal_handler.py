@@ -278,7 +278,7 @@ class TerminalHandler:
                              "radius": radius,
                              "locator_time": locator_time,
                              "locator_status":locator_status,
-                             "time_stamp":time_stamp
+                             "server_recv_time":time_stamp
                              }
             if len(lnglat2) != 0:
                 location_info["lnglat2"] = lnglat2
@@ -310,7 +310,7 @@ class TerminalHandler:
             status=pk.status,
             electric_quantity=pk.electric_quantity,
             j01_repoter_date=now_time,
-            time_stamp=time_stamp )
+            server_recv_time=time_stamp )
 
         battery_status = 0
         if pk.electric_quantity < LOW_BATTERY:
@@ -671,7 +671,7 @@ class TerminalHandler:
         if len(lnglat) != 0:
             location_info = {"lnglat": lnglat,
                              "locator_time": pk.location_info.locator_time,
-                             "time_stamp":time_stamp
+                             "server_recv_time":time_stamp
                              }
             logger.info("imei:%s pk:%s location  lnglat:%s", pk, str_pk,
                         str(lnglat),time_stamp)
@@ -681,7 +681,7 @@ class TerminalHandler:
             pk.imei,
             status=pk.status,
             electric_quantity=pk.electric_quantity,
-            time_stamp=time_stamp
+            server_recv_time=time_stamp
             )
 
         pet_info = yield self.pet_dao.get_pet_info(

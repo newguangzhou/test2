@@ -88,7 +88,7 @@ PET_LOCATION_TB_ROW_DEFINE = {
     "pet_id": (None, int),
     "device_imei": (u"", unicode),
     "locator_time": (None, datetime.datetime),
-    "time_stamp":(None,int),
+    "server_recv_time":(None,int),
     "lnglat": ([], list),
     "lnglat2": ([], list),
     "lnglat3": ([], list),

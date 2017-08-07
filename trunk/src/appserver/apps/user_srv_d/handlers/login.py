@@ -87,7 +87,10 @@ class Login(HelperHandler):
             res["uid"] = uid
             res["token"] = token
             res["token_expire_secs"] = expire_secs
-            yield pet_dao.update_pet_info_by_uid(uid,mobile_num=phone_num,device_os_int=x_os_int)
+            try:
+                yield pet_dao.update_pet_info_by_uid(uid,mobile_num=phone_num,device_os_int=x_os_int)
+            except Exception, ex:
+                logging.error("update pet info by uid error %s", ex)
         except Exception, e:
             logging.error("OnLogin, error, %s %s", self.dump_req(),
                           self.dump_exp(e))

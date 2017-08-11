@@ -88,7 +88,6 @@ webapp = Application(
         (r"/pet/healthy/summary", handlers.Summary),
         (r"/pet/healthy/set_sport_info", handlers.SetTargetStep),
         (r"/pet/activity", handlers.PetActivity),
-        (r"/device/get_device_status", handlers.DeviceStatus),
         (r"/device/add_device_info", handlers.AddDeviceInfo),
         (r"/device/get_info", handlers.GetDeviceInfo),
         (r"/device/remove_device_info", handlers.RemoveDeviceInfo),

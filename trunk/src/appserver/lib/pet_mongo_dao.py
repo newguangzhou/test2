@@ -302,7 +302,7 @@ class PetMongoDAO(MongoDAOBase):
         def _callback(mongo_client, **kwargs):
             tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_INFOS_TB]
             res = tb.update_one({"uid": uid},
-                                {"$set": {"home_wifi": home_wifi}})
+                                {"$set": {"home_wifi": home_wifi,"common_wifi":[]}})
             return res
 
         ret = yield self.submit(_callback)

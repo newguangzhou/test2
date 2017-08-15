@@ -203,6 +203,16 @@ class TerminalHandler:
         # Parse packet
         pk = terminal_packets.ReportLocationInfoReq()
         pk.Parse(body)
+
+
+        # 突然跳零的处理
+        electric_quantity = pk.electric_quantity
+        device_info_electric_quantity = yield self.new_device_dao.get_device_info(pk.imei, ("electric_quantity",))
+        if device_info_electric_quantity - electric_quantity > 10:
+            electric_quantity = device_info_electric_quantity - 5
+        # 突然跳零的处理
+        pk.electric_quantity=electric_quantity
+
         str_pk = str(pk)
 
         logger.debug(

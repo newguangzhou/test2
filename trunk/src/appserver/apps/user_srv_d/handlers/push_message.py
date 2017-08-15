@@ -38,34 +38,40 @@ class PushMessageCmd(HelperHandler):
         pass_through = None
         try:
             uid = self.get_argument("uid")
-            push_type = self.get_argument("push_type","alias")
-            pass_through = self.get_argument("push_through",1)
+            push_type = self.get_argument("type","in_home")
         except Exception, e:
             logging.warning("OnPushMessage, invalid args, %s %s",
                             self.dump_req(), self.dump_exp(e))
             res["status"] = error_codes.EC_INVALID_ARGS
             self.res_and_fini(res)
             return
+	payload=''
+        if push_type=='in_home':
+	   payload="宠物现在回家了"
+	elif push_type=='out_home':
+	   payload="宠物现在离家了，请确定安全"
+	yield msg_rpc.push_ios_useraccount(uids=str(uid),
+						payload=payload)
+		
+        #msg = push_msg.new_pet_not_home_msg()
 
-        msg = push_msg.new_pet_not_home_msg()
-
-        battery_statue=self.get_argument("battery_statue",0)
-        if battery_statue == '1':
-            yield msg_rpc.push_android(uids=str(uid),
-                                            title="小毛球智能提醒",
-                                            desc="设备低电量，请注意充电",
-                                            payload=msg,
-                                            pass_through=0)
-            yield msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                    payload="设备低电量，请注意充电")
-        elif battery_statue == '2':
-            yield msg_rpc.push_android(uids=str(uid),
-                                            title="小毛球智能提醒",
-                                            desc="设备超低电量，请注意充电",
-                                            payload=msg,
-                                            pass_through=0)
-            yield msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                    payload="设备超低电量，请注意充电")
+        #battery_statue=self.get_argument("battery_statue",0)
+       # if battery_statue == '1':
+        #   yield msg_rpc.push_android(uids=str(uid),
+         #                                   title="小毛球智能提醒",
+          #                                  desc="设备低电量，请注意充电",
+           #                                 payload=msg,
+            #                                pass_through=0)
+           # yield msg_rpc.push_ios_useraccount(uids=str(uid),
+                                             #       payload="设备低电量，请注意充电")
+       # elif battery_statue == '2':
+        #    yield msg_rpc.push_android(uids=str(uid),
+           #                                 title="小毛球智能提醒",
+            #                                desc="设备超低电量，请注意充电",
+             #                               payload=msg,
+              #                              pass_through=0)
+          #  yield msg_rpc.push_ios_useraccount(uids=str(uid),
+           #                                         payload="设备超低电量，请注意充电")
 
 
         # try:

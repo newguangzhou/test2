@@ -51,6 +51,9 @@ class BroadCastor(object):
     def get_imei_by_conn(self, conn_id):
         imei = self._conn_imei_dict.get(conn_id, None)
         return imei
+    def get_connid_by_imei(self,imei):
+        connid=self._imei_conn_dict.get(imei,None)
+        return connid
 
     @gen.coroutine
     def send_msg_multicast(self, imeis, data):

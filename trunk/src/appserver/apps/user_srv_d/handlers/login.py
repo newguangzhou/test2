@@ -58,7 +58,7 @@ class Login(HelperHandler):
             #验证码则验证
             if phone_num == "13812345678" and code == "000000":
                 logging.warn("apple review login ")
-            elif phone_num in ['18565353866','18520120830','18825180264','18925146492','15622286095','18688416599','13751783082','13751775599' ,'13560487757','15218133828']:
+            elif phone_num in ['18565353866','18520120830','18825180264','18925146492','15622286095','18688416599','13751783082','13751775599' ,'13560487757','15218133828','18122440271']:
                 logging.warn("we login ")
             else:
                 st = yield self.check_verify_code("OnLogin", res, 1, phone_num,
@@ -87,7 +87,10 @@ class Login(HelperHandler):
             res["uid"] = uid
             res["token"] = token
             res["token_expire_secs"] = expire_secs
-            yield pet_dao.update_pet_info_by_uid(uid,mobile_num=phone_num,device_os_int=x_os_int)
+            try:
+                yield pet_dao.update_pet_info_by_uid(uid,mobile_num=phone_num,device_os_int=x_os_int)
+            except Exception, ex:
+                logging.error("update pet info by uid error %s", ex)
         except Exception, e:
             logging.error("OnLogin, error, %s %s", self.dump_req(),
                           self.dump_exp(e))

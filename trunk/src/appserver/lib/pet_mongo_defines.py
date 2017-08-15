@@ -46,6 +46,7 @@ _PET_INFOS_TB_ROW_DEFINE = {
     "device_status":(1,int), #设备状态  0表示离线，1表示在线
     "device_os_int": (23, int),  # android 设备os  int 值
     "mobile_num": None,  # 手机号码
+    "agree_policy":(0,int), #0是不同意，1是同意
 }
 
 """
@@ -87,6 +88,7 @@ PET_LOCATION_TB_ROW_DEFINE = {
     "pet_id": (None, int),
     "device_imei": (u"", unicode),
     "locator_time": (None, datetime.datetime),
+    "server_recv_time":(None,int),
     "lnglat": ([], list),
     "lnglat2": ([], list),
     "lnglat3": ([], list),

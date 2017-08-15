@@ -46,6 +46,7 @@ from get_base_info import GetBaseInfo
 from send_get_wifi_list_cmd import SendGetWifiListCmd
 from get_wifi_list import GetWifiList
 from reboot_device_cmd import RebootDeviceCmd
+from agree_policy import AgreePolicy
 from push_message import PushMessageCmd
 from about_xmpush import SetAliasHandler,UnSetAliasHandler,SetAccountHandler,UnSetAccountHandler
 from suggest import Suggest

@@ -26,6 +26,7 @@ import terminal_handler
 import http_handlers
 import imei_timer
 import unreply_msg2
+from test_handler import CloseTcp
 from lib.msg_rpc import MsgRPC
 from lib.sys_config import SysConfig
 from lib import sys_config
@@ -106,12 +107,14 @@ if __name__ == '__main__':
             (r"/send_command_params", http_handlers.SendParamsCommandHandler),
             (r"/send_commandj03", http_handlers.SendCommandHandlerJ03),
             (r"/send_commandj13", http_handlers.SendCommandHandlerJ13),
+            (r"/closesocket_byimei",CloseTcp)
         ],
         autoreload=True,
         debug=True,
         broadcastor=broadcastor,
         msg_rpc=msg_rpc,
         unreply_msg_mgr=unreply_msg_mgr,
+        conn_mgr=conn_mgr,
         # no_heart_msg_mgr=no_heart_msg_mgr,
         op_log_dao=OPLogDAO.new(mongo_meta=mongo_conf.op_log_mongo_meta), )
 

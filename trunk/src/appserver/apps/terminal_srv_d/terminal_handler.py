@@ -175,6 +175,9 @@ class TerminalHandler:
 
         if self.terminal_proto_guarder.has_key(conn_id):
             del self.terminal_proto_guarder[conn_id]
+        conn.close()
+        #打日志
+        imei=self._broadcastor.get_imei_by_conn(conn_id)
 
         self._broadcastor.un_register_conn(conn_id)
 
@@ -206,10 +209,10 @@ class TerminalHandler:
 
 
         # 突然跳零的处理
-        electric_quantity = pk.electric_quantity
+        electric_quantity = (int)(pk.electric_quantity)
         device_info_electric_quantity = yield self.new_device_dao.get_device_info(pk.imei, ("electric_quantity",))
-        if device_info_electric_quantity - electric_quantity > 10:
-            electric_quantity = device_info_electric_quantity - 5
+        if (int)(device_info_electric_quantity.get("electric_quantity",0)) -(int)(electric_quantity) > 10 and (int)(device_info_electric_quantity.get("electric_quantity",0)) -(int)(electric_quantity) <100:
+            electric_quantity =(int)(device_info_electric_quantity.get("electric_quantity",0)) - 5
         # 突然跳零的处理
         pk.electric_quantity=electric_quantity
 
@@ -488,7 +491,9 @@ class TerminalHandler:
                                                     payload=msg,
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                       payload="设备低电量，请注意充电")
+                                                       payload="设备低电量，请注意充电",
+                                                       extra={"type":"low_battery"}
+                                                            )
                 elif battery_statue ==2 :
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     title="小毛球智能提醒",
@@ -496,7 +501,9 @@ class TerminalHandler:
                                                     payload=msg,
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                            payload="设备超低电量，请注意充电")
+                                                            payload="设备超低电量，请注意充电",
+                                                            extra={"type":"superlow_battery"}
+                                                            )
 
 
             except Exception, e:
@@ -755,7 +762,9 @@ class TerminalHandler:
                                                     payload=msg,
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                            payload="宠物现在回家了")
+                                                            payload="宠物现在回家了",
+                                                            extra={"type":"in_home"}
+                                                            )
                 else:
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     title="小毛球智能提醒",
@@ -763,7 +772,9 @@ class TerminalHandler:
                                                     payload=msg,
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                            payload="宠物现在离家了，请确定安全")
+                                                            payload="宠物现在离家了，请确定安全",
+                                                            extra={"type": "out_home"}
+                                                            )
 
 
 
@@ -790,7 +801,9 @@ class TerminalHandler:
                 yield self.msg_rpc.push_android(uids=str(uid),
                                                 payload=msg,
                                                 pass_through=1)
-                yield self.msg_rpc.push_ios(uids=str(uid), payload=msg)
+                # yield self.msg_rpc.push_ios_useraccount(uids=str(uid), payload=msg,
+                #                             extra={"type":"online"}
+                #                             )
             except Exception, e:
                 logger.exception(e)
 
@@ -827,7 +840,9 @@ class TerminalHandler:
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     payload=msg,
                                                     pass_through=1)
-                    yield self.msg_rpc.push_ios(uids=str(uid), payload=msg)
+                    # yield self.msg_rpc.push_ios(uids=str(uid), payload=msg)
+                    # yield self.msg_rpc.push_ios_useraccount(uids=str(uid), payload=msg,
+                    #                                         extra={"type": "offline"})
                     logger.debug("_OnImeiExpires imeis success:%s", str(imeis))
                 except Exception, e:
                     logger.exception(e)

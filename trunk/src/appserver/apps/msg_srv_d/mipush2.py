@@ -67,11 +67,11 @@ class MiPush2:
 
     def send_to_useraccount_ios(self,
                               str_uids,
-                              desc,
-                              extras):
-        message = PushMessage().description(extras).sound_url(
+                                payload,
+                                extra):
+        message = PushMessage().description(payload).sound_url(
             "default").badge(0).category(
-            "action").title("test_title")
+            "action").title("test_title").extra(extra)
         # recv = self._sender1.send_to_alias(message.message_dict_ios(), str_uids)
         logging.debug("ios_push_useraccount_message:%s" % message.message_dict_ios())
         recv = self._sender_ios.send_to_user_account(message.message_dict_ios(), str_uids)

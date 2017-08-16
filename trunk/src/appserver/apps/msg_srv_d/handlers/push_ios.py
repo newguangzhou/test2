@@ -32,20 +32,22 @@ class PushIOS(xmq_web_handler.XMQWebHandler):
             res["status"] = error_codes.EC_INVALID_ARGS
         else:
             desc = self.get_str_arg("desc")
+
             payload = self.get_str_arg("payload")
+            extra=self.get_str_arg("extra")
             push_type = self.get_argument("push_type", "alias")
             if push_type == "alias":
                 yield self.send_to_alias_ios(uids, desc, payload)
             elif push_type == "user_account":
-                yield self.send_to_useraccount_ios(uids, desc, payload)
+                yield self.send_to_useraccount_ios(uids,payload, extra)
 
         self.res_and_fini(res)
         return
 
     @run_on_executor
-    def send_to_useraccount_ios(self, str_uids, desc, extras):
+    def send_to_useraccount_ios(self, str_uids, payload, extra):
         xiaomi_push2 = self.settings["xiaomi_push2"]
-        return xiaomi_push2.send_to_useraccount_ios(str_uids, desc, extras)
+        return xiaomi_push2.send_to_useraccount_ios(str_uids, payload, extra)
 
     @run_on_executor
     def send_to_alias_ios(self, str_uids, desc, extras):

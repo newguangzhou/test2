@@ -39,7 +39,7 @@ class PushIOS(xmq_web_handler.XMQWebHandler):
             if push_type == "alias":
                 yield self.send_to_alias_ios(uids, desc, payload)
             elif push_type == "user_account":
-                yield self.send_to_useraccount_ios(uids,payload, extra)
+                yield self.send_to_useraccount_ios(uids,payload, {"type":extra})
 
         self.res_and_fini(res)
         return

@@ -492,7 +492,7 @@ class TerminalHandler:
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
                                                        payload="设备低电量，请注意充电",
-                                                       extra={"type":"low_battery"}
+                                                       extra="low_battery"
                                                             )
                 elif battery_statue ==2 :
                     yield self.msg_rpc.push_android(uids=str(uid),
@@ -502,7 +502,7 @@ class TerminalHandler:
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
                                                             payload="设备超低电量，请注意充电",
-                                                            extra={"type":"superlow_battery"}
+                                                            extra="superlow_battery"
                                                             )
 
 
@@ -763,7 +763,7 @@ class TerminalHandler:
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
                                                             payload="宠物现在回家了",
-                                                            extra={"type":"in_home"}
+                                                            extra="in_home"
                                                             )
                 else:
                     yield self.msg_rpc.push_android(uids=str(uid),
@@ -773,7 +773,7 @@ class TerminalHandler:
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
                                                             payload="宠物现在离家了，请确定安全",
-                                                            extra={"type": "out_home"}
+                                                            extra="out_home"
                                                             )
 
 

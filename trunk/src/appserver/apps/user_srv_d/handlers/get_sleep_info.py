@@ -100,6 +100,11 @@ class GetSleepInfo(HelperHandler):
                     date_data["light_sleep"] = '{:.1f}'.format(
                         light_delta.total_seconds() / 3600)
                     res["data"].append(date_data)
+            else:
+                date_data = {}
+                date_data["deep_sleep"] = 0
+                date_data["light_sleep"] = 0
+                res["data"].append(date_data)
 
         except Exception, e:
             logging.error("GetSleepInfo, error, %s %s", self.dump_req(),

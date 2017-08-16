@@ -79,6 +79,13 @@ class GetActivityInfo(HelperHandler):
                 date_data["percentage"] = percentage
                 date_data["target_amount"] = "%.2f" % date_data["target_amount"]
                 res["data"].append(date_data)
+        else:
+            date_data = {}
+            date_data["reality_amount"] =0
+            date_data["target_amount"] = target_amount
+            date_data["percentage"] = 0
+            res["data"].append(date_data)
+
         # 成功
         logging.debug("GetActivityInfo, success %s", self.dump_req())
         self.res_and_fini(res)

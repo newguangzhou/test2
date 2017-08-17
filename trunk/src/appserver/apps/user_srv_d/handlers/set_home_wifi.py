@@ -95,12 +95,19 @@ class SetHomeWifi(HelperHandler):
         try:
             uid = int(self.get_argument("uid"))
             token = self.get_argument("token")
+            pet_id=self.get_argument("pet_id")
             st = yield self.check_token("SetHomeWifi", res, uid, token)
             if not st:
                return
             wifi_ssid = self.get_argument("wifi_ssid")
             wifi_bssid = self.get_argument("wifi_bssid")
-            logging.debug("arround_wifi",self.request.body)
+            home_wifi={"wifi_ssid":wifi_ssid,"wifi_bssid":wifi_bssid}
+            # logging.error("arround_wifi",self.request.body)
+            arround_wifilist=json.loads(self.request.body)
+            new_common_wifi = utils.get_new_common_wifi_from_client(
+                None, arround_wifilist, home_wifi)
+            yield pet_dao.add_common_wifi_info(long(pet_id),
+                                                    new_common_wifi)
             # wifi_power = self.get_argument("wifi_power")
         except Exception, e:
             logging.warning("SetHomeWifi, invalid args, %s %s",

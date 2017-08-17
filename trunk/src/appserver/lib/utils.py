@@ -338,6 +338,44 @@ def get_new_common_wifi(common_wifi,wifi_info,home_wifi):
                     common_wifi.append(item)
                     break
     return common_wifi
+def get_new_common_wifi_from_client(common_wifi,wifi_info,home_wifi):
+    if home_wifi is None:
+        logging.debug("home_wifi is None in get_new_common_wifi")
+        common_wifi = []
+        return common_wifi
+    alpha = 2
+    beta = 1
+    home_wifi_power = None
+    home_wifi_bssid = home_wifi["wifi_bssid"]
+    for item in wifi_info:
+        if item["wifi_bssid"] == home_wifi_bssid:
+            home_wifi_power = int(item.get("wifi_power",-100))
+            break
+
+    if home_wifi_power is None or home_wifi_power < -99:
+        if home_wifi_power is None:
+            logging.debug("home_wifi_power is None in get_new_common_wifi")
+        else:
+            logging.debug("home_wifi_power < -99 in get_new_common_wifi：%d" % home_wifi_power)
+        return common_wifi
+
+
+    create_time = datetime.datetime.now()
+    for item in wifi_info:
+        item_power = int(item.get("wifi_power",-100))
+        item_cal = alpha * home_wifi_power+ beta * item_power
+        item["cal"] = item_cal
+        # item["create_time"] = create_time
+        if len(common_wifi) < 10:
+            common_wifi.append(item)
+        else:
+            for common_item in common_wifi:
+                common_item_cal = common_item["cal"]
+                if common_item_cal < item_cal:
+                    common_wifi.remove(common_item)
+                    common_wifi.append(item)
+                    break
+    return common_wifi
 #电量级别是否相等
 def battery_status_isequal(localbattery_status,nowbattery_status):
     if (localbattery_status is None or localbattery_status ==0) and nowbattery_status==0:

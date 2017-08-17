@@ -254,8 +254,10 @@ def is_imei_valide(imei):
 
 def is_in_home(home_wifi,common_wifi,wifi_list):
     wifi_list_names = []
+    #如果没有设置homewifi,直接判定在家
     if home_wifi is None:
         return True
+    # 如果有homewifi,判定在家
     for item in wifi_list:
         wifi_list_names.append(item["wifi_ssid"])
         if home_wifi is not None and home_wifi[
@@ -264,13 +266,24 @@ def is_in_home(home_wifi,common_wifi,wifi_list):
             "wifi_bssid"] == item[
             "wifi_bssid"]:
             return True
-    num = 0;
+    # 如果没有homewifi,有3个commonwifi在列表里，
+    num = 0
     if common_wifi is not None:
          for item in common_wifi:
              if item["wifi_ssid"] in wifi_list_names:
                  num += 1;
                  if num > 2:
                      return True
+    # 如果没有homewifi,不含用户设定的HomeWifi，但扫到的wifi < 6个，如果其中 >50% 以上的wifi在wifi列表中，则认为追踪器状态为：在家。
+    wifi_list_size=len(wifi_list)
+    num = 0
+    if wifi_list_size<6:
+        for item in common_wifi:
+            if item["wifi_ssid"] in wifi_list_names:
+                num+=1
+        if num>wifi_list_size/2:
+            return True
+
     return False
 
 def get_new_common_wifi(common_wifi,wifi_info,home_wifi):

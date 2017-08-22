@@ -67,6 +67,8 @@ class PetFind(HelperHandler):
             msg.gps_enable = gps_enable
             if msg.gps_enable == 1:
                 msg.report_time = 1
+            else:
+                msg.report_time = 0
 
             get_res = yield terminal_rpc.send_command_params(
                 imei=imei, command_content=str(msg))
@@ -105,8 +107,10 @@ class PetFind(HelperHandler):
                 msg.battery_threshold = 0
             else:
                 msg.battery_threshold = 25
-            send_weight = float(info.get("weight", 0.0))
-            send_sex = int(info.get("sex", 1))
+            # send_weight = float(info.get("weight", 0.0))
+            send_weight=15
+            # send_sex = int(info.get("sex", 1))
+            send_sex=1
             msg.light_flash = ((0, 0), (0, 0))
             msg.pet_weight = "%.2f" % (send_weight)
             msg.pet_gender = send_sex

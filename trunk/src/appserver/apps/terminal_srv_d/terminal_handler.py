@@ -333,7 +333,7 @@ class TerminalHandler:
         device_info= yield self.new_device_dao.get_device_info(pk.imei,("battery_status",))
         # if device_info is not None:
         if not utils.battery_status_isequal(device_info.get("battery_status",0),battery_status) :
-            yield self.new_device_dao.update_device_info(pk.imei,{"battery_status":battery_status})
+            yield self.new_device_dao.update_device_info(pk.imei,**{"battery_status":battery_status})
             yield self._SendBatteryMsg(pk.imei, pk.electric_quantity,
                                            battery_status, now_time)
         if pet_info is not None:
@@ -543,7 +543,7 @@ class TerminalHandler:
         device_info= yield  self.new_device_dao.get_device_info(pk.imei,("battery_status",))
         if device_info is not None:
             if not utils.battery_status_isequal(device_info.get("battery_status", 0),battery_status) :
-                yield self.new_device_dao.update_device_info(pk.imei,{"battery_status":battery_status})
+                yield self.new_device_dao.update_device_info(pk.imei,**{"battery_status":battery_status})
                 yield self._SendBatteryMsg(pk.imei, pk.electric_quantity,
                                            battery_status, now_time)
 

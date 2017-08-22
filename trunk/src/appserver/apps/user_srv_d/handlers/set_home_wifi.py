@@ -101,13 +101,6 @@ class SetHomeWifi(HelperHandler):
                return
             wifi_ssid = self.get_argument("wifi_ssid")
             wifi_bssid = self.get_argument("wifi_bssid")
-            home_wifi={"wifi_ssid":wifi_ssid,"wifi_bssid":wifi_bssid}
-            # logging.error("arround_wifi",self.request.body)
-            arround_wifilist=json.loads(self.request.body)
-            new_common_wifi = utils.get_new_common_wifi_from_client(
-                None, arround_wifilist, home_wifi)
-            yield pet_dao.add_common_wifi_info(long(pet_id),
-                                                    new_common_wifi)
             # wifi_power = self.get_argument("wifi_power")
         except Exception, e:
             logging.warning("SetHomeWifi, invalid args, %s %s",
@@ -128,6 +121,13 @@ class SetHomeWifi(HelperHandler):
             set_res = yield pet_dao.set_home_wifi(uid, {"wifi_ssid": wifi_ssid,
                                                         "wifi_bssid":
                                                         wifi_bssid})
+            home_wifi = {"wifi_ssid": wifi_ssid, "wifi_bssid": wifi_bssid}
+            # logging.error("arround_wifi",self.request.body)
+            arround_wifilist = json.loads(self.request.body)
+            new_common_wifi = utils.get_new_common_wifi_from_client(
+                None, arround_wifilist, home_wifi)
+            yield pet_dao.add_common_wifi_info(long(pet_id),
+                                               new_common_wifi)
             if set_res.matched_count <= 0:
                 logging.warning("SetHomeWifi, set fail, %s", self.dump_req())
                 res["status"] = error_codes.EC_SYS_ERROR

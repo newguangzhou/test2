@@ -305,12 +305,12 @@ def get_new_common_wifi(common_wifi,wifi_info,home_wifi):
     else:
         pre_seven_days_datetime = datetime.datetime.now() + datetime.timedelta(days=-7)
         for item in common_wifi:
-            item_create_time = item["create_time"]
+            item_create_time = item.get("create_time", datetime.datetime.now())
             if compare_time(pre_seven_days_datetime,item_create_time):
                 common_wifi.remove(item)
                 continue
             if home_wifi_power is not None:
-                item_power = int(item["deep"])
+                item_power = int(item.get("deep", -100))
                 item_cal = alpha * home_wifi_power+ beta * item_power
                 item["cal"] = item_cal
 
@@ -351,7 +351,8 @@ def get_new_common_wifi_from_client(common_wifi,wifi_info,home_wifi):
         if item["wifi_bssid"] == home_wifi_bssid:
             home_wifi_power = int(item.get("wifi_power",-100))
             break
-
+    if common_wifi is None:
+        common_wifi = []
     if home_wifi_power is None or home_wifi_power < -99:
         if home_wifi_power is None:
             logging.debug("home_wifi_power is None in get_new_common_wifi")

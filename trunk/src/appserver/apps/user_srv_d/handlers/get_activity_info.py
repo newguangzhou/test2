@@ -58,7 +58,9 @@ class GetActivityInfo(HelperHandler):
         res_info = yield pet_dao.get_sport_info(pet_id, start_date, end_date)
 
         pet_info = yield pet_dao.get_user_pets(uid,("target_energy",))
-        target_amount = pet_info.get("target_energy",0)
+        target_amount=0
+        if pet_info is not None:
+            target_amount = pet_info.get("target_energy",0)
         #print res_info
         res["data"] = []
         if res_info is not None:

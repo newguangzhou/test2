@@ -227,10 +227,11 @@ class TerminalHandler:
             sn_end_num = int(header.sn[-4:])
             if sn_end_num <= 3:
                 temp_diary = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-                res_info = self.pet_dao.get_sport_info(pet_info["pet_id"], temp_diary, temp_diary)
+                res_info =yield self.pet_dao.get_sport_info(pet_info["pet_id"], temp_diary, temp_diary)
                 if res_info is not None:
-                    if res_info.get("calorie", 0) > now_calorie:
-                        now_calorie = res_info.get("calorie", 0)
+                    for item in res_info:
+                        if item.get("calorie", 0) > now_calorie:
+                            now_calorie = item.get("calorie", 0)
         pk.calorie = now_calorie
         # 卡路里突然调零的处理
 

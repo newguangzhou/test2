@@ -269,8 +269,9 @@ def is_in_home(home_wifi,common_wifi,wifi_list):
     # 如果没有homewifi,有3个commonwifi在列表里，
     num = 0
     if common_wifi is not None:
-         for item in common_wifi:
-             if item["wifi_ssid"] in wifi_list_names:
+         for item in wifi_list_names:
+             for item2 in common_wifi:
+              if item == item2["wifi_ssid"]:
                  num += 1;
                  if num > 2:
                      return True
@@ -278,9 +279,10 @@ def is_in_home(home_wifi,common_wifi,wifi_list):
     wifi_list_size=len(wifi_list)
     num = 0
     if wifi_list_size<6:
-        for item in common_wifi:
-            if item["wifi_ssid"] in wifi_list_names:
-                num+=1
+        for item in wifi_list_names:
+            for item2 in common_wifi:
+              if item == item2["wifi_ssid"]:
+                 num+=1
         if num>wifi_list_size/2:
             return True
 

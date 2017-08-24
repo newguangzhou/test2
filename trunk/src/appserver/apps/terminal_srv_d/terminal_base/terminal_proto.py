@@ -238,7 +238,8 @@ class ProtoIO:
             return None
 
         if pkData[0] != "[":
-            raise ProtoException("Invalid terminal packet:%s" % (pkData))
+            # raise ProtoException("Invalid terminal packet:%s" % (pkData))
+            return None
         if pkData[1] == "]":
             self.read_buff.Seek(pos + 2)
             return SIMPLE_HEART

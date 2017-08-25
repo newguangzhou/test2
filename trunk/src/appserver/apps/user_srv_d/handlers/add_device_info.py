@@ -80,7 +80,10 @@ class AddDeviceInfo(HelperHandler):
                         res["old_account"] = ""
                         info = yield user_dao.get_user_info(old_uid, ("phone_num",))
                         logging.info("AddDeviceInfo,get phone num:%s",info)
-                        res["old_account"] = info.get("phone_num", "")
+                        old_account=str(info.get("phone_num", ""))
+                        if old_account is not None and len(old_account)>=9:
+                            old_account=old_account[0:3]+"_**_"+old_account[-4:]
+                        res["old_account"] = old_account
             except Exception, ee:
                 logging.warning("AddDeviceInfo, error, imei has exit but can't get the old account: %s %s",
                                 self.dump_req(),

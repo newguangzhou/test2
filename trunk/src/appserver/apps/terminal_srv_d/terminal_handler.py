@@ -845,6 +845,11 @@ class TerminalHandler:
         logger.debug("_OnImeiExpires imeis:%s", str(imeis))
 
         for imei in imeis:
+            conn_id=self._broadcastor.get_connid_by_imei(imei)
+            if conn_id is not None:
+                conn = self.conn_mgr.GetConn(conn_id)
+                if conn is not None:
+                    conn.close()
             pet_info = yield self.pet_dao.get_pet_info(("pet_id", "uid"),
                                                        device_imei=imei)
             if pet_info is not None:

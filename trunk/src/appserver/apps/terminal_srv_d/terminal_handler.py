@@ -217,7 +217,7 @@ class TerminalHandler:
                 device_info_electric_quantity.get("electric_quantity", 0)) - (int)(electric_quantity) < 100:
             electric_quantity = (int)(device_info_electric_quantity.get("electric_quantity", 0)) - 5
         elif (int)(device_info_electric_quantity.get("electric_quantity", 0)) - (int)(electric_quantity) > 10 and device_info_electric_quantity.get("electric_quantity", 0)==200:
-            electric_quantity=200
+            electric_quantity=100
         # 电量突然跳零的处理
         pk.electric_quantity = electric_quantity
 

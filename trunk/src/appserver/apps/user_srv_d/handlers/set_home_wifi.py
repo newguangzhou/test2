@@ -144,7 +144,7 @@ class SetHomeWifi(HelperHandler):
         self.res_and_fini(res)
 
     def post(self):
-        return self._deal_request_post()
+        return self._deal_request()
 
     def get(self):
         return self._deal_request()

@@ -334,7 +334,7 @@ def get_new_common_wifi(common_wifi,wifi_info,home_wifi):
             for item1 in common_wifi:
                 if item1["wifi_bssid"]==item["wifi_bssid"]:
                     common_wifi.remove(item1)
-                    common_wifi.append(item)
+            common_wifi.append(item)
         else:
             for common_item in common_wifi:
                 common_item_cal = common_item["cal"]
@@ -343,7 +343,7 @@ def get_new_common_wifi(common_wifi,wifi_info,home_wifi):
                     for item1 in common_wifi:
                         if item1["wifi_bssid"] == item["wifi_bssid"]:
                             common_wifi.remove(item1)
-                            common_wifi.append(item)
+                    common_wifi.append(item)
                     break
     return common_wifi
 def get_new_common_wifi_from_client(common_wifi,wifi_info,home_wifi):

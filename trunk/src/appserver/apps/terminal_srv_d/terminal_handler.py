@@ -94,6 +94,8 @@ class TerminalHandler:
         try:
             while True:
                 header, body = proto_io.Read()
+                if header == terminal_proto.ERROR_START:
+                    continue
                 if header is None:
                     break
                 if header == terminal_proto.SIMPLE_HEART:

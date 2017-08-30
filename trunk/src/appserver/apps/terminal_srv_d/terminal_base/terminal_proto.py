@@ -12,6 +12,7 @@ DATE_FIELD = 3
 FLOAT_FIELD = 4
 import logging
 SIMPLE_HEART = "[]"
+ERROR_START=-1
 _field_tps = set([INTEGER_FIELD, STRING_FIELD, DATE_FIELD, FLOAT_FIELD])
 
 
@@ -206,6 +207,8 @@ class ProtoIO:
 
         # Read header
         header = self._ReadHeader()
+        if header == ERROR_START:
+            return (ERROR_START,None)
         if header == SIMPLE_HEART:
             return (header, None)
 
@@ -238,9 +241,9 @@ class ProtoIO:
             return None
 
         if pkData[0] != "[":
-            raise ProtoException("Invalid terminal packet:%s" % (pkData))
-            # self.read_buff.Seek(pos + 1)
-            # return None
+            # raise ProtoException("Invalid terminal packet:%s" % (pkData))
+            self.read_buff.Seek(pos + 1)
+            return ERROR_START
         if pkData[1] == "]":
             self.read_buff.Seek(pos + 2)
             return SIMPLE_HEART

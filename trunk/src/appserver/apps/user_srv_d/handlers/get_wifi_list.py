@@ -5,6 +5,7 @@ import logging
 import traceback
 from lib import error_codes
 import datetime
+import time
 from tornado.web import asynchronous
 from tornado import gen
 from helper_handler import HelperHandler
@@ -85,6 +86,7 @@ class GetWifiList(HelperHandler):
                 logging.info("all_wifis:%s", all_wifis)
                 all_wifis.sort(key=lambda obj: int(obj.get('wifi_power')), reverse=True)
                 res["data"] = all_wifis
+                res["get_wifi_list_time"]=int(time.mktime(datetime.datetime.now().timetuple()))
 
         except Exception, e:
             logging.error("OnGetWifiListStatus, error, %s %s",

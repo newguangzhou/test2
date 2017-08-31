@@ -253,3 +253,22 @@ class NewDeviceMongoDAO(MongoDAOBase):
 
         ret = yield self.submit(_callback)
         raise gen.Return(ret)
+
+    @gen.coroutine
+    def get_arround_ten_minutes_wifi_info(self, imei,that_time):
+        def _callback(mongo_client, **kwargs):
+            tb = mongo_client[new_device_def.DEVICE_DATABASE][
+                new_device_def.DEVICE_WIFI_INFOS_TB]
+            # now_time = datetime.datetime.now();
+            pre_ten_minutes_time = that_time + datetime.timedelta(minutes=-10)
+            aft_ten_minutes_time= that_time + datetime.timedelta(minutes=10)
+            qcols = {"_id": 0}
+            cursor = tb.find({"imei": imei,
+                              "create_date": {"$gte": pre_ten_minutes_time, "$lt": aft_ten_minutes_time}},
+                             qcols)
+            if cursor.count() <= 0:
+                return None
+            return cursor
+
+        ret = yield self.submit(_callback)
+        raise gen.Return(ret)

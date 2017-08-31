@@ -32,6 +32,16 @@ def str2date(str, format="%Y%m%d"):
 def str2datetime(str, format="%Y%m%d%H%M%S"):
     st = time.strptime(str, format)
     return datetime.datetime.fromtimestamp(time.mktime(st))
+def stamp2data(stamp,format='%Y-%m-%d %H:%M:%S'):
+    x=time.localtime(stamp)
+    data_string=time.strftime('%Y-%m-%d %H:%M:%S',x)
+    yesr=int(data_string[0:4])
+    month=int(data_string[5:7])
+    day=int(data_string[8:10])
+    H=int(data_string[11:13])
+    M=int(data_string[14:16])
+    S=int(data_string[17:19])
+    return datetime.datetime(yesr, month, day, H, M, S)
 '''
 0:time1小
 1:time1大

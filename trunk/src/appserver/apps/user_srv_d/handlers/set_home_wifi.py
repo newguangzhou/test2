@@ -3,6 +3,7 @@ import json
 import urllib
 import logging
 import datetime
+import time
 import traceback
 from lib import error_codes
 
@@ -24,15 +25,21 @@ class SetHomeWifi(HelperHandler):
         user_dao = self.settings["user_dao"]
         pet_dao = self.settings["pet_dao"]
         terminal_rpc = self.settings["terminal_rpc"]
+        device_dao=self.settings["device_dao"]
         conf = self.settings["appconfig"]
         res = {"status": error_codes.EC_SUCCESS}
 
         uid = None
+        imei=None
+        pet_id=None
         wifi_ssid = None
         wifi_bssid = None
+        get_wifi_list_time=None
         # wifi_power = None
         try:
             uid = int(self.get_argument("uid"))
+            imei=self.get_argument("imei")
+            pet_id=self.get_argument("pet_id")
             token = self.get_argument("token")
             st = yield self.check_token("SetHomeWifi", res, uid, token)
             if not st:
@@ -40,6 +47,7 @@ class SetHomeWifi(HelperHandler):
             wifi_ssid = self.get_argument("wifi_ssid")
             wifi_bssid = self.get_argument("wifi_bssid")
             # wifi_power = self.get_argument("wifi_power")
+            get_wifi_list_time= self.get_argument("get_wifi_list_time",int(time.mktime(datetime.datetime.now().timetuple())))
         except Exception, e:
             logging.warning("SetHomeWifi, invalid args, %s %s",
                             self.dump_req(), str(e))
@@ -63,6 +71,20 @@ class SetHomeWifi(HelperHandler):
                 logging.warning("SetHomeWifi, set fail, %s", self.dump_req())
                 res["status"] = error_codes.EC_SYS_ERROR
                 self.res_and_fini(res)
+            else:
+                home_wifi = {"wifi_ssid": wifi_ssid, "wifi_bssid": wifi_bssid}
+                if imei is not None and pet_id is not None:
+                    final_common_wifi=[]
+                    arround_ten_minutes_wifi = yield device_dao.get_arround_ten_minutes_wifi_info(imei,utils.stamp2data(get_wifi_list_time))
+                    if arround_ten_minutes_wifi is not None:
+                        for col in arround_ten_minutes_wifi:
+                            logging.info("around_ten_minutes_wifi:%s", col)
+                            tmp = utils.change_wifi_info(col["wifi_info"], True)
+                            new_common_wifi = utils.get_new_common_wifi(
+                                [], tmp, home_wifi)
+                            final_common_wifi.append(new_common_wifi)
+                    yield pet_dao.add_common_wifi_info(long(pet_id),
+                                                       new_common_wifi)
         except Exception, e:
             logging.warning("SetHomeWifi, error, %s %s", self.dump_req(),
                             self.dump_exp(e))

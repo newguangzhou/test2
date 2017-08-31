@@ -47,7 +47,7 @@ class SetHomeWifi(HelperHandler):
             wifi_ssid = self.get_argument("wifi_ssid")
             wifi_bssid = self.get_argument("wifi_bssid")
             # wifi_power = self.get_argument("wifi_power")
-            get_wifi_list_time= self.get_argument("get_wifi_list_time",int(time.mktime(datetime.datetime.now().timetuple())))
+            get_wifi_list_time= self.get_argument("get_wifi_list_time",float(time.mktime(datetime.datetime.now().timetuple())))
         except Exception, e:
             logging.warning("SetHomeWifi, invalid args, %s %s",
                             self.dump_req(), str(e))
@@ -75,7 +75,7 @@ class SetHomeWifi(HelperHandler):
                 home_wifi = {"wifi_ssid": wifi_ssid, "wifi_bssid": wifi_bssid}
                 if imei is not None and pet_id is not None:
                     final_common_wifi=[]
-                    arround_ten_minutes_wifi = yield device_dao.get_arround_ten_minutes_wifi_info(imei,utils.stamp2data(get_wifi_list_time))
+                    arround_ten_minutes_wifi = yield device_dao.get_arround_ten_minutes_wifi_info(imei,utils.stamp2data(float(get_wifi_list_time)))
                     if arround_ten_minutes_wifi is not None:
                         for col in arround_ten_minutes_wifi:
                             logging.info("around_ten_minutes_wifi:%s", col)

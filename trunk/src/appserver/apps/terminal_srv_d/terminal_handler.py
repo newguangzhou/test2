@@ -228,13 +228,13 @@ class TerminalHandler:
         now_calorie = pk.calorie
         if pet_info is not None:
             # 卡路里重启调零的处理
-            sn_end_num = int(header.sn[-4:])
-            if sn_end_num <= 3:
-                temp_diary = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-                res_info =yield self.pet_dao.get_sport_info(pet_info["pet_id"], temp_diary, temp_diary)
-                if res_info is not None and res_info.count()>0:
-                        if res_info[0].get("calorie", 0) > now_calorie:
-                            now_calorie = res_info[0].get("calorie", 0)
+            # sn_end_num = int(header.sn[-4:])
+            # if sn_end_num <= 3:
+            temp_diary = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+            res_info =yield self.pet_dao.get_sport_info(pet_info["pet_id"], temp_diary, datetime.datetime.now())
+            if res_info is not None and res_info.count()>0:
+                    if res_info[0].get("calorie", 0) > now_calorie:
+                        now_calorie = res_info[0].get("calorie", 0)
         pk.calorie = now_calorie
         # 卡路里突然调零的处理
 

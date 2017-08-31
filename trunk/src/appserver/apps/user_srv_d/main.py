@@ -59,10 +59,6 @@ if support_setptitle:
 # Init web application
 webapp = Application(
     [
-        (r"/push/set_alias", handlers.SetAliasHandler),
-        (r"/push/unset_alias", handlers.UnSetAliasHandler),
-        (r"/push/set_account", handlers.SetAccountHandler),
-        (r"/push/unset_account", handlers.UnSetAccountHandler),
         (r"/user/get_verify_code", handlers.GetVerifyCode),
         (r"/user/push_message_cmd", handlers.PushMessageCmd),
         (r"/user/login", handlers.Login),
@@ -77,7 +73,6 @@ webapp = Application(
         (r"/pet/location_test", handlers.PetLocation2),
         (r"/pet/walk", handlers.PetWalk),
         (r"/pet/find", handlers.PetFind),
-        #(r"/pet/set_home_wifi", handlers.SetHomeWifi),
         (r"/pet/get_pet_type_info", handlers.PetTypeInfo),
         (r"/pet/get_pet_info", handlers.GetPetInfo),
         (r"/pet/get_pet_status", handlers.GetPetStatusInfo),

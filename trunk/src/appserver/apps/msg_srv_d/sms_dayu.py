@@ -18,7 +18,7 @@ def send_verify(code, product, phones):
                                  "f95d87510975317c9539d858c010f5a0"))
     req.extend = ""
     req.sms_type = "normal"
-    req.sms_free_sign_name = "登录验证"
+    req.sms_free_sign_name = "小毛球"
     req.sms_param = "{code:'%s',product:'%s'}" % (code, product)
     req.rec_num = phones
     req.sms_template_code = "SMS_18700741"

@@ -507,11 +507,11 @@ class TerminalHandler:
                 if battery_statue == 1:
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     title="小毛球智能提醒",
-                                                    desc="设备低电量，请注意充电",
+                                                    desc="追踪器电量低，请及时充电！",
                                                     payload=msg,
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                            payload="设备低电量，请注意充电",
+                                                            payload="追踪器电量超低，请及时充电！",
                                                             extra="low_battery"
                                                             )
                 elif battery_statue == 2:
@@ -737,7 +737,7 @@ class TerminalHandler:
     @gen.coroutine
     def _SendPetInOrNotHomeMsg(self, imei, is_in_home):
         pet_info = yield self.pet_dao.get_pet_info(
-            ("pet_id", "uid", "pet_is_in_home", "device_os_int", "mobile_num"),
+            ("pet_id", "uid","nick", "pet_is_in_home", "device_os_int", "mobile_num"),
             device_imei=imei)
         if pet_info is not None:
             uid = pet_info.get("uid", None)
@@ -764,10 +764,11 @@ class TerminalHandler:
                 logger.exception(e)
 
             message = ""
+            nick=pet_info.get("nick","宠物")
             if is_in_home:
-                message = "宠物现在回家了"
+                message = nick+"已安全到家。"
             else:
-                message = "宠物现在离家了，请确定安全"
+                message = nick+"可能离家，请确认安全。"
 
             if (int)(pet_info.get('device_os_int', 23)) > 23 and pet_info.get('mobile_num') is not None:
                 self.msg_rpc.send_sms(pet_info.get('mobile_num'), message)
@@ -777,21 +778,21 @@ class TerminalHandler:
                 if (is_in_home):
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     title="小毛球智能提醒",
-                                                    desc="宠物现在回家了",
+                                                    desc=message,
                                                     payload=msg,
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                            payload="宠物现在回家了",
+                                                            payload=message,
                                                             extra="in_home"
                                                             )
                 else:
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     title="小毛球智能提醒",
-                                                    desc="宠物现在离家了，请确定安全",
+                                                    desc=message,
                                                     payload=msg,
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                            payload="宠物现在离家了，请确定安全",
+                                                            payload=message,
                                                             extra="out_home"
                                                             )
 

@@ -50,6 +50,7 @@ from agree_policy import AgreePolicy
 from push_message import PushMessageCmd
 from about_xmpush import SetAliasHandler,UnSetAliasHandler,SetAccountHandler,UnSetAccountHandler
 from suggest import Suggest
+from get_config import AppConfig
 
 #from get_sale_info import GetSaleInfo
 #from get_sale_statist import GetSaleStatist

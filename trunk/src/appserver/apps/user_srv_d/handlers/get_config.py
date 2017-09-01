@@ -13,6 +13,7 @@ class AppConfig(HelperHandler):
     @asynchronous
     def _deal_request(self):
         logging.debug("AppConfig, %s", self.dump_req())
+        self.set_header("Content-Type", "application/json; charset=utf-8")
         res = {"status": error_codes.EC_SUCCESS}
         try:
             version = self.get_argument("version")

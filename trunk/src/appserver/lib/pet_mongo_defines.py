@@ -14,8 +14,8 @@ PET_DATABASE = "xmq_pet"
 """
 PET_INFOS_TB = "pet_infos"
 PET_INFOS_TB_INDEXES = [
-    IndexModel("pet_id", unique=True),
-    IndexModel("device_imei", unique=True),
+    IndexModel("pet_id"),
+    IndexModel("device_imei"),
     IndexModel("uid"),
 ]
 _PET_INFOS_TB_ROW_DEFINE = {

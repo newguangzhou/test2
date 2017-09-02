@@ -57,10 +57,14 @@ class GetActivityInfo(HelperHandler):
 
         res_info = yield pet_dao.get_sport_info(pet_id, start_date, end_date)
 
-        pet_info = yield pet_dao.get_user_pets(uid,("target_energy",))
+        pet_info = yield pet_dao.get_user_pets(uid,("target_energy","weight","sex"))
         target_amount=0
+        weight=15
+        sex=1
         if pet_info is not None:
             target_amount = pet_info.get("target_energy",0)
+            weight=pet_info.get("weight",15)
+            sex=pet_info.get("sex",1)
         #print res_info
         res["data"] = []
         if res_info is not None:
@@ -70,7 +74,7 @@ class GetActivityInfo(HelperHandler):
                 date_data["date"] = utils.date2str(item["diary"].date())
                 date_data["target_amount"] = target_amount
                 #date_data["reality_amount"] = '{:.1f}'.format(item["calorie"] /1000)
-                date_data["reality_amount"] = (item["calorie"] / 1000.0)
+                date_data["reality_amount"] = utils.calorie_transform((item["calorie"] / 1000.0),weight,sex)
                 percentage = 0
                 if date_data["target_amount"] <= 0:
                     percentage = 0

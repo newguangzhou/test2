@@ -403,6 +403,22 @@ def battery_status_isequal(localbattery_status,nowbattery_status):
         return True
     return False
 
+#卡路里转换
+# 如果性别 = 公，
+# 卡路里 = 设备卡路里 x 体重 / 15.00  x【定义的系数】
+# 如果性别 = 母，
+# 卡路里 = 设备卡路里 x 体重 / 15.00 x 1.10 / 1.29 x【定义的系数】
+# 【定义的系数】暂时设为1，后面可能会不断微调……
+def calorie_transform(raw_calorie,weight,sex,coefficient=1):
+    result_calorie=raw_calorie
+    if sex==1:
+        #公
+        result_calorie=raw_calorie*weight*coefficient/15.00
+    elif sex==2:
+        result_calorie=raw_calorie*weight*coefficient*1.10/(1.29*15.00)
+    return result_calorie
+
+
 
 
 

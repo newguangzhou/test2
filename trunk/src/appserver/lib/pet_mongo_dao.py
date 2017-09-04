@@ -32,7 +32,7 @@ class PetMongoDAO(MongoDAOBase):
         MongoDAOBase.__init__(self, *args, **kwargs)
 
     @gen.coroutine
-    def add_pet_info(self, **kwargs):
+    def add_pet_info(self,uid, **kwargs):
         pet_info = kwargs
 
         def _callback(mongo_client, **kwargs):
@@ -52,7 +52,9 @@ class PetMongoDAO(MongoDAOBase):
                     "Validate pet infos row failed, invalid column \"%s\"",
                     exp_col)
 
-            tb.insert_one(row)
+            # tb.insert_one(row)
+            res = tb.update_one({"uid": uid}, {"$set": row},
+                                upsert=True)
 
         yield self.submit(_callback)
 
@@ -169,7 +171,10 @@ class PetMongoDAO(MongoDAOBase):
     def bind_device(self, uid, imei, pet_id):
         def _callback(mongo_client, **kwargs):
             tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_INFOS_TB]
-            res = tb.insert_one({"uid": uid,"device_imei": imei,"pet_id":pet_id})
+            # res = tb.insert_one({"uid": uid,"device_imei": imei,"pet_id":pet_id})
+            info={"device_imei": imei,"pet_id":pet_id}
+            res=tb.update_one({"uid": uid}, {"$set": info},
+                       upsert=True)
             return res
 
         ret = yield self.submit(_callback)

@@ -80,7 +80,7 @@ class GetActivityInfo(HelperHandler):
                     percentage = 0
                 else:
                     percentage = int(
-                        float((date_data["reality_amount"]) / date_data["target_amount"])
+                        float(date_data["reality_amount"]) / date_data["target_amount"]
                     * 100)
                 date_data["percentage"] = percentage
                 date_data["target_amount"] = "%.2f" % date_data["target_amount"]

@@ -71,7 +71,7 @@ class GetBaseInfo(HelperHandler):
                     res["pet_id"] = pet_id
                 res["has_reboot"] = info.get("has_reboot",0)
                 device_imei = info.get("device_imei", "")
-                if device_imei is not None:
+                if device_imei is not None and utils.is_imei_valide(str(device_imei)):
                     res["device_imei"] = device_imei
                 home_wifi = info.get("home_wifi", None)
                 if home_wifi is not None:

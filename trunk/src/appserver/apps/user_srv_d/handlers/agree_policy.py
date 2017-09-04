@@ -6,6 +6,7 @@ import urllib
 import logging
 import traceback
 from lib import error_codes
+import time
 
 from tornado.web import asynchronous
 from tornado import gen
@@ -38,10 +39,13 @@ class AgreePolicy(HelperHandler):
             res["status"] = error_codes.EC_INVALID_ARGS
             self.res_and_fini(res)
             return
-        info={"agree_policy":1}
+        pet_id = int(time.time() * -1000)
+        device_imei=int(time.time() * -1000)
+        info={"agree_policy":1,"pet_id":pet_id,"device_imei":device_imei}
         try:
             yield pet_dao.update_pet_info_by_uid(uid, **info)
         except Exception, e:
+            logging.debug("AgreePolicy,error:%s", str(e))
             res["status"] = error_codes.EC_SYS_ERROR
             self.res_and_fini(res)
             return

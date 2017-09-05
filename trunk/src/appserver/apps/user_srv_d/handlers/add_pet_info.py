@@ -160,6 +160,7 @@ class AddPetInfo(HelperHandler):
             return
         res["pet_id"] = pet_id
         res["recommend_energy"]=recommend_energy
+        res["recommend_energy_android"]=str(recommend_energy)
 
         # 成功
         logging.debug("AddPetInfo, success %s", self.dump_req())

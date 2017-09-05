@@ -21,7 +21,7 @@ def send_verify(code, product, phones):
     req.sms_free_sign_name = "小毛球"
     req.sms_param = "{code:'%s',product:'%s'}" % (code, product)
     req.rec_num = phones
-    req.sms_template_code = "SMS_18700741"
+    req.sms_template_code = "SMS_91765057"
     try:
         resp = req.getResponse()
         print resp

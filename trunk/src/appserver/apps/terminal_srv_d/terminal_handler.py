@@ -95,6 +95,8 @@ class TerminalHandler:
             while True:
                 header, body = proto_io.Read()
                 if header == terminal_proto.ERROR_START:
+                    imei = self._broadcastor.get_imei_by_conn(conn_id)
+                    logging.debug("error_start,imei:%s",imei)
                     continue
                 if header is None:
                     break

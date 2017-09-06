@@ -68,7 +68,7 @@ webapp = Application(
         (r"/user/set_home_wifi", handlers.SetHomeWifi),
         (r"/user/set_home_location", handlers.SetHomeLocation),
         (r"/user/get_base_infomation", handlers.GetBaseInfo),
-        (r"/user/suggest",handlers.Suggest),
+        (r"/user/suggest", handlers.Suggest),
         (r"/pet/location", handlers.PetLocation),
         (r"/pet/location_test", handlers.PetLocation2),
         (r"/pet/walk", handlers.PetWalk),
@@ -93,8 +93,8 @@ webapp = Application(
         (r"/device/get_wifi_list", handlers.GetWifiList),
         (r"/device/reboot_device_cmd", handlers.RebootDeviceCmd),
         (r"/user/agree_policy", handlers.AgreePolicy),
-        (r"/device/get_device_status",handlers.GetPetStatusInfo),
-        (r"/app/get_config",handlers.AppConfig),
+        (r"/device/get_device_status", handlers.GetPetStatusInfo),
+        (r"/app/get_config", handlers.AppConfig),
     ],
     autoreload=True,
     pyloader=pyloader,
@@ -103,7 +103,6 @@ webapp = Application(
     auth_dao=AuthDAO.new(mongo_meta=mongo_conf.auth_mongo_meta),
     pet_dao=PetDAO.new(mongo_meta=mongo_conf.pet_mongo_meta),
     device_dao=NewDeviceDAO.new(mongo_meta=mongo_conf.pet_mongo_meta),
-
     appconfig=conf, )
 
 

@@ -24,7 +24,8 @@ from lib.sys_config import SysConfig
 import handlers.user.upload_logo
 import handlers.get
 
-define("debug_mode", 0, int, "Enable debug mode, 1 is local debug, 2 is test, 0 is disable")
+define("debug_mode", 0, int,
+       "Enable debug mode, 1 is local debug, 2 is test, 0 is disable")
 define("port", 9700, int, "Listen port, default is 9700")
 define("address", "0.0.0.0", str, "Bind address, default is 127.0.0.1")
 define("console_port", 9710, int, "Console listen port, default is 9710")
@@ -37,29 +38,30 @@ pyloader = PyLoader("config")
 conf = pyloader.ReloadInst("Config")
 
 mongo_pyloader = PyLoader("configs.mongo_config")
-mongo_conf = mongo_pyloader.ReloadInst("MongoConfig", debug_mode = options.debug_mode)
+mongo_conf = mongo_pyloader.ReloadInst("MongoConfig",
+                                       debug_mode=options.debug_mode)
 
 # Set process title
 setproctitle.setproctitle(conf.proctitle)
 
 # Init web application
 webapp = Application(
-        [
-         (r"/file/pet/upload_logo", handlers.user.upload_logo.UploadLogo),
-         (r"/file/get", handlers.get.Get),
-        ],
-        autoreload = False,
-        pyloader = pyloader,
-        files_dao = FilesDAO.new(mongo_meta = mongo_conf.files_mongo_meta),
-        auth_dao = AuthDAO.new(mongo_meta = mongo_conf.auth_mongo_meta),
-        user_dao = UserDAO.new(mongo_meta = mongo_conf.user_mongo_meta),
-        appconfig = conf,
-    )
+    [
+        (r"/file/pet/upload_logo", handlers.user.upload_logo.UploadLogo),
+        (r"/file/get", handlers.get.Get),
+    ],
+    autoreload=False,
+    pyloader=pyloader,
+    files_dao=FilesDAO.new(mongo_meta=mongo_conf.files_mongo_meta),
+    auth_dao=AuthDAO.new(mongo_meta=mongo_conf.auth_mongo_meta),
+    user_dao=UserDAO.new(mongo_meta=mongo_conf.user_mongo_meta),
+    appconfig=conf, )
+
 
 class _UserSrvConsole(Console):
     def handle_cmd(self, stream, address, cmd):
         if len(cmd) == 1 and cmd[0] == "quit":
-            self.send_response(stream,"Byte!")
+            self.send_response(stream, "Byte!")
             return False
         elif len(cmd) == 0:
             pass
@@ -79,13 +81,17 @@ console = _UserSrvConsole()
 console.bind(options.console_port, "127.0.0.1")
 console.start()
 
+
 # Init async
 @gen.coroutine
 def _async_init():
-    SysConfig.new(mongo_meta = mongo_conf.global_mongo_meta, debug_mode = options.debug_mode)
+    SysConfig.new(mongo_meta=mongo_conf.global_mongo_meta,
+                  debug_mode=options.debug_mode)
     yield SysConfig.current().open()
+
+
 ioloop.IOLoop.current().run_sync(_async_init)
 
 # Run web app loop
-webapp.listen(options.port, options.address, xheaders = True)
+webapp.listen(options.port, options.address, xheaders=True)
 ioloop.IOLoop.current().start()

@@ -11,9 +11,9 @@ import utils
 
 from sys_config import SysConfig
 import type_defines
-
+import logging
 import pymongo
-
+import threading
 from mongo_dao_base import MongoDAOBase
 
 
@@ -59,6 +59,7 @@ class OpLogMongoDAO(MongoDAOBase):
     def get_log_info(self, start_date, end_date, imei, cols):
         def _callback(mongo_client, **kwargs):
             ret = []
+            start = time.time()
             tb = mongo_client[op_log_def.OP_LOG_DATABASE][
                 op_log_def.OP_LOG_INFOS_TB]
             qcols = {"_id": 0}
@@ -70,11 +71,18 @@ class OpLogMongoDAO(MongoDAOBase):
 
             find_cond = {"imei": imei, "log_time": {"$gte": start_date}}
             if end_date != None:
-                find_cond["log_time"]["$lte"]=end_date
-
+                find_cond["log_time"]["$lte"] = end_date
+            middle = time.time()
             cursor = tb.find(find_cond, qcols).sort("log_time",
                                                     pymongo.DESCENDING)
-            return cursor
+         
+            for item in cursor:
+                ret.append(item)
+            end = time.time()
+            logging.info("thread name:%s start:%f middle:%f end:%f cha:%f",
+                         threading.currentThread().getName(), start, middle,
+                         end, end - start)
+            return ret
 
         #print "caossdasdasdas", start_date, end_date, imei
         ret = yield self.submit(_callback)

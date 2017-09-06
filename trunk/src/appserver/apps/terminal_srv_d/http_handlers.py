@@ -133,8 +133,10 @@ class SendCommandHandler3(tornado.web.RequestHandler):
         ret_str = "send ok" if ret else "send fail"
         self._OnOpLog("s2c send_data:%s ret:%s" % (send_data, ret_str), imei)
         self.write(ret_str)
-        unreply_msg_mgr = self.settings["unreply_msg_mgr"]
-        unreply_msg_mgr.add_unreply_msg(pk.sn, imei, send_data, command_num)
+        if type == "0":
+            unreply_msg_mgr = self.settings["unreply_msg_mgr"]
+            unreply_msg_mgr.add_unreply_msg(pk.sn, imei, send_data,
+                                            command_num)
 
     def _OnOpLog(self, content, imei):
         logger.info("content:%s imei:%s", content, imei)
@@ -281,7 +283,7 @@ class SendCommandHandlerJ03(tornado.web.RequestHandler):
 
 class GetOpLogHandler(tornado.web.RequestHandler):
     @gen.coroutine
-    def get(self):
+    def do_request(self):
         op_log_dao = self.settings["op_log_dao"]
         #ret = {}
         start_time = None
@@ -304,6 +306,15 @@ class GetOpLogHandler(tornado.web.RequestHandler):
             ret += " 【log_time】:%s 【imei】:%s 【content】:%s <br><br>" % (
                 utils.date2str(item["log_time"]), item["imei"],
                 item["content"])
-            #ret
         ret += "</html>"
         self.write(ret)
+
+    def get(self):
+        return self.do_request()
+
+    def post(self):
+        return self.do_request()
+
+
+
+

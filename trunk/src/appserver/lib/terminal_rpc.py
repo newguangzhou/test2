@@ -9,9 +9,11 @@ import traceback
 
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient
-
 import type_defines
 import error_codes
+
+import http_rpc
+from discover_config import TERMINAL_SRV_D
 
 
 class TerminalRPCException(Exception):
@@ -22,8 +24,9 @@ class TerminalRPCException(Exception):
         return self._message
 
 
-class TerminalRPC:
-    def __init__(self, msg_url):
+"""class TerminalRPC:
+    def __init__(self,
+                 msg_url, ):
         self._apis = {"send_j13": "%s/send_commandj13" % (msg_url, ),
                       "send_command_params":
                       "%s/send_command_params" % (msg_url, ), }
@@ -51,4 +54,25 @@ class TerminalRPC:
     @gen.coroutine
     def send_command_params(self, **args):
         ret = yield self.call("send_command_params", **args)
+        raise gen.Return(ret)"""
+
+
+class TerminalRPC(http_rpc.HttpRpc):
+    def __init__(self, discover):
+        http_rpc.HttpRpc.__init__(self, discover)
+        self.name = TERMINAL_SRV_D
+
+    @gen.coroutine
+    def send_j13(self, imei):
+        ret = yield self.call(self.name, "send_commandj13", imei=imei)
+        raise gen.Return(ret)
+
+    @gen.coroutine
+    def send_command_params(self, **args):
+        ret = yield self.call(self.name, "send_command_params", **args)
+        raise gen.Return(ret)
+
+    @gen.coroutine
+    def get_log(self, **args):
+        ret = yield self.call(self.name, "op_log", **args)
         raise gen.Return(ret)

@@ -7,9 +7,8 @@ from op_log_mongo_dao import OpLogMongoDAO
 
 class OPLogDAO:
     @staticmethod
-    def new(**kwargs):
-        mongo_meta = kwargs["mongo_meta"]
-        mongo_dao = OpLogMongoDAO(meta=mongo_meta)
+    def new(*args, **kwargs):
+        mongo_dao = OpLogMongoDAO(*args, **kwargs)
         inst = OPLogDAO(db_dao=mongo_dao)
         return inst
 

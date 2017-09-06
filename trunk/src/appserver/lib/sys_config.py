@@ -31,7 +31,7 @@ SC_SHARE_WITH_OTHERS_RULE_DESC_FMT = 20  # 是否与其他优惠活动同享规�
 SC_AC_ONLY_NEW_USER_RULE_DESC_FMT = 21  # 是否仅限新用户领取规则描述格式
 SC_AC_ONLY_MEMBER_RULE_DESC_FMT = 22  # 是否仅限店铺会员参与
 SC_TERMINAL_RPC_URL = 30
-SC_SIM_CARD_EXPIRE_DAYS = 31 #sim card 默认过期时间,天数
+SC_SIM_CARD_EXPIRE_DAYS = 31  #sim card 默认过期时间,天数
 
 
 class SysConfigException(Exception):
@@ -192,7 +192,6 @@ class SysConfig:
     @staticmethod
     def _disable_debug_hack():
         _CONFIG_ITEMS[SC_FILE_BASE_URL] = (
-
             str, "http://120.24.152.121:9700/file/get", None)
         _CONFIG_ITEMS[SC_GID_RPC_URL] = (
             str, "http://127.0.0.1:9800/gid/alloc", None)

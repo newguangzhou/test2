@@ -29,12 +29,13 @@ class MsgRPC(http_rpc.HttpRpc):
         self.name = MSG_SRV_D
 
     @gen.coroutine
-    def send_sms(self, phone_num, sms):
+    def send_sms(self, sms_type, phone_num, sms):
         ret = yield self.call(self.name,
                               "msg/send_sms",
+                              sms_type=sms_type,
                               phone_num=phone_num,
                               sms=sms)
-        raise gen.Return(ret)
+
 
     @gen.coroutine
     def send_verify_code(self, phones, code, product):

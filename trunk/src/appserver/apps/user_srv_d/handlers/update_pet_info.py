@@ -186,6 +186,7 @@ class UpdatePetInfo(HelperHandler):
             yield pet_dao.update_pet_info(pet_id, **info)
             res["status"] = error_codes.EC_SUCCESS
             res["recommend_energy"] = recommend_energy
+            res["recommend_energy_android"] = str(recommend_energy)
         except Exception, e:
             logging.warning("UpdatePetInfo, error, %s %s", self.dump_req(),
                             self.dump_exp(e))

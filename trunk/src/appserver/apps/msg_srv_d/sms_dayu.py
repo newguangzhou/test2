@@ -21,7 +21,7 @@ def send_verify(code, product, phones):
     req.sms_free_sign_name = "小毛球"
     req.sms_param = "{code:'%s',product:'%s'}" % (code, product)
     req.rec_num = phones
-    req.sms_template_code = "SMS_18700741"
+    req.sms_template_code = "SMS_91765057"
     try:
         resp = req.getResponse()
         print resp
@@ -32,7 +32,7 @@ def send_verify(code, product, phones):
         logging.exception(e)
         return False
 
-def send_message(message,phone):
+def send_message(type,message,phone):
     # logging.debug("code:%s product:%s phones:%s", code, product, phones)
     logging.debug("message:%s,phone:%s",message,phone)
     req = api.AlibabaAliqinFcSmsNumSendRequest()
@@ -41,9 +41,25 @@ def send_message(message,phone):
     req.extend=""
     req.sms_type="normal"
     req.sms_free_sign_name="小毛球"
-    req.sms_param="{message:%s}" % message
     req.rec_num = phone
-    req.sms_template_code = "SMS_81510040"
+
+
+    if type=="at_home":
+        #在家
+        req.sms_param = "{name:%s}" % message
+        req.sms_template_code = "SMS_91900039"
+    elif type=="out_home":
+        #离家
+        req.sms_param = "{name:%s}" % message
+        req.sms_template_code = "SMS_91815049"
+    elif type=="low_battery":
+        #低电量
+        req.sms_param = "{message:%s}" % message
+        req.sms_template_code = "SMS_91825060"
+    elif type=="superlow_battery":
+        #超低电量
+        req.sms_param = "{message:%s}" % message
+        req.sms_template_code = "SMS_91825060"
     try:
         resp = req.getResponse()
         print resp
@@ -57,7 +73,7 @@ def send_message(message,phone):
 
 def main():
     # send_verify("123222", "小试试", 18666023586)
-    send_message("没电了",18825180264)
+    send_message("superlow_battery","超低",18825180264)
 
 if __name__ == '__main__':
     main()

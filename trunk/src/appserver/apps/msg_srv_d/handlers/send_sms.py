@@ -31,6 +31,7 @@ class SendSMS(xmq_web_handler.XMQWebHandler):
         sms = None
         try:
             phone_num = self.get_argument("phone_num")
+            sms_type=self.get_argument("sms_type")
             sms = self.get_argument("sms")
             sms = self.decode_argument(sms)
         except Exception,e:
@@ -39,7 +40,7 @@ class SendSMS(xmq_web_handler.XMQWebHandler):
             self.res_and_fini(res)
             return
         else:
-            ok = yield sms_sender(sms,phone_num)
+            ok = yield sms_sender(sms_type,sms,phone_num)
             if not ok:
                 res = {"status": error_codes.EC_FAIL}
         # 发送成功

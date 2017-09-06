@@ -486,15 +486,18 @@ class TerminalHandler:
                 return
 
             message = ''
+            sms_type="low_battery"
             if battery_statue == 1:
                 message = "设备低电量，请注意充电"
+                sms_type = "low_battery"
                 if (int)(pet_info.get('device_os_int', 23)) > 23 and pet_info.get('mobile_num') is not None:
-                    self.msg_rpc.send_sms(pet_info.get('mobile_num'), message)
+                    self.msg_rpc.send_sms(sms_type,pet_info.get('mobile_num'), "低")
                     return
             elif battery_statue == 2:
                 message = "设备超低电量，请注意充电"
                 if (int)(pet_info.get('device_os_int', 23)) > 23 and pet_info.get('mobile_num') is not None:
-                    self.msg_rpc.send_sms(pet_info.get('mobile_num'), message)
+                    sms_type = "superlow_battery"
+                    self.msg_rpc.send_sms(sms_type,pet_info.get('mobile_num'), "超低")
                     return
 
             msg = push_msg.new_now_battery_msg(
@@ -766,14 +769,17 @@ class TerminalHandler:
                 logger.exception(e)
 
             message = ""
+            sms_type="at_home"
             nick=pet_info.get("nick","宠物")
             if is_in_home:
                 message = nick+"已安全到家。"
+                sms_type="at_home"
             else:
                 message = nick+"可能离家，请确认安全。"
+                sms_type = "out_home"
 
             if (int)(pet_info.get('device_os_int', 23)) > 23 and pet_info.get('mobile_num') is not None:
-                self.msg_rpc.send_sms(pet_info.get('mobile_num'), message)
+                self.msg_rpc.send_sms(sms_type,pet_info.get('mobile_num'), nick)
                 return
 
             try:

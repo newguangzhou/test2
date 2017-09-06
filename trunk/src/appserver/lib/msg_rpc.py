@@ -49,8 +49,8 @@ class MsgRPC:
         raise gen.Return(res)
 
     @gen.coroutine
-    def send_sms(self, phone_num, sms):
-        ret = yield self.call("send_sms", phone_num=phone_num, sms=sms)
+    def send_sms(self, sms_type,phone_num, sms):
+        ret = yield self.call("send_sms", sms_type=sms_type,phone_num=phone_num, sms=sms)
         raise gen.Return(ret)
 
     @gen.coroutine

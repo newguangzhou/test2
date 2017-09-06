@@ -27,7 +27,6 @@ class MsgRPC(http_rpc.HttpRpc):
     def __init__(self, discover):
         http_rpc.HttpRpc.__init__(self, discover)
         self.name = MSG_SRV_D
-
     @gen.coroutine
     def send_sms(self, sms_type, phone_num, sms):
         ret = yield self.call(self.name,
@@ -35,7 +34,6 @@ class MsgRPC(http_rpc.HttpRpc):
                               sms_type=sms_type,
                               phone_num=phone_num,
                               sms=sms)
-
 
     @gen.coroutine
     def send_verify_code(self, phones, code, product):

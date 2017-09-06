@@ -28,12 +28,18 @@ import unreply_msg2
 from test_handler import CloseTcp
 from lib.msg_rpc import MsgRPC
 from lib.sys_config import SysConfig
+<<<<<<< Updated upstream
 from lib import sys_config,discover_config
 from lib.service_discovery import server_discoverer_worker
 from lib.mongo_dao_base import GetMongoClientAndAuth
 
 from concurrent.futures import ThreadPoolExecutor
 
+=======
+from lib import sys_config
+from lib.service_discovery import server_discoverer_worker
+from lib import discover_config
+>>>>>>> Stashed changes
 support_setptitle = True
 ptitle = "terminal_srv_d"
 verbose = False
@@ -75,6 +81,7 @@ if __name__ == '__main__':
     msg_rpc = MsgRPC(worker.get_discover())
     thread_pool = ThreadPoolExecutor(max_thread_count)
     mongo_client = GetMongoClientAndAuth(mongo_conf.default_meta)
+
     handler = terminal_handler.TerminalHandler(
         conn_mgr,
         debug,
@@ -109,18 +116,28 @@ if __name__ == '__main__':
         op_log_dao=OPLogDAO.new(mongo_client, thread_pool), )
 
     webapp.listen(http_listen_port)
+
     imei_timer_mgr.set_on_imeis_expire(handler._OnImeiExpires)
     imei_timer_mgr.start()
     unreply_msg_mgr.set_on_un_reply_msg_retry_func(handler._OnUnreplyMsgsSend)
+<<<<<<< Updated upstream
 
+=======
+    # no_heart_msg_mgr.set_on_no_heart_func(handler._OnImeiExpires)
+>>>>>>> Stashed changes
 
     try:
         worker.register(discover_config.TERMINAL_SRV_D, http_listen_port, 0,
                         None)
         worker.work()
     except Exception, e:
+<<<<<<< Updated upstream
         print "worker register error exception:", e
         logger.exception(e)
         exit(0)
     print "started"
+=======
+        print e
+    print "starting"
+>>>>>>> Stashed changes
     IOLoop.current().start()

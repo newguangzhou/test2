@@ -24,7 +24,7 @@ class AppConfig(HelperHandler):
             self.res_and_fini(res)
             return
 
-        res["force_update"]=1
+        res["force_update"]=0
         logging.debug("AppConfig, success %s", res["force_update"])
         self.res_and_fini(res)
 

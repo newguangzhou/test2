@@ -2,6 +2,7 @@
 import sys
 sys.path.append("../../")
 reload(sys)
+sys.setdefaultencoding("utf-8")
 
 from tornado import ioloop, gen
 from tornado.web import Application

@@ -8,6 +8,7 @@ from lib import utils
 from lib import error_codes
 import json
 import base64
+from lib.xmq_http_handler import WithImeiLogHandlerMixin, WithBlockFuncHandler, BaseHttpHandler
 from terminal_base import terminal_packets, terminal_commands, terminal_proto
 from test_data import TEST_S2C_COMMAND_DATA
 logger = logging.getLogger(__name__)
@@ -110,7 +111,6 @@ class SendCommandHandler3(tornado.web.RequestHandler):
     def get(self):
         try:
             imei = self.get_argument("imei")
-
         except Exception as e:
             self.write("arg error ")
             return
@@ -133,10 +133,7 @@ class SendCommandHandler3(tornado.web.RequestHandler):
         ret_str = "send ok" if ret else "send fail"
         self._OnOpLog("s2c send_data:%s ret:%s" % (send_data, ret_str), imei)
         self.write(ret_str)
-        if type == "0":
-            unreply_msg_mgr = self.settings["unreply_msg_mgr"]
-            unreply_msg_mgr.add_unreply_msg(pk.sn, imei, send_data,
-                                            command_num)
+
 
     def _OnOpLog(self, content, imei):
         logger.info("content:%s imei:%s", content, imei)
@@ -172,7 +169,8 @@ class SendCommandHandler4(tornado.web.RequestHandler):
         op_log_dao.add_op_info(imei=unicode(imei), content=unicode(content))
 
 
-class SendParamsCommandHandler(tornado.web.RequestHandler):
+class SendParamsCommandHandler(BaseHttpHandler,
+                               WithImeiLogHandlerMixin):
     @gen.coroutine
     def do_request(self):
         res = {"status": error_codes.EC_SUCCESS}
@@ -191,13 +189,11 @@ class SendParamsCommandHandler(tornado.web.RequestHandler):
             else:
                 ret_str = "send fail"
                 res["status"] = error_codes.EC_SEND_CMD_FAIL
-            self._OnOpLog("s2c send_data:%s ret:%s" % (send_data, ret_str),
-                          imei)
-            unreply_msg_mgr = self.settings["unreply_msg_mgr"]
-            msg_type = content[0:3]
-            unreply_msg_mgr.add_unreply_msg(pk.sn, imei, send_data, msg_type)
-        data = json.dumps(res, ensure_ascii=False, encoding='utf8')
-        self.write(data)
+            self.on_log("s2c send_data:%s ret:%s" % (send_data, ret_str), imei)
+            #unreply_msg_mgr = self.settings["unreply_msg_mgr"]
+            #msg_type = content[0:3]
+            #unreply_msg_mgr.add_unreply_msg(pk.sn, imei, send_data, msg_type)
+        self.write_obj(res)
 
     def get(self):
         return self.do_request()
@@ -205,13 +201,9 @@ class SendParamsCommandHandler(tornado.web.RequestHandler):
     def post(self):
         return self.do_request()
 
-    def _OnOpLog(self, content, imei):
-        logger.info("content:%s imei:%s", content, imei)
-        op_log_dao = self.settings["op_log_dao"]
-        op_log_dao.add_op_info(imei=unicode(imei), content=unicode(content))
 
-
-class SendCommandHandlerJ13(tornado.web.RequestHandler):
+class SendCommandHandlerJ13(BaseHttpHandler,
+                            WithImeiLogHandlerMixin):
     @gen.coroutine
     def do_request(self):
         res = {"status": error_codes.EC_SUCCESS}
@@ -224,16 +216,14 @@ class SendCommandHandlerJ13(tornado.web.RequestHandler):
             pk = terminal_packets.GetLocationAck(terminal_proto.GenSN(), imei)
             send_data = str(pk)
             ret = yield broadcastor.send_msg_multicast((imei, ), send_data)
-            #ret_str = "send ok" if ret else "send fail"
             if ret:
                 ret_str = "send ok"
             else:
                 ret_str = "send fail"
                 res["status"] = error_codes.EC_SEND_CMD_FAIL
-            self._OnOpLog("s2c send_data:%s ret:%s" % (send_data, ret_str),
-                          imei)
-        data = json.dumps(res, ensure_ascii=False, encoding='utf8')
-        self.write(data)
+            self.on_log("s2c send_data:%s ret:%s" % (send_data, ret_str), imei)
+        #data = json.dumps(res, ensure_ascii=False, encoding='utf8')
+        self.write_obj(res)
 
     def get(self):
         return self.do_request()
@@ -241,13 +231,9 @@ class SendCommandHandlerJ13(tornado.web.RequestHandler):
     def post(self):
         return self.do_request()
 
-    def _OnOpLog(self, content, imei):
-        logger.info("content:%s imei:%s", content, imei)
-        op_log_dao = self.settings["op_log_dao"]
-        op_log_dao.add_op_info(imei=unicode(imei), content=unicode(content))
 
-
-class SendCommandHandlerJ03(tornado.web.RequestHandler):
+class SendCommandHandlerJ03(BaseHttpHandler,
+                            WithImeiLogHandlerMixin):
     @gen.coroutine
     def get(self):
         self.write(JO3_HTML)
@@ -269,16 +255,11 @@ class SendCommandHandlerJ03(tornado.web.RequestHandler):
         #send_data = send_data.replace("*", "#")
         ret = yield broadcastor.send_msg_multicast((imei, ), send_data)
         ret_str = "send ok" if ret else "send fail"
-        self._OnOpLog("s2c send_data:%s ret:%s" % (send_data, ret_str), imei)
+        self.on_log("s2c send_data:%s ret:%s" % (send_data, ret_str), imei)
         self.write(ret_str)
-        unreply_msg_mgr = self.settings["unreply_msg_mgr"]
-        msg_type = content[0:3]
-        unreply_msg_mgr.add_unreply_msg(pk.sn, imei, send_data, msg_type)
-
-    def _OnOpLog(self, content, imei):
-        logger.info("content:%s imei:%s", content, imei)
-        op_log_dao = self.settings["op_log_dao"]
-        op_log_dao.add_op_info(imei=unicode(imei), content=unicode(content))
+        #unreply_msg_mgr = self.settings["unreply_msg_mgr"]
+        #msg_type = content[0:3]
+        #unreply_msg_mgr.add_unreply_msg(pk.sn, imei, send_data, msg_type)
 
 
 class GetOpLogHandler(tornado.web.RequestHandler):
@@ -316,3 +297,30 @@ class GetOpLogHandler(tornado.web.RequestHandler):
         return self.do_request()
 
 
+class UnicastHandler(BaseHttpHandler, WithImeiLogHandlerMixin):
+    @gen.coroutine
+    def do_request(self):
+        res = {"status": error_codes.EC_SUCCESS}
+        try:
+            imei = self.get_argument("imei")
+            content = self.get_argument("content")
+        except Exception as e:
+            res["status"] = error_codes.EC_INVALID_ARGS
+        else:
+            broadcastor = self.settings["broadcastor"]
+            print content
+            send_data = str(content)
+            ret = yield broadcastor.send_msg_multicast((imei, ), send_data)
+            if ret:
+                ret_str = "send ok"
+            else:
+                ret_str = "send fail"
+                res["status"] = error_codes.EC_SEND_CMD_FAIL
+            #self.on_log("s2c send_data:%s ret:%s" % (send_data, ret_str), imei)
+        self.write_obj(res)
+        
+    def get(self):
+        return self.do_request()
+
+    def post(self):
+        return self.do_request()

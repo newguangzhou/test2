@@ -7,9 +7,8 @@ from pet_mongo_dao import PetMongoDAO
 
 class PetDAO:
     @staticmethod
-    def new(**kwargs):
-        mongo_meta = kwargs["mongo_meta"]
-        mongo_dao = PetMongoDAO(meta = mongo_meta)
+    def new(*args, **kwargs):
+        mongo_dao = PetMongoDAO(*args, **kwargs)
         inst = PetDAO(db_dao = mongo_dao)
         return inst
     

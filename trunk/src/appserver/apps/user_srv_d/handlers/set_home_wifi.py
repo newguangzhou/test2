@@ -24,7 +24,7 @@ class SetHomeWifi(HelperHandler):
         self.set_header("Content-Type", "application/json; charset=utf-8")
         user_dao = self.settings["user_dao"]
         pet_dao = self.settings["pet_dao"]
-        terminal_rpc = self.settings["terminal_rpc"]
+        broadcast_rpc =  self.settings["broadcast_rpc"]
         device_dao=self.settings["device_dao"]
         conf = self.settings["appconfig"]
         res = {"status": error_codes.EC_SUCCESS}
@@ -105,7 +105,7 @@ class SetHomeWifi(HelperHandler):
         self.set_header("Content-Type", "application/json; charset=utf-8")
         user_dao = self.settings["user_dao"]
         pet_dao = self.settings["pet_dao"]
-        terminal_rpc = self.settings["terminal_rpc"]
+        broadcast_rpc =  self.settings["broadcast_rpc"]
         conf = self.settings["appconfig"]
         res = {"status": error_codes.EC_SUCCESS}
 

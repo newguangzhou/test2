@@ -5,7 +5,7 @@ from terminal_base import terminal_proto
 sock = socket.socket()
 
 #sock.connect(("120.24.152.121", 5050))
-sock.connect(("120.78.17.193", 5050))
+sock.connect(("127.0.0.1", 5050))
 proto_io = terminal_proto.ProtoIO()
 
 

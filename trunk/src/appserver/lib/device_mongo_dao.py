@@ -99,11 +99,15 @@ class DeviceMongoDAO(MongoDAOBase):
     @gen.coroutine
     def get_location_infos(self, imei):
         def _callback(mongo_client, **kwargs):
+            ret = []
             tb = mongo_client[device_def.DEVICE_DATABASE][
                 device_def.DEVICE_INFOS_TB]
-            return tb.find({"imei": imei}, {"location_data": 1,
+            cursor = tb.find({"imei": imei}, {"location_data": 1,
                                             "_id": 0},
                            sort=[("systemtimestamp", pymongo.DESCENDING)])
+            for item in cursor:
+                ret.append(item)
+            return ret
 
         ret = yield self.submit(_callback)
         raise gen.Return(ret)

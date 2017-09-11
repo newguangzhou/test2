@@ -19,7 +19,7 @@ class PetFind(HelperHandler):
         logging.debug("OnPetFind, %s", self.dump_req())
         self.set_header("Content-Type", "application/json; charset=utf-8")
         pet_dao = self.settings["pet_dao"]
-        terminal_rpc = self.settings["terminal_rpc"]
+        broadcast_rpc =  self.settings["broadcast_rpc"]
         uid = None
         token = None
         find_status = None
@@ -70,7 +70,7 @@ class PetFind(HelperHandler):
             else:
                 msg.report_time = 0
 
-            get_res = yield terminal_rpc.send_command_params(
+            get_res = yield broadcast_rpc.send_command_params(
                 imei=imei, command_content=str(msg))
 
             if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
@@ -115,7 +115,7 @@ class PetFind(HelperHandler):
             msg.pet_weight = "%.2f" % (send_weight)
             msg.pet_gender = send_sex
             logging.info("pet_find send_command_j03 msg:%s", msg)
-            get_res = yield terminal_rpc.send_command_params(
+            get_res = yield broadcast_rpc.send_command_params(
                 imei=device_imei, command_content=str(msg))
 
             if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:

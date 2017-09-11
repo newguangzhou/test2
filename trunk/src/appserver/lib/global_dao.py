@@ -6,9 +6,8 @@ from global_mongo_dao import GlobalMongoDAO
 
 class GlobalDAO:
     @staticmethod
-    def new(**kwargs):
-        mongo_meta = kwargs["mongo_meta"]
-        mongo_dao = GlobalMongoDAO(meta = mongo_meta)
+    def new(*args, **kwargs):
+        mongo_dao = GlobalMongoDAO(*args, **kwargs)
         inst = GlobalDAO(db_dao = mongo_dao)
         return inst
     

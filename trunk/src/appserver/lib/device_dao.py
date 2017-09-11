@@ -7,9 +7,8 @@ from device_mongo_dao import DeviceMongoDAO
 
 class DeivceDAO:
     @staticmethod
-    def new(**kwargs):
-        mongo_meta = kwargs["mongo_meta"]
-        mongo_dao = DeviceMongoDAO(meta = mongo_meta)
+    def new(*args, **kwargs):
+        mongo_dao = DeviceMongoDAO(*args, **kwargs)
         inst = DeivceDAO(db_dao = mongo_dao)
         return inst
     

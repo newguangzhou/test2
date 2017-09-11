@@ -62,17 +62,27 @@ class TerminalRPC(http_rpc.HttpRpc):
         http_rpc.HttpRpc.__init__(self, discover)
         self.name = TERMINAL_SRV_D
 
-    @gen.coroutine
-    def send_j13(self, imei):
-        ret = yield self.call(self.name, "send_commandj13", imei=imei)
-        raise gen.Return(ret)
+    #@gen.coroutine
+    #def send_j13(self,imei,server_id=None,**args):
+    #    ret = yield self.call(self.name, "send_commandj13",id=server_id, imei=imei)
+    #    raise gen.Return(ret)
+
+    #@gen.coroutine
+    #def send_command_params(self,server_id=None, **args):
+    #    ret = yield self.call(self.name, "send_command_params",id=server_id, **args)
+     #   raise gen.Return(ret)
 
     @gen.coroutine
-    def send_command_params(self, **args):
-        ret = yield self.call(self.name, "send_command_params", **args)
+    def unicast(self,server_id=None, **args):
+        ret = yield self.call(self.name, "unicast",id=server_id, **args)
         raise gen.Return(ret)
 
-    @gen.coroutine
-    def get_log(self, **args):
-        ret = yield self.call(self.name, "op_log", **args)
-        raise gen.Return(ret)
+    #@gen.coroutine
+    #def get_log(self, **args):
+    #    ret = yield self.call(self.name, "op_log", **args)
+    #    raise gen.Return(ret)
+
+    #@gen.coroutine
+    #def send_j3(self,imei,server_id=None,):
+    #    ret = yield self.call(self.name, "send_commandj13",id=server_id, imei=imei)
+    #    raise gen.Return(ret)

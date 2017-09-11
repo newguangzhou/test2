@@ -26,12 +26,16 @@ class BroadCastor(object):
         #self._imei_timestamp_dict = {}
 
     def register_conn(self, conn_id, imei):
-        logger.info("register_conn conn_id:%d, imei:%s", conn_id, imei)
-        exist = self._imei_conn_dict.has_key(imei)
-        self._imei_conn_dict[imei] = conn_id
-        self._conn_imei_dict[conn_id] = imei
+        tmp_conn_id = self._imei_conn_dict.get(imei, None)
+        logger.info("register_conn conn_id:%d  imei:%s tmp_conn_id:%s", conn_id, imei, tmp_conn_id)
+
+        if tmp_conn_id is not None and tmp_conn_id == conn_id:
+            return True
+        else:
+            self._imei_conn_dict[imei] = conn_id
+            self._conn_imei_dict[conn_id] = imei
+            return False
         #self._imei_timestamp_dict[imei] = int(time.time())
-        return exist
 
     def un_register_conn(self, conn_id):
         logger.info("un_register_conn conn_id:%d ", conn_id)
@@ -47,12 +51,14 @@ class BroadCastor(object):
                 logger.exception(
                     "on un_register_conn conn_id:%d imei:%s exception:%s",
                     conn_id, imei, str(e))
+        return imei
 
     def get_imei_by_conn(self, conn_id):
         imei = self._conn_imei_dict.get(conn_id, None)
         return imei
-    def get_connid_by_imei(self,imei):
-        connid=self._imei_conn_dict.get(imei,None)
+
+    def get_connid_by_imei(self, imei):
+        connid = self._imei_conn_dict.get(imei, None)
         return connid
 
     @gen.coroutine

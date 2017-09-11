@@ -5,7 +5,8 @@ import traceback
 import random
 import json
 import bson
-
+from tornado.concurrent import run_on_executor
+from concurrent.futures import ThreadPoolExecutor
 from tornado import ioloop, gen
 
 import pet_mongo_defines as pet_def
@@ -195,13 +196,18 @@ class PetMongoDAO(MongoDAOBase):
     @gen.coroutine
     def get_location_infos(self, pet_id):
         def _callback(mongo_client, **kwargs):
+            ret = []
             tb = mongo_client[pet_def.PET_DATABASE][
                 pet_def.PET_LOCATION_INFOS_TB]
             qcols = {"_id": 0}
             cursor = tb.find({"pet_id": pet_id}, qcols)
+            
             if cursor.count() <= 0:
-                return None
-            return cursor
+                ret =  None
+            else:
+                for item in cursor:
+                    ret.append(item)
+            return ret
 
         ret = yield self.submit(_callback)
         raise gen.Return(ret)
@@ -246,6 +252,7 @@ class PetMongoDAO(MongoDAOBase):
     @gen.coroutine
     def get_sport_info(self, pet_id, start_time, end_time):
         def _callback(mongo_client, **kwargs):
+            ret = []
             tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_SPORT_INFOS_TB]
             qcols = {"_id": 0}
             find_cond = {"pet_id": pet_id, "diary": {"$gte": start_time}}
@@ -253,10 +260,12 @@ class PetMongoDAO(MongoDAOBase):
                 find_cond["diary"]["$lte"] = end_time
             #print find_cond
             cursor = tb.find(find_cond, qcols)
-            #print cursor.count()
             if cursor.count() <= 0:
-                return None
-            return cursor
+                ret =  None
+            else:
+                for item in cursor:
+                    ret.append(item)
+            return ret
 
         ret = yield self.submit(_callback)
         raise gen.Return(ret)
@@ -281,6 +290,7 @@ class PetMongoDAO(MongoDAOBase):
     @gen.coroutine
     def get_sleep_info(self, pet_id, start_time, end_time):
         def _callback(mongo_client, **kwargs):
+            ret = []
             tb = mongo_client[pet_def.PET_DATABASE][pet_def.PET_SLEEP_INFOS_TB]
             qcols = {"_id": 0}
             find_cond = {"pet_id": pet_id, "begin_time": {"$gte": start_time}}
@@ -288,8 +298,11 @@ class PetMongoDAO(MongoDAOBase):
                 find_cond["begin_time"]["$lte"] = end_time
             cursor = tb.find(find_cond, qcols)
             if cursor.count() <= 0:
-                return None
-            return cursor
+                ret =  None
+            else:
+                for item in cursor:
+                    ret.append(item)
+            return ret
 
         ret = yield self.submit(_callback)
         raise gen.Return(ret)

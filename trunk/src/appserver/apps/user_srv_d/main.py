@@ -21,12 +21,22 @@ from lib.pet_dao import PetDAO
 from lib.global_dao import GlobalDAO
 #from lib.device_dao import DeivceDAO
 from lib.sys_config import SysConfig
-from lib import sys_config
 from lib.new_device_dao import NewDeviceDAO
 
 from lib.gid_rpc import GIDRPC
 from lib.msg_rpc import MsgRPC
-from lib.terminal_rpc import TerminalRPC
+
+from lib.boradcast_rpc import BroadcastRPC
+from lib import sys_config, discover_config
+from lib.service_discovery import server_discoverer_worker
+from lib.mongo_dao_base import GetMongoClientAndAuth
+from concurrent.futures import ThreadPoolExecutor
+from lib.service_discovery import server_discoverer_worker
+from lib import discover_config
+import logging
+
+logger = logging.getLogger(__name__)
+
 support_setptitle = True
 try:
     import setproctitle
@@ -43,7 +53,7 @@ define("console_port", 9110, int, "Console listen port, default is 9110")
 
 # Parse commandline
 tornado.options.parse_command_line()
-
+max_thread_count = 30
 # Init pyloader
 pyloader = PyLoader("config")
 conf = pyloader.ReloadInst("Config")
@@ -55,6 +65,14 @@ mongo_conf = mongo_pyloader.ReloadInst("MongoConfig",
 # Set process title
 if support_setptitle:
     setproctitle.setproctitle(conf.proctitle)
+#
+worker = server_discoverer_worker.ServerDiscovererWorker()
+msg_rpc = MsgRPC(worker.get_discover())
+broadcast_rpc = BroadcastRPC(worker.get_discover())
+
+#
+thread_pool = ThreadPoolExecutor(max_thread_count)
+mongo_client = GetMongoClientAndAuth(mongo_conf.default_meta)
 
 # Init web application
 webapp = Application(
@@ -97,13 +115,14 @@ webapp = Application(
         (r"/app/get_config", handlers.AppConfig),
 
     ],
-    autoreload=True,
     pyloader=pyloader,
-    user_dao=UserDAO.new(mongo_meta=mongo_conf.user_mongo_meta),
-    global_dao=GlobalDAO.new(mongo_meta=mongo_conf.global_mongo_meta),
-    auth_dao=AuthDAO.new(mongo_meta=mongo_conf.auth_mongo_meta),
-    pet_dao=PetDAO.new(mongo_meta=mongo_conf.pet_mongo_meta),
-    device_dao=NewDeviceDAO.new(mongo_meta=mongo_conf.pet_mongo_meta),
+    user_dao=UserDAO.new(mongo_client, thread_pool),
+    global_dao=GlobalDAO.new(mongo_client, thread_pool),
+    auth_dao=AuthDAO.new(mongo_client, thread_pool),
+    pet_dao=PetDAO.new(mongo_client, thread_pool),
+    device_dao=NewDeviceDAO.new(mongo_client, thread_pool),
+    broadcast_rpc = broadcast_rpc,
+    msg_rpc=msg_rpc,
     appconfig=conf, )
 
 
@@ -135,15 +154,19 @@ console.start()
 # Init async
 @gen.coroutine
 def _async_init():
-    SysConfig.new(mongo_meta=mongo_conf.global_mongo_meta,
-                  debug_mode=options.debug_mode)
+    SysConfig.new(sys_config.DEFAULT_CATEGORY,mongo_client, thread_pool)
     yield SysConfig.current().open()
-    webapp.settings["gid_rpc"] = GIDRPC(SysConfig.current().get(
-        sys_config.SC_GID_RPC_URL))
-    webapp.settings["msg_rpc"] = MsgRPC(SysConfig.current().get(
-        sys_config.SC_MSG_RPC_URL))
-    webapp.settings["terminal_rpc"] = TerminalRPC(SysConfig.current().get(
-        sys_config.SC_TERMINAL_RPC_URL))
+    webapp.settings["gid_rpc"] = GIDRPC(SysConfig.current().get(sys_config.SC_GID_RPC_URL))
+
+
+
+try:
+    worker.register(discover_config.USER_SRV_D, options.port, 0, None)
+    worker.work()
+except Exception, e:
+    print "worker register error exception:", e
+    logger.exception(e)
+    exit(0)
 
 
 ioloop.IOLoop.current().run_sync(_async_init)

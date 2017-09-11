@@ -6,9 +6,8 @@ from files_mongo_dao import FilesMongoDAO
 
 class FilesDAO:
     @staticmethod
-    def new(**kwargs):
-        mongo_meta = kwargs["mongo_meta"]
-        mongo_dao = FilesMongoDAO(meta = mongo_meta)
+    def new(*args, **kwargs):
+        mongo_dao = FilesMongoDAO(*args, **kwargs)
         inst = FilesDAO(db_dao = mongo_dao)
         return inst
     

@@ -7,9 +7,8 @@ from user_mongo_dao import UserMongoDAO
 
 class UserDAO:
     @staticmethod
-    def new(**kwargs):
-        mongo_meta = kwargs["mongo_meta"]
-        mongo_dao = UserMongoDAO(meta=mongo_meta)
+    def new(*args, **kwargs):
+        mongo_dao = UserMongoDAO(*args, **kwargs)
         inst = UserDAO(db_dao=mongo_dao)
         return inst
 

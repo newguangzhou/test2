@@ -48,9 +48,9 @@ class MongoMeta:
 
         if kwargs.has_key("max_thread_count"):
             self.max_thread_count = kwargs["max_thread_count"]
-"""
 
-class MongoDAOBase:
+
+class MongoDAOBase2:
     def __init__(self, meta, **kwargs):
         self._meta = meta
         self._thread_pool = ThreadPoolExecutor(10)
@@ -99,7 +99,7 @@ class MongoDAOBase:
         return self._meta
 
 
-"""
+
 
 
 class MongoDAOBase:

@@ -200,8 +200,8 @@ class SysConfig:
                                               None)
 
     @staticmethod
-    def new(category=DEFAULT_CATEGORY, **kwargs):
-        dao = global_dao.GlobalDAO.new(**kwargs)
+    def new(category ,*args, **kwargs):
+        dao = global_dao.GlobalDAO.new(*args, **kwargs)
         inst = SysConfig(dao=dao, category=category)
 
         debug_mode = 1

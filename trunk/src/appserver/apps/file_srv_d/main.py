@@ -24,12 +24,19 @@ from lib.sys_config import SysConfig
 import handlers.user.upload_logo
 import handlers.get
 
+from lib import sys_config, discover_config
+from lib.service_discovery import server_discoverer_worker
+from lib.mongo_dao_base import GetMongoClientAndAuth
+from concurrent.futures import ThreadPoolExecutor
+from lib.service_discovery import server_discoverer_worker
+from lib import discover_config
+
 define("debug_mode", 0, int,
        "Enable debug mode, 1 is local debug, 2 is test, 0 is disable")
 define("port", 9700, int, "Listen port, default is 9700")
 define("address", "0.0.0.0", str, "Bind address, default is 127.0.0.1")
 define("console_port", 9710, int, "Console listen port, default is 9710")
-
+max_thread_count = 30
 # Parse commandline
 tornado.options.parse_command_line()
 
@@ -44,6 +51,15 @@ mongo_conf = mongo_pyloader.ReloadInst("MongoConfig",
 # Set process title
 setproctitle.setproctitle(conf.proctitle)
 
+
+worker = server_discoverer_worker.ServerDiscovererWorker()
+
+#
+thread_pool = ThreadPoolExecutor(max_thread_count)
+mongo_client = GetMongoClientAndAuth(mongo_conf.default_meta)
+
+
+
 # Init web application
 webapp = Application(
     [
@@ -52,9 +68,9 @@ webapp = Application(
     ],
     autoreload=False,
     pyloader=pyloader,
-    files_dao=FilesDAO.new(mongo_meta=mongo_conf.files_mongo_meta),
-    auth_dao=AuthDAO.new(mongo_meta=mongo_conf.auth_mongo_meta),
-    user_dao=UserDAO.new(mongo_meta=mongo_conf.user_mongo_meta),
+    files_dao=FilesDAO.new( mongo_client, thread_pool),
+    auth_dao=AuthDAO.new( mongo_client, thread_pool),
+    user_dao=UserDAO.new( mongo_client, thread_pool),
     appconfig=conf, )
 
 
@@ -85,9 +101,17 @@ console.start()
 # Init async
 @gen.coroutine
 def _async_init():
-    SysConfig.new(mongo_meta=mongo_conf.global_mongo_meta,
-                  debug_mode=options.debug_mode)
+    SysConfig.new(sys_config.DEFAULT_CATEGORY, mongo_client, thread_pool)
     yield SysConfig.current().open()
+
+
+try:
+    worker.register(discover_config.FILE_SRV_D, options.port, 0, None)
+    worker.work()
+except Exception, e:
+    print "worker register error exception:", e
+    logger.exception(e)
+    exit(0)
 
 
 ioloop.IOLoop.current().run_sync(_async_init)

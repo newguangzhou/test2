@@ -22,7 +22,7 @@ class SendGetWifiListCmd(HelperHandler):
 
         self.set_header("Content-Type", "application/json; charset=utf-8")
         pet_dao = self.settings["pet_dao"]
-        terminal_rpc = self.settings["terminal_rpc"]
+        broadcast_rpc =  self.settings["broadcast_rpc"]
         conf = self.settings["appconfig"]
         res = {"status": error_codes.EC_SUCCESS}
 
@@ -51,7 +51,7 @@ class SendGetWifiListCmd(HelperHandler):
                 res["status"] = error_codes.EC_DEVICE_NOT_EXIST
                 self.res_and_fini(res)
                 return
-            get_res = yield terminal_rpc.send_j13(imei)
+            get_res = yield broadcast_rpc.send_j13(imei)
             res["status"] = get_res["status"]
 
         except Exception, e:

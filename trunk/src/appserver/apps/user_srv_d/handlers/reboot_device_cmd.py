@@ -21,7 +21,7 @@ class RebootDeviceCmd(HelperHandler):
 
         self.set_header("Content-Type", "application/json; charset=utf-8")
         pet_dao = self.settings["pet_dao"]
-        terminal_rpc = self.settings["terminal_rpc"]
+        broadcast_rpc =  self.settings["broadcast_rpc"]
         conf = self.settings["appconfig"]
         res = {"status": error_codes.EC_SUCCESS}
 
@@ -62,7 +62,7 @@ class RebootDeviceCmd(HelperHandler):
             return
 
         # 重启
-        get_res = yield terminal_rpc.send_command_params(
+        get_res = yield broadcast_rpc.send_command_params(
             imei=imei, command_content=str(terminal_commands.TermimalReboot()))
         if get_res["status"] == error_codes.EC_SEND_CMD_FAIL:
             logging.warning("send_command_params reboot, fail status:%d",

@@ -23,7 +23,7 @@ class UpdatePetInfo(HelperHandler):
         self.set_header("Content-Type", "application/json; charset=utf-8")
         pet_dao = self.settings["pet_dao"]
         conf = self.settings["appconfig"]
-        terminal_rpc = self.settings["terminal_rpc"]
+        broadcast_rpc =  self.settings["broadcast_rpc"]
         res = {"status": error_codes.EC_SUCCESS}
         pet_info = None
 

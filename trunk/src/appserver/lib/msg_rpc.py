@@ -27,13 +27,16 @@ class MsgRPC(http_rpc.HttpRpc):
     def __init__(self, discover):
         http_rpc.HttpRpc.__init__(self, discover)
         self.name = MSG_SRV_D
-    @gen.coroutine
+
     def send_sms(self, sms_type, phone_num, sms):
-        ret = yield self.call(self.name,
+        return  self.call(self.name,
                               "msg/send_sms",
                               sms_type=sms_type,
                               phone_num=phone_num,
                               sms=sms)
+
+        
+
 
     @gen.coroutine
     def send_verify_code(self, phones, code, product):
@@ -67,3 +70,26 @@ class MsgRPC(http_rpc.HttpRpc):
         for (k, v) in extras.items():
             ret[k] = v
         return json.dumps(ret)
+
+
+    # default is alias
+    def push_android(self, **args):
+        args["push_type"] = "alias"
+        return self.call(self.name, "msg/push_android",
+                              **args)
+    # defalut is alias
+    def push_ios(self, **args):
+        args["push_type"] = "alias"
+        return self.call(self.name, "msg/push_ios", **args)
+
+    # default is alias
+    def push_android_useraccount(self, **args):
+        args["push_type"] = "user_account"
+        return self.call(self.name, "msg/push_android",
+                         **args)
+
+    # defalut is alias
+    def push_ios_useraccount(self, **args):
+        args["push_type"] = "user_account"
+        return self.call(self.name, "msg/push_ios", **args)
+

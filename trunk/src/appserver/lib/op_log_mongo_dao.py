@@ -14,7 +14,7 @@ import type_defines
 import logging
 import pymongo
 import threading
-from mongo_dao_base import MongoDAOBase
+from mongo_dao_base import MongoDAOBase,MongoDAOBase2
 
 
 class OpLogMongoDAOException(Exception):

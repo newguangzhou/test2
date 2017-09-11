@@ -18,7 +18,7 @@ class PetLocation(HelperHandler):
 
         logging.debug("OnPetLocation, %s", self.dump_req())
         self.set_header("Content-Type", "application/json; charset=utf-8")
-        terminal_rpc = self.settings["terminal_rpc"]
+        broadcast_rpc =  self.settings["broadcast_rpc"]
         pet_dao = self.settings["pet_dao"]
         uid = None
         token = None
@@ -57,7 +57,7 @@ class PetLocation(HelperHandler):
                 return
             else:
                 if info.get("pet_status",0) != 2:
-                    terminal_rpc.send_j13(imei)
+                    yield broadcast_rpc.send_j13(imei)
 
             res_info = yield pet_dao.get_location_infos(pet_id)
             if res_info is not None:

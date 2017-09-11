@@ -6,9 +6,8 @@ from auth_mongo_dao import AuthMongoDAO
 
 class AuthDAO:
     @staticmethod
-    def new(**kwargs):
-        mongo_meta = kwargs["mongo_meta"]
-        mongo_dao = AuthMongoDAO(meta = mongo_meta)
+    def new(*args, **kwargs):
+        mongo_dao = AuthMongoDAO(*args, **kwargs)
         inst = AuthDAO(db_dao = mongo_dao)
         return inst
     

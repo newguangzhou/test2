@@ -15,7 +15,6 @@ class RedisTimer(object):
         now = int(time.time())
         timeout = now + expires
         client = self.redis_mgr.get_client()
-        print "dasdasdsadasd", key, timeout,now
         client.zadd(self.name, timeout, key)
        
         logger.debug("add key:%s timeout:%d", key, timeout)

@@ -26,12 +26,20 @@ from mipush2 import MiPush2
 from sms_dayu import send_verify,send_message
 import handlers
 
+from lib import sys_config, discover_config
+from lib.service_discovery import server_discoverer_worker
+from lib.mongo_dao_base import GetMongoClientAndAuth
+from concurrent.futures import ThreadPoolExecutor
+from lib.service_discovery import server_discoverer_worker
+from lib import discover_config
+import logging
+logger = logging.getLogger(__name__)
 define("debug_mode", 0, int,
        "Enable debug mode, 1 is local debug, 2 is test, 0 is disable")
 define("port", 9200, int, "Listen port, default is 9200")
 define("address", "0.0.0.0", str, "Bind address, default is 127.0.0.1")
 define("console_port", 9210, int, "Console listen port, default is 9210")
-
+max_thread_count = 30
 # Parse commandline
 tornado.options.parse_command_line()
 
@@ -48,6 +56,11 @@ setproctitle.setproctitle(conf.proctitle)
 
 # # Init sms
 # sms_sender = NEXMOSMS(pyloader)
+worker = server_discoverer_worker.ServerDiscovererWorker()
+
+#
+thread_pool = ThreadPoolExecutor(max_thread_count)
+mongo_client = GetMongoClientAndAuth(mongo_conf.default_meta)
 
 # Init web application
 webapp = Application(
@@ -63,7 +76,7 @@ webapp = Application(
     pyloader=pyloader,
     appconfig=conf,
     sms_registered=True,
-    auth_dao=AuthDAO.new(mongo_meta=mongo_conf.auth_mongo_meta),
+    auth_dao=AuthDAO.new(mongo_client, thread_pool),
     sms_sender=send_message,
     verify_sender=send_verify,
     xiaomi_push2= MiPush2(conf.mipush_appsecret_android, conf.mipush_pkg_name,
@@ -72,29 +85,16 @@ webapp = Application(
                        conf.mipush_pkg_name))
 
 
-class _UserSrvConsole(Console):
-    def handle_cmd(self, stream, address, cmd):
-        if len(cmd) == 1 and cmd[0] == "quit":
-            self.send_response(stream, "Byte!")
-            return False
-        elif len(cmd) == 0:
-            pass
-        elif len(cmd) == 1 and cmd[0] == "reload-config":
-            conf = self.pyld.ReloadInst("Config")
-            webapp.settings["appconfig"] = conf
-            mipush = MIPush(conf.mipush_host, conf.mipush_appsecret,
-                           conf.mipush_pkg_name)
-            webapp.settings["xiaomi_push"] = mipush
-            self.send_response(stream, "done")
-        else:
-            self.send_response(stream, "Invalid command!")
-        return True
+try:
+    worker.register(discover_config.FILE_SRV_D, options.port, 0, None)
+    worker.work()
+except Exception, e:
+    print "worker register error exception:", e
+    logger.exception(e)
+    exit(0)
 
-# Init console
-console = _UserSrvConsole()
-console.bind(options.console_port)
-console.start()
 
+print "started"
 # Run web app loop
 webapp.listen(options.port, options.address, xheaders=True)
 ioloop.IOLoop.current().start()

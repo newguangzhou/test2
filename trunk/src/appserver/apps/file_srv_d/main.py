@@ -13,7 +13,7 @@ from tornado.web import Application, url
 
 import tornado.options
 from tornado.options import define, options
-
+import logging
 from lib.console import Console
 from lib.pyloader import PyLoader
 from lib.auth_dao import AuthDAO
@@ -30,7 +30,7 @@ from lib.mongo_dao_base import GetMongoClientAndAuth
 from concurrent.futures import ThreadPoolExecutor
 from lib.service_discovery import server_discoverer_worker
 from lib import discover_config
-
+logger = logging.getLogger(__name__)
 define("debug_mode", 0, int,
        "Enable debug mode, 1 is local debug, 2 is test, 0 is disable")
 define("port", 9700, int, "Listen port, default is 9700")

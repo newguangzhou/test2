@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class ServerDiscovererWorker(object):
     SERVER_IP_ENV_NAME = "SERVER_IP"
     SERVER_GROUP_ENV_NAME = "SERVER_GROUP"
-    DISCOVER_DOMAIN = "discover.seeyoutime.com"
+    DISCOVER_DOMAIN = "discover.xiaomaoqiu.com"
 
     def __init__(self):
         self.ip = os.environ.get(self.SERVER_IP_ENV_NAME)
@@ -37,19 +37,3 @@ class ServerDiscovererWorker(object):
 
     def work(self):
         self.discover_server.watch()
-
-
-if __name__ == '__main__':
-    import sys
-    import random
-    if len(sys.argv) >= 2:
-        name = sys.argv[1]
-    else:
-        exit(0)
-    port = random.randint(1000, 10000)
-    try:
-        worker = ServerDiscovererWorker()
-        worker.register(name, port, 0, None)
-        worker.work()
-    except Exception, e:
-        print e

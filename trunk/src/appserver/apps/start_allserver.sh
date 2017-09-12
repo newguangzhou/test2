@@ -12,5 +12,8 @@ exec nohup sh start.sh & $*
 cd ../terminal_srv_d/
 exec nohup sh start.sh & $*
 
+cd ../broadcast_srv_d/
+exec nohup sh start.sh & $*
+
 exit 1
 

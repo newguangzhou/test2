@@ -86,7 +86,7 @@ webapp = Application(
 
 
 try:
-    worker.register(discover_config.FILE_SRV_D, options.port, 0, None)
+    worker.register(discover_config.MSG_SRV_D, options.port, 0, None)
     worker.work()
 except Exception, e:
     print "worker register error exception:", e

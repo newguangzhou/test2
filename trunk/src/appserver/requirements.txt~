@@ -9,4 +9,4 @@ python-geohash
 haversine
 pymongo
 pillow
-python-etcd3
+etcd3

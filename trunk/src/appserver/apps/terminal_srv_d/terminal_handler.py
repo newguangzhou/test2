@@ -516,17 +516,17 @@ class TerminalHandler:
                                                     payload=msg,
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                            payload="追踪器电量超低，请及时充电！",
+                                                            payload="追踪器电量低，请及时充电！",
                                                             extra="low_battery"
                                                             )
                 elif battery_statue == 2:
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     title="小毛球智能提醒",
-                                                    desc="设备超低电量，请注意充电",
+                                                    desc="追踪器电量超低，请及时充电！",
                                                     payload=msg,
                                                     pass_through=0)
                     yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
-                                                            payload="设备超低电量，请注意充电",
+                                                            payload="追踪器电量超低，请及时充电！",
                                                             extra="superlow_battery"
                                                             )
 
@@ -560,9 +560,9 @@ class TerminalHandler:
 
         now_time = datetime.datetime.now()
         battery_status = 0
-        if pk.electric_quantity < LOW_BATTERY:
+        if pk.electric_quantity <= LOW_BATTERY:
             battery_status = 1
-            if pk.electric_quantity < ULTRA_LOW_BATTERY:
+            if pk.electric_quantity <= ULTRA_LOW_BATTERY:
                 battery_status = 2
         yield self._SendOnlineMsg(pk.imei, pk.electric_quantity, now_time)
         device_info = yield self.new_device_dao.get_device_info(pk.imei, ("battery_status",))

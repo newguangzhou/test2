@@ -300,7 +300,7 @@ class TerminalHandler:
                 lnglat = [ret[0], ret[1]]
 
         elif pk.location_info.locator_status == terminal_packets.LOCATOR_STATUS_STATION:
-            bts_info, near_bts_infos = util.split_locator_station_info(
+            bts_info, near_bts_infos = util.new_split_locator_station_info(
                 pk.location_info.station_locator_data)
             ret = yield self.get_location_by_bts_info(pk.imei, bts_info,
                                                       near_bts_infos)
@@ -308,7 +308,7 @@ class TerminalHandler:
                 lnglat = [ret[0], ret[1]]
                 radius = ret[2]
         elif pk.location_info.locator_status == terminal_packets.LOCATOR_STATUS_MIXED:
-            bts_info, near_bts_infos = util.split_locator_station_info(
+            bts_info, near_bts_infos = util.new_split_locator_station_info(
                 pk.location_info.station_locator_data)
 
             ret = yield self.get_location_by_mixed(

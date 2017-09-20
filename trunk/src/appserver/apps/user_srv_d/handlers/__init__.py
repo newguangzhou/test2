@@ -52,6 +52,8 @@ from about_xmpush import SetAliasHandler,UnSetAliasHandler,SetAccountHandler,UnS
 from suggest import Suggest
 from get_config import AppConfig
 
+from outdoor_protect import OutdoorOnOff,SetOutdoorWifi
+
 #from get_sale_info import GetSaleInfo
 #from get_sale_statist import GetSaleStatist
 #from get_user_recommand_activities import GetUserRecommandActivities

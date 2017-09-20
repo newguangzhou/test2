@@ -62,7 +62,7 @@ class PetLocation(HelperHandler):
 
             res_info = yield pet_dao.get_location_infos(pet_id)
             if res_info is not None:
-                length = res_info.count()
+                length = len(res_info)
                 if length > 0:
                     tmp = res_info[length - 1]
                     res["locator_status"] = tmp.get("locator_status", 5)

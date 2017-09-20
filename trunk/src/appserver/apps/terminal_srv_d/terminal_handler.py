@@ -262,7 +262,7 @@ class TerminalHandler:
                                                    datetime.time.min)
             res_info = yield self.pet_dao.get_sport_info(
                 pet_info["pet_id"], temp_diary, datetime.datetime.now())
-            if res_info is not None and res_info.count() > 0:
+            if res_info is not None and len(res_info) > 0:
                 if res_info[0].get("calorie", 0) > now_calorie:
                     now_calorie = res_info[0].get("calorie", 0)
         pk.calorie = now_calorie

@@ -13,6 +13,13 @@ from lib.pyloader import PyLoader
 from lib.op_log_dao import OPLogDAO
 from lib.sys_config import SysConfig
 
+from lib import sys_config, discover_config
+
+from concurrent.futures import ThreadPoolExecutor
+from lib.mongo_dao_base import GetMongoClientAndAuth
+
+
+
 from tornado.ioloop import IOLoop
 
 from lib import utils
@@ -24,6 +31,7 @@ ptitle = "self_srv_d"
 
 listen_port = 5053
 debug = False
+max_thread_count = 30
 
 
 try:
@@ -46,7 +54,7 @@ mongo_conf = mongo_pyloader.ReloadInst("MongoConfig", debug_mode=debug)
 
 @gen.coroutine
 def _async_init():
-    SysConfig.new(mongo_meta=mongo_conf.global_mongo_meta, debug_mode=debug)
+    SysConfig.new(sys_config.DEFAULT_CATEGORY,mongo_meta=mongo_conf.global_mongo_meta, debug_mode=debug)
     yield SysConfig.current().open()
 
 class GetOpLogHandler(tornado.web.RequestHandler):
@@ -81,12 +89,15 @@ class GetOpLogHandler(tornado.web.RequestHandler):
 if __name__ == '__main__':
     tornado.options.options.logging = "debug"
     tornado.options.parse_command_line()
-    IOLoop.current().run_sync(_async_init)
+    # IOLoop.current().run_sync(_async_init)
+    thread_pool = ThreadPoolExecutor(max_thread_count)
+    mongo_client = GetMongoClientAndAuth(mongo_conf.default_meta)
+
     webapp = Application(
         [
             (r"/op_log", GetOpLogHandler),
         ],
-        op_log_dao=OPLogDAO.new(mongo_meta=mongo_conf.op_log_mongo_meta),)
+        op_log_dao=OPLogDAO.new(mongo_client, thread_pool),)
     webapp.listen(listen_port)
     IOLoop.current().start()
 

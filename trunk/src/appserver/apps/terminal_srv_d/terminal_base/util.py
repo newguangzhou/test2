@@ -25,6 +25,23 @@ def split_locator_station_info(locator_station):
     else:
         return tmp[0], "|".join(tmp[1:])
 
+#测试：基站第一个参数为强度最大
+def new_split_locator_station_info(locator_station):
+    tmp = locator_station.split("|")
+    if len(tmp) == 1:
+        return tmp[0], None
+    else:
+        return get_max_bts(locator_station), locator_station
+
+def get_max_bts(raw):
+    temp_list = raw.split("|")
+    sorting_list = []
+    for inner_temp in temp_list:
+        inner_item = inner_temp.split(",")
+        sorting_list.append(inner_item[-1])
+    sorted_list = sorted(sorting_list, reverse=True)
+    index = sorting_list.index(sorted_list[0])
+    return temp_list[index]
 
 def can_unicode(strstr):
     try:

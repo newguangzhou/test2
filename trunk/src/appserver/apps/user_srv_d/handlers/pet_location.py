@@ -9,6 +9,7 @@ import time
 from tornado.web import asynchronous
 from tornado import gen
 from helper_handler import HelperHandler
+from lib import utils
 
 
 class PetLocation(HelperHandler):
@@ -56,20 +57,29 @@ class PetLocation(HelperHandler):
                 self.res_and_fini(res)
                 return
             else:
-                if info.get("pet_status",0) != 2:
-                    yield broadcast_rpc.send_j13(imei)
+                # if info.get("pet_status",0) != 2:
+                yield broadcast_rpc.send_j13(imei)
 
             res_info = yield pet_dao.get_location_infos(pet_id)
             if res_info is not None:
                 length = res_info.count()
                 if length > 0:
                     tmp = res_info[length - 1]
-                    res["longitude"] = "%.7f" % tmp["lnglat"][0]
-                    res["latitude"] = "%.7f" % tmp["lnglat"][1]
+                    res["locator_status"] = tmp.get("locator_status", 5)
+                    if tmp.get("locator_status", 5)==5 \
+                            and tmp["lnglat"] is not None \
+                            and  tmp["lnglat3"] is not None \
+                            and utils.haversine(tmp["lnglat"][0],tmp["lnglat"][1],tmp["lnglat3"][0],tmp["lnglat3"][1])>2000:
+                             #基站定位
+                        res["longitude"] = "%.7f" % tmp["lnglat3"][0]
+                        res["latitude"] = "%.7f" % tmp["lnglat3"][1]
+                        res["locator_status"] = 2
+                    else:
+                        res["longitude"] = "%.7f" % tmp["lnglat"][0]
+                        res["latitude"] = "%.7f" % tmp["lnglat"][1]
                     res["radius"] = tmp.get("radius", -1)
                     res["location_time"] = int(time.mktime(tmp[
                         "locator_time"].timetuple()))
-                    res["locator_status"]=tmp.get("locator_status",5)
             else:
                 res["status"] = error_codes.EC_NODATA
         except Exception, e:

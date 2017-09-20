@@ -8,6 +8,7 @@ import re
 from tornado.concurrent import Future
 from tornado import gen
 import math
+from math import radians, cos, sin, asin, sqrt
 from sys_config import DOG_CONFIG, DOG_NAME_CONFIG
 
 
@@ -416,6 +417,22 @@ def calorie_transform(raw_calorie,weight,sex,coefficient=1):
         result_calorie=raw_calorie*weight*coefficient*1.10/(1.29*15.00)
     return result_calorie
 
+#计算高德地图两个经纬度之间的距离
+def haversine(lon1, lat1, lon2, lat2):  # 经度1，纬度1，经度2，纬度2 （十进制度数）
+    """ 
+    Calculate the great circle distance between two points  
+    on the earth (specified in decimal degrees) 
+    """
+    # 将十进制度数转化为弧度
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+
+    # haversine公式
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+    c = 2 * asin(sqrt(a))
+    r = 6371  # 地球平均半径，单位为公里
+    return c * r * 1000
 
 
 

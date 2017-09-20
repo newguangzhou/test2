@@ -32,5 +32,5 @@ do
 	nodes="$nodes $LAN_IP:$port"
 done
 
-$2/redis-trib.rb create --replicas 1 $nodes
+#$2/redis-trib.rb create --replicas 1 $nodes
 

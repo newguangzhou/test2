@@ -300,7 +300,7 @@ class TerminalHandler:
                 lnglat = [ret[0], ret[1]]
 
         elif pk.location_info.locator_status == terminal_packets.LOCATOR_STATUS_STATION:
-            bts_info, near_bts_infos = util.split_locator_station_info(
+            bts_info, near_bts_infos = util.new_split_locator_station_info(
                 pk.location_info.station_locator_data)
             ret = yield self.get_location_by_bts_info(pk.imei, bts_info,
                                                       near_bts_infos)
@@ -308,7 +308,7 @@ class TerminalHandler:
                 lnglat = [ret[0], ret[1]]
                 radius = ret[2]
         elif pk.location_info.locator_status == terminal_packets.LOCATOR_STATUS_MIXED:
-            bts_info, near_bts_infos = util.split_locator_station_info(
+            bts_info, near_bts_infos = util.new_split_locator_station_info(
                 pk.location_info.station_locator_data)
 
             ret = yield self.get_location_by_mixed(
@@ -375,9 +375,9 @@ class TerminalHandler:
             server_recv_time=time_stamp)
 
         battery_status = 0
-        if pk.electric_quantity < LOW_BATTERY:
+        if pk.electric_quantity <= LOW_BATTERY:
             battery_status = 1
-            if pk.electric_quantity < ULTRA_LOW_BATTERY:
+            if pk.electric_quantity <= ULTRA_LOW_BATTERY:
                 battery_status = 2
         device_info = yield self.new_device_dao.get_device_info(pk.imei, (
             "battery_status", ))
@@ -563,20 +563,23 @@ class TerminalHandler:
                                                     desc="追踪器电量低，请及时充电！",
                                                     payload=msg,
                                                     pass_through=0)
-                    yield self.msg_rpc.push_ios_useraccount(
-                        uids=str(uid),
-                        payload="追踪器电量超低，请及时充电！",
-                        extra="low_battery")
+
+                    yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
+                                                            payload="追踪器电量低，请及时充电！",
+                                                            extra="low_battery"
+                                                            )
                 elif battery_statue == 2:
                     yield self.msg_rpc.push_android(uids=str(uid),
                                                     title="小毛球智能提醒",
-                                                    desc="设备超低电量，请注意充电",
+                                                    desc="追踪器电量超低，请及时充电！",
                                                     payload=msg,
                                                     pass_through=0)
-                    yield self.msg_rpc.push_ios_useraccount(
-                        uids=str(uid),
-                        payload="设备超低电量，请注意充电",
-                        extra="superlow_battery")
+
+                    yield self.msg_rpc.push_ios_useraccount(uids=str(uid),
+                                                            payload="追踪器电量超低，请及时充电！",
+                                                            extra="superlow_battery"
+                                                            )
+
 
             except Exception, e:
                 logger.exception(e)
@@ -607,9 +610,9 @@ class TerminalHandler:
 
         now_time = datetime.datetime.now()
         battery_status = 0
-        if pk.electric_quantity < LOW_BATTERY:
+        if pk.electric_quantity <= LOW_BATTERY:
             battery_status = 1
-            if pk.electric_quantity < ULTRA_LOW_BATTERY:
+            if pk.electric_quantity <= ULTRA_LOW_BATTERY:
                 battery_status = 2
         yield self._SendOnlineMsg(pk.imei, pk.electric_quantity, now_time)
         device_info = yield self.new_device_dao.get_device_info(pk.imei, (

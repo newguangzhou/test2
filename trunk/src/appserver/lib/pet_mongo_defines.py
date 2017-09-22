@@ -42,6 +42,7 @@ _PET_INFOS_TB_ROW_DEFINE = {
     "home_wifi": (None, dict),
     "outdoor_wifi":(None,dict),#户外wifi
     "outdoor_on_off":(0,int),#0 关闭 1 打开
+    "outdoor_in_protected":(0,int),#0表示不在保护范围，1表示在保护范围
     "home_location": (None,dict),
     "common_wifi": ([], list),
     "has_reboot":(0,int),

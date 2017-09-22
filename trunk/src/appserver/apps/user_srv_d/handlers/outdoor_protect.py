@@ -18,7 +18,7 @@ class OutdoorOnOff(HelperHandler):
         try:
             uid = int(self.get_argument("uid"))
             token = self.get_argument("token")
-            outdoor_on_off=self.get_argument("outdoor_on_off")
+            outdoor_on_off=int(self.get_argument("outdoor_on_off"))
         except Exception,e:
             logging.warning("OutdoorOnOff, invalid args, %s %s",
                             self.dump_req(), str(e))

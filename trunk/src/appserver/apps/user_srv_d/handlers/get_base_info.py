@@ -84,8 +84,8 @@ class GetBaseInfo(HelperHandler):
                 if home_location is not None:
                     res["longitude"]=home_location["longitude"]
                     res["latitude"]=home_location["latitude"]
-                res["agree_policy"]=info.get("agree_policy",0)
-                res["outdoor_on_off"]=info.get("outdoor_on_off",0)
+                res["agree_policy"]=int(info.get("agree_policy",0))
+                res["outdoor_on_off"]=int(info.get("outdoor_on_off",0))
                 outdoor_wifi=info.get("outdoor_wifi",None)
                 if outdoor_wifi is not None:
                     res["outdoor_wifi_bssid"] = outdoor_wifi["outdoor_wifi_bssid"]

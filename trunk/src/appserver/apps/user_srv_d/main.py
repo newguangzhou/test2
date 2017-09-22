@@ -114,9 +114,11 @@ webapp = Application(
         (r"/device/get_device_status", handlers.GetPetStatusInfo),
         (r"/app/get_config", handlers.AppConfig),
         (r"/user/set_outdoor_on_off", handlers.OutdoorOnOff),
-        (r"user/set_outdoor_wifi", handlers.SetOutdoorWifi),
+        (r"/user/set_outdoor_wifi", handlers.SetOutdoorWifi),
 
     ],
+    debug=True,
+    autoreload=True,
     pyloader=pyloader,
     user_dao=UserDAO.new(mongo_client, thread_pool),
     global_dao=GlobalDAO.new(mongo_client, thread_pool),
